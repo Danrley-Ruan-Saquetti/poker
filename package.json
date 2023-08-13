@@ -1,0 +1,26 @@
+{
+    "name": "poker",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start:dev": "tsx watch src"
+    },
+    "keywords": [],
+    "author": "Dan Ruan <danrsaquetti@gmail.com>",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^20.5.0",
+        "@typescript-eslint/eslint-plugin": "^5.59.11",
+        "@typescript-eslint/parser": "^5.59.11",
+        "eslint": "^8.42.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "prettier": "^2.8.8",
+        "tsx": "^3.12.7",
+        "typescript": "^5.1.6"
+    },
+    "dependencies": {
+        "@esliph/util-node": "^1.0.35"
+    }
+}
