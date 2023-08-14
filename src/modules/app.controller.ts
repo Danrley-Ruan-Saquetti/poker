@@ -8,6 +8,10 @@ export class AppController {
         this.gameController = new GameController()
     }
 
+    initComponents() {
+        this.gameController.generateDeckInRepository()
+    }
+
     newGame() {
         const gameEntity = this.gameController.createGame()
 

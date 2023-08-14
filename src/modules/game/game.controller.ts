@@ -1,3 +1,4 @@
+import { DeckController } from '../deck/deck.controller'
 import { RoomController } from '../room/room.controller'
 import { GameEntity, GameId, GameModel } from './game.entity'
 import { GameRepository } from './game.repository'
@@ -5,6 +6,15 @@ import { GameRepository } from './game.repository'
 export class GameController {
     private static repository = new GameRepository()
     private roomController = new RoomController()
+    private deckController: DeckController
+
+    constructor() {
+        this.deckController = new DeckController()
+    }
+
+    generateDeckInRepository() {
+        this.deckController.generateDeckInRepository()
+    }
 
     getGames() {
         return GameController.repository.findAll()
