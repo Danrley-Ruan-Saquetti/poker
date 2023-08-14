@@ -1,13 +1,16 @@
-import { PlayerId } from '../player/player.entity'
+import { GameId } from '../game/game.entity'
 
 export type RoomId = number
 
 export interface RoomModel {
     id: RoomId
-    players: PlayerId[]
+    gameId: GameId
 }
 
 export class RoomEntity implements RoomModel {
-    id: RoomId
-    players: PlayerId[]
+
+    constructor(
+        public id: RoomId,
+        public gameId: GameId,
+    ) { }
 }

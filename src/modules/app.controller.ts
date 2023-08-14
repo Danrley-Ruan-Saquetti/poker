@@ -1,9 +1,20 @@
-import { RoomController } from './room/room.controller'
+import { Game } from './game/game'
+import { GameController } from './game/game.controller'
 
 export class AppController {
-    private roomController: RoomController
+    private gameController: GameController
 
     constructor() {
-        this.roomController = new RoomController()
+        this.gameController = new GameController()
+    }
+
+    newGame() {
+        const gameEntity = this.gameController.createGame()
+
+        const game = new Game(gameEntity.id)
+
+        game.initComponents()
+
+        return game
     }
 }

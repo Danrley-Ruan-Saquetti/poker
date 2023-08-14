@@ -31,7 +31,7 @@ export class Repository<Model extends RepositoryModel> {
         this.documents.splice(index, 1)
     }
 
-    updateByIndex(id: number, data: Partial<Omit<Model, 'id'>>) {
+    updateById(id: number, data: Partial<Omit<Model, 'id'>>) {
         const index = this.findIndexById(id)
 
         if (index < 0) { return }
