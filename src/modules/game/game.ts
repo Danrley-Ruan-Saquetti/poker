@@ -7,8 +7,6 @@ import { RoomId } from '../room/room.entity'
 import { GameController } from './game.controller'
 import { GameId } from './game.entity'
 
-type GameEvents = {}
-
 export class Game {
     private gameController: GameController
     private roomController: RoomController
