@@ -8,16 +8,18 @@ function bootstrap() {
     const game = app.newGame()
 
     game.newPlayer({ money: 10000, name: 'Dan' })
-    game.newPlayer({ money: 10000, name: 'Dan' })
-    game.newPlayer({ money: 10000, name: 'Dan' })
-    game.newPlayer({ money: 10000, name: 'Dan' })
-    game.newPlayer({ money: 10000, name: 'Dan' })
-    game.newPlayer({ money: 10000, name: 'Dan' })
-    game.newPlayer({ money: 10000, name: 'Dan' })
-    game.newPlayer({ money: 10000, name: 'Dan' })
-    game.newPlayer({ money: 10000, name: 'Dan' })
+    game.newPlayer({ money: 10000, name: 'Ruan' })
+    game.newPlayer({ money: 10000, name: 'Davi' })
+    // game.newPlayer({ money: 10000, name: 'Dan' })
+    // game.newPlayer({ money: 10000, name: 'Dan' })
+    // game.newPlayer({ money: 10000, name: 'Dan' })
+    // game.newPlayer({ money: 10000, name: 'Dan' })
+    // game.newPlayer({ money: 10000, name: 'Dan' })
+    // game.newPlayer({ money: 10000, name: 'Dan' })
 
-    console.log(game.getState())
+    console.log(game.getDeck().deck)
+    console.log(game.getPlayersInOrder().players)
+    console.log(game.getRoom().room)
 }
 
 bootstrap()

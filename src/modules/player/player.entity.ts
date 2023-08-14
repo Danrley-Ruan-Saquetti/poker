@@ -8,8 +8,9 @@ export interface PlayerModel {
     name: string
     money: number
     cards: CardId[]
+    active: boolean
     room: {
-        id: RoomId,
+        id: RoomId
         order: number
     }
 }
@@ -19,16 +20,18 @@ export class PlayerEntity implements PlayerModel {
     name: string
     money: number
     cards: CardId[]
+    active: boolean
     room: {
-        id: RoomId,
+        id: RoomId
         order: number
     }
 
-    constructor({ id, money, name, room, cards }: PlayerModel) {
+    constructor({ id, money, name, room, cards, active }: PlayerModel) {
         this.id = id
         this.money = money
         this.name = name
         this.room = room
         this.cards = cards
+        this.active = active
     }
 }

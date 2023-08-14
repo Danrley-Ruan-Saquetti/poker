@@ -1,3 +1,4 @@
+import { PartialDeep } from 'src/util'
 import { RoomId } from '../room/room.entity'
 import { PlayerEntity, PlayerId, PlayerModel } from './player.entity'
 import { PlayerRepository } from './player.repository'
@@ -5,16 +6,16 @@ import { PlayerRepository } from './player.repository'
 export class PlayerController {
     private static repository = new PlayerRepository()
 
-    createPlayer({ money, name, room }: Omit<PlayerModel, 'id' | 'cards'>) {
-        const playerDoc = PlayerController.repository.add({ money, name, room, cards: [] })
+    createPlayer({ money, name, room }: Omit<PlayerModel, 'id' | 'cards' | 'active'>) {
+        const playerDoc = PlayerController.repository.add({ money, name, room, cards: [], active: false })
 
         const player = new PlayerEntity(playerDoc)
 
         return player
     }
 
-    updatePlayerById(args: PlayerModel) {
-        PlayerController.repository.updateById(args.id, args)
+    updatePlayerById(id: PlayerId, args: PartialDeep<Omit<PlayerModel, 'id'>>) {
+        PlayerController.repository.updateById(id, args)
     }
 
     removePlayerBy(id: PlayerId) {

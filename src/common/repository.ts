@@ -1,8 +1,8 @@
+import { PartialDeep } from 'src/util'
+
 type RepositoryModel = {
     id: number
 }
-
-type PartialDeep<T> = { [x in keyof T]?: T[x] extends object ? PartialDeep<T[x]> : T[x] }
 
 export class Repository<Model extends RepositoryModel> {
     protected documents: Model[]
@@ -28,7 +28,9 @@ export class Repository<Model extends RepositoryModel> {
     removeById(id: number) {
         const index = this.findIndexById(id)
 
-        if (index < 0) { return }
+        if (index < 0) {
+            return
+        }
 
         this.documents.splice(index, 1)
     }
@@ -36,7 +38,9 @@ export class Repository<Model extends RepositoryModel> {
     updateById(id: number, data: PartialDeep<Omit<Model, 'id'>>) {
         const index = this.findIndexById(id)
 
-        if (index < 0) { return }
+        if (index < 0) {
+            return
+        }
 
         this.documents[index] = {
             ...this.documents[index],
@@ -67,40 +71,51 @@ export class Repository<Model extends RepositoryModel> {
     }
 
     private validProps(doc: any, args: any) {
-        if (!Object.keys(args).length) { return false }
+        if (!Object.keys(args).length) {
+            return false
+        }
 
         for (const argKey in args) {
             const arg = args[argKey]
             const docArg = doc[argKey]
 
-            if (typeof docArg == 'undefined') { continue }
+            if (typeof docArg == 'undefined') {
+                continue
+            }
 
             if (typeof arg == 'object') {
                 if (!this.validProps(docArg, arg)) {
                     return false
                 }
             } else {
-                if (docArg != arg) { return false }
+                if (docArg != arg) {
+                    return false
+                }
             }
-
         }
 
         return true
     }
 
     findFirst(args: PartialDeep<Model>) {
-        return this.documents.find(doc => {
-            for (const argKey in args) {
-                const arg = args[argKey]
-                const docArg = doc[argKey]
+        return (
+            this.documents.find(doc => {
+                for (const argKey in args) {
+                    const arg = args[argKey]
+                    const docArg = doc[argKey]
 
-                if (typeof docArg == 'undefined') { continue }
+                    if (typeof docArg == 'undefined') {
+                        continue
+                    }
 
-                if (docArg != arg) { return false }
-            }
+                    if (docArg != arg) {
+                        return false
+                    }
+                }
 
-            return true
-        }) || null
+                return true
+            }) || null
+        )
     }
 
     findById(id: number) {

@@ -21,9 +21,9 @@ export class GameController {
     }
 
     createGame() {
-        const gameDoc = GameController.repository.add({})
+        const gameDoc = GameController.repository.add({ isRunning: false })
 
-        const game = new GameEntity(gameDoc.id)
+        const game = new GameEntity(gameDoc.id, gameDoc.isRunning)
 
         return game
     }
