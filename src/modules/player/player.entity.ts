@@ -6,19 +6,25 @@ export interface PlayerModel {
     id: PlayerId
     name: string
     money: number
-    roomId: RoomId
+    room: {
+        id: RoomId,
+        order: number
+    }
 }
 
 export class PlayerEntity implements PlayerModel {
     id: PlayerId
     name: string
     money: number
-    roomId: RoomId
+    room: {
+        id: RoomId,
+        order: number
+    }
 
-    constructor({ id, money, name, roomId }: PlayerModel) {
+    constructor({ id, money, name, room }: PlayerModel) {
         this.id = id
         this.money = money
         this.name = name
-        this.roomId = roomId
+        this.room = room
     }
 }

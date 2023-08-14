@@ -5,8 +5,8 @@ import { PlayerRepository } from './player.repository'
 export class PlayerController {
     private static repository = new PlayerRepository()
 
-    createPlayer({ money, name, roomId }: Omit<PlayerModel, 'id'>) {
-        const playerDoc = PlayerController.repository.add({ money, name, roomId })
+    createPlayer({ money, name, room }: Omit<PlayerModel, 'id'>) {
+        const playerDoc = PlayerController.repository.add({ money, name, room })
 
         const player = new PlayerEntity(playerDoc)
 
@@ -29,7 +29,7 @@ export class PlayerController {
         return PlayerController.repository.findManyWithOr(ids.map(id => ({ id })))
     }
 
-    getPlayerByIdRoom(roomId: RoomId) {
-        return PlayerController.repository.findMany({ roomId })
+    getPlayersByIdRoom(roomId: RoomId) {
+        return PlayerController.repository.findMany({ room: { id: roomId } })
     }
 }

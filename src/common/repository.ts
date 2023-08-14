@@ -2,6 +2,8 @@ type RepositoryModel = {
     id: number
 }
 
+type PartialDeep<T> = { [x in keyof T]?: T[x] extends object ? PartialDeep<T[x]> : T[x] }
+
 export class Repository<Model extends RepositoryModel> {
     protected documents: Model[]
     private lastIndex: number
@@ -31,7 +33,7 @@ export class Repository<Model extends RepositoryModel> {
         this.documents.splice(index, 1)
     }
 
-    updateById(id: number, data: Partial<Omit<Model, 'id'>>) {
+    updateById(id: number, data: PartialDeep<Omit<Model, 'id'>>) {
         const index = this.findIndexById(id)
 
         if (index < 0) { return }
@@ -46,16 +48,16 @@ export class Repository<Model extends RepositoryModel> {
         return this.documents.findIndex(doc => doc.id == id)
     }
 
-    findMany(args: Partial<Model>) {
-        return this.documents.filter(doc => this.validDocArgs(doc, args))
+    findMany(args: PartialDeep<Model>) {
+        return this.documents.filter(doc => this.validProps(doc, args))
     }
 
-    findManyWithOr(argsOr: Partial<Model>[]) {
+    findManyWithOr(argsOr: PartialDeep<Model>[]) {
         return this.documents.filter(doc => {
             for (let i = 0; i < argsOr.length; i++) {
                 const args = argsOr[i]
 
-                if (this.validDocArgs(doc, args)) {
+                if (this.validProps(doc, args)) {
                     return true
                 }
             }
@@ -64,7 +66,7 @@ export class Repository<Model extends RepositoryModel> {
         })
     }
 
-    private validDocArgs(doc: Model, args: Partial<Model>) {
+    private validProps(doc: any, args: any) {
         if (!Object.keys(args).length) { return false }
 
         for (const argKey in args) {
@@ -73,13 +75,20 @@ export class Repository<Model extends RepositoryModel> {
 
             if (typeof docArg == 'undefined') { continue }
 
-            if (docArg != arg) { return false }
+            if (typeof arg == 'object') {
+                if (!this.validProps(docArg, arg)) {
+                    return false
+                }
+            } else {
+                if (docArg != arg) { return false }
+            }
+
         }
 
         return true
     }
 
-    findFirst(args: Partial<Model>) {
+    findFirst(args: PartialDeep<Model>) {
         return this.documents.find(doc => {
             for (const argKey in args) {
                 const arg = args[argKey]
