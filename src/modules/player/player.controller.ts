@@ -6,8 +6,8 @@ import { PlayerRepository } from './player.repository'
 export class PlayerController {
     private static repository = new PlayerRepository()
 
-    createPlayer({ money, name, room }: Omit<PlayerModel, 'id' | 'cards' | 'active'>) {
-        const playerDoc = PlayerController.repository.add({ money, name, room, cards: [], active: false })
+    createPlayer({ money, name, room }: Omit<PlayerModel, 'id' | 'cards' | 'active' | 'isDealer'>) {
+        const playerDoc = PlayerController.repository.add({ money, name, room, cards: [], active: false, isDealer: false, inGame: true })
 
         const player = new PlayerEntity(playerDoc)
 

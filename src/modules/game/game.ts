@@ -2,7 +2,7 @@ import { RULES_GAME } from '../../common/rules'
 import { CardController } from '../card/card.controller'
 import { DeckController } from '../deck/deck.controller'
 import { PlayerController } from '../player/player.controller'
-import { PlayerModel } from '../player/player.entity'
+import { PlayerId, PlayerModel } from '../player/player.entity'
 import { RoomController } from '../room/room.controller'
 import { RoomId } from '../room/room.entity'
 import { GameController } from './game.controller'
@@ -75,40 +75,55 @@ export class Game {
     // Game Logic
     private newRound() {
         this.resetDeck()
+        this.updateListPlayersInGame()
         this.distributeCards()
     }
 
     private resetDeck() {
         const { players } = this.getPlayers()
 
-        this.deckController.updateDeckById(this.getDeck().deck.id, { cards: this.getDeck().deck.cards.map(card => ({ id: card.id, inDeck: true })) })
-
         players.forEach(player => {
             player.cards = []
+
+            this.playerController.updatePlayerById(player.id, player)
+        })
+
+        this.deckController.updateDeckById(this.getDeck().deck.id, { cards: this.getDeck().deck.cards.map(card => ({ id: card.id, inDeck: true })) })
+    }
+
+    private updateListPlayersInGame() {
+        const { players } = this.getPlayersInOrder()
+
+        players.forEach(player => {
+            player.active = player.money > 0
 
             this.playerController.updatePlayerById(player.id, player)
         })
     }
 
     private distributeCards() {
-        const { players } = this.getPlayersInOrder()
-
-        for (let i = 0; i < RULES_GAME.maxCardForPlayer; i++) {
-            players.forEach(player => {
-                player.cards.push(this.chooseCard())
-            })
+        for (let i = 0; i < RULES_GAME.maxCardForEachPlayer; i++) {
+            this.distributeOneCardForEachPlayer()
         }
+    }
+
+    private distributeOneCardForEachPlayer() {
+        const { players } = this.getPlayersInGame()
+
+        players.forEach(player => {
+            player.cards.push(this.chooseCard())
+        })
 
         players.forEach(player => this.playerController.updatePlayerById(player.id, player))
     }
 
     private chooseCard() {
         const { id: deckId } = this.getDeck().deck
-        const cardsInDeck = this.getCardsInPack()
+        const { cards } = this.getCardsInPack()
 
-        const index = Math.round(Math.random() * (cardsInDeck.length - 1 - 1)) + 1
+        const index = Math.round(Math.random() * (cards.length - 1 - 1)) + 1
 
-        const cardSelected = cardsInDeck[index]
+        const cardSelected = cards[index]
 
         this.deckController.updateCardById(deckId, cardSelected.id, { inDeck: false })
 
@@ -120,8 +135,9 @@ export class Game {
         const { players } = this.getPlayersInOrder()
         const { room } = this.getRoom()
         const { deck } = this.getDeck()
+        const { cards } = this.getCardsInPack()
 
-        return { room, players, deck }
+        return { room, players, deck, cards }
     }
 
     getRoom() {
@@ -140,6 +156,38 @@ export class Game {
         const playersInOrder = players.sort((p1, p2) => p1.room.order - p2.room.order)
 
         return { players: playersInOrder }
+    }
+
+    getPlayersInGame() {
+        const { players } = this.getPlayersInOrder()
+
+        const playersInGame = players.filter(({ active }) => active)
+
+        return { players: playersInGame }
+    }
+
+    getPlayersInGameWithCards() {
+        const { players } = this.getPlayersInOrder()
+
+        const playersInGame = players.filter(({ active }) => active)
+
+        const playersInGameWithCards = playersInGame.map(player => ({ ...player, cards: this.cardController.getCardsById(player.cards.map(id => id)) }))
+
+        return { players: playersInGameWithCards }
+    }
+
+    getCardsOfPlayer(playerId: PlayerId) {
+        const { player } = this.getPlayerById(playerId)
+
+        if (!player) {
+            return { cards: [] }
+        }
+
+        return { cards: this.cardController.getCardsById(player.cards.map(id => id)) }
+    }
+
+    getPlayerById(id: PlayerId) {
+        return { player: this.playerController.getPlayerById(id) }
     }
 
     getPlayers() {
@@ -167,12 +215,12 @@ export class Game {
     private getCardsInPack() {
         const { deck } = this.getDeck()
 
-        return this.deckController.getCardsInDeck(deck.id)
+        return { cards: this.deckController.getCardsInDeck(deck.id) }
     }
 
     private getCardsInNotPack() {
         const { deck } = this.getDeck()
 
-        return this.deckController.getCardsInNotDeck(deck.id)
+        return { cards: this.deckController.getCardsInNotDeck(deck.id) }
     }
 }

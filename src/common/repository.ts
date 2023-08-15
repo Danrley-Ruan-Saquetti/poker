@@ -22,7 +22,7 @@ export class Repository<Model extends RepositoryModel> {
 
         this.documents.push(data)
 
-        return data
+        return { ...data } as Model
     }
 
     removeById(id: number) {
@@ -53,21 +53,23 @@ export class Repository<Model extends RepositoryModel> {
     }
 
     findMany(args: PartialDeep<Model>) {
-        return this.documents.filter(doc => this.validProps(doc, args))
+        return [...this.documents.filter(doc => this.validProps(doc, args))] as Model[]
     }
 
     findManyWithOr(argsOr: PartialDeep<Model>[]) {
-        return this.documents.filter(doc => {
-            for (let i = 0; i < argsOr.length; i++) {
-                const args = argsOr[i]
+        return [
+            ...this.documents.filter(doc => {
+                for (let i = 0; i < argsOr.length; i++) {
+                    const args = argsOr[i]
 
-                if (this.validProps(doc, args)) {
-                    return true
+                    if (this.validProps(doc, args)) {
+                        return true
+                    }
                 }
-            }
 
-            return false
-        })
+                return false
+            })
+        ] as Model[]
     }
 
     private validProps(doc: any, args: any) {
@@ -98,8 +100,8 @@ export class Repository<Model extends RepositoryModel> {
     }
 
     findFirst(args: PartialDeep<Model>) {
-        return (
-            this.documents.find(doc => {
+        return ({
+            ...this.documents.find(doc => {
                 for (const argKey in args) {
                     const arg = args[argKey]
                     const docArg = doc[argKey]
@@ -114,15 +116,15 @@ export class Repository<Model extends RepositoryModel> {
                 }
 
                 return true
-            }) || null
-        )
+            })
+        } || null) as Model | null
     }
 
     findById(id: number) {
-        return this.documents.find(doc => doc.id == id) || null
+        return ({ ...this.documents.find(doc => doc.id == id) } || null) as Model | null
     }
 
     findAll() {
-        return this.documents
+        return [...this.documents] as Model[]
     }
 }

@@ -1,7 +1,7 @@
 import { CardController } from '../card/card.controller'
-import { CardId, CardModel } from '../card/card.entity'
+import { CardId } from '../card/card.entity'
 import { RoomId } from '../room/room.entity'
-import { Deck, DeckId, DeckModel } from './deck'
+import { Deck, DeckId } from './deck'
 import { DeckRepository } from './deck.repository'
 
 export class DeckController {
