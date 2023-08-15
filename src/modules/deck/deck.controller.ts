@@ -1,7 +1,7 @@
 import { CardController } from '../card/card.controller'
 import { CardId } from '../card/card.entity'
 import { RoomId } from '../room/room.entity'
-import { Deck, DeckId } from './deck'
+import { Deck, DeckId } from './deck.entity'
 import { DeckRepository } from './deck.repository'
 
 export class DeckController {
@@ -13,13 +13,13 @@ export class DeckController {
     }
 
     generateDeckInRepository() {
-        this.cardController.generateCard()
+        this.cardController.generateCards()
     }
 
     createDeck(roomId: RoomId) {
         const cards = this.cardController.getCards()
 
-        const deckDoc = DeckController.repository.add({ cards: cards.map(({ id }) => ({ id, inDeck: true })), roomId })
+        const deckDoc = this.repository.create({ cards: cards.map(({ id }) => ({ id, inDeck: true })), roomId })
 
         const deck = new Deck(deckDoc)
 
@@ -27,11 +27,11 @@ export class DeckController {
     }
 
     removeDeckById(args: Deck) {
-        DeckController.repository.removeById(args.id)
+        this.repository.removeById(args.id)
     }
 
     updateDeckById(id: DeckId, args: Partial<Omit<Deck, 'id'>>) {
-        DeckController.repository.updateById(id, args)
+        this.repository.updateById(id, args)
     }
 
     updateCardById(deckId: DeckId, cardId: CardId, args: Partial<Omit<{ inDeck?: boolean }, 'id'>>) {
@@ -54,15 +54,15 @@ export class DeckController {
     }
 
     getDeckById(id: DeckId) {
-        return DeckController.repository.findById(id)
+        return this.repository.findById(id)
     }
 
     getDeckByIdRoom(roomId: RoomId) {
-        return DeckController.repository.findFirst({ roomId })
+        return this.repository.findFirst({ roomId })
     }
 
     getCardsByIdDeck(deckId: DeckId) {
-        const deck = DeckController.repository.findById(deckId)
+        const deck = this.repository.findById(deckId)
 
         if (!deck) {
             return []
@@ -80,7 +80,7 @@ export class DeckController {
     }
 
     getCardsByIdDeckAndIsInDeck(deckId: DeckId, inDeck: boolean) {
-        const deck = DeckController.repository.findById(deckId)
+        const deck = this.repository.findById(deckId)
 
         if (!deck) {
             return []
@@ -92,6 +92,10 @@ export class DeckController {
     }
 
     getAllDecks() {
-        return DeckController.repository.findAll()
+        return this.repository.findAll()
+    }
+
+    private get repository() {
+        return DeckController.repository
     }
 }

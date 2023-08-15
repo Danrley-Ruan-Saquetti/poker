@@ -1,19 +1,21 @@
 import { RULES_GAME } from 'src/common/rules'
-import { Card, CardId, CardModel, CardSuit } from './card.entity'
-import { CardRepository } from './card.repository'
+import { Card, CardId, CardSuit } from './card.entity'
+import { CardRepository, CardArgsDefault } from './card.repository'
+
+export type { CardArgsDefault }
 
 export class CardController {
     private static repository = new CardRepository()
 
-    createCard({ number, suit }: Omit<CardModel, 'id'>) {
-        const cardDoc = CardController.repository.add({ number, suit })
+    createCard({ number, suit }: CardArgsDefault) {
+        const cardDoc = this.repository.create({ data: { number, suit } })
 
         const card = new Card(cardDoc)
 
         return card
     }
 
-    generateCard() {
+    generateCards() {
         const cards: Card[] = []
 
         for (let i = 0; i < RULES_GAME.maxSuitLength; i++) {
@@ -27,15 +29,21 @@ export class CardController {
         return cards
     }
 
+    getCards() {
+        return this.repository.findAll()
+    }
+
+    query() {}
+
     getCardById(id: CardId) {
-        return CardController.repository.findById(id)
+        return this.repository.findById(id)
     }
 
     getCardsById(ids: CardId[]) {
-        return CardController.repository.findManyWithOr(ids.map(id => ({ id })))
+        return this.repository.findManyWithOr(ids.map(id => ({ id })))
     }
 
-    getCards() {
-        return CardController.repository.findAll()
+    private get repository() {
+        return CardController.repository
     }
 }

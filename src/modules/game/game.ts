@@ -29,9 +29,9 @@ export class Game {
         this.deckController.createDeck(this.idRoom)
     }
 
-    newPlayer({ money, name }: Omit<PlayerModel, 'id' | 'room' | 'cards' | 'active'>) {
+    newPlayer({ money, name }: Omit<PlayerModel, 'id' | 'room' | 'cards' | 'active' | 'inGame' | 'isDealer'>) {
         if (!this.validNewPlayer()) {
-            throw new Error('Cannot add player because max length players exceeded')
+            throw new Error('Cannot create player because max length players exceeded')
         }
 
         const player = this.playerController.createPlayer({
@@ -43,11 +43,11 @@ export class Game {
             }
         })
 
-        if (this.getPlayers().players.length >= 2) {
-            if (!this.getGame().isRunning) {
-                this.newRound()
-            }
-        }
+        // if (this.getPlayers().players.length >= 2) {
+        //     if (!this.getGame().isRunning) {
+        //         this.newRound()
+        //     }
+        // }
 
         return player
     }
@@ -73,10 +73,44 @@ export class Game {
     }
 
     // Game Logic
-    private newRound() {
+    newRound() {
         this.resetDeck()
         this.updateListPlayersInGame()
+        this.updateDealer()
         this.distributeCards()
+    }
+
+    startRound() {
+        const { game } = this.getGame()
+        this.gameController.updateGameById({ ...game, isRunning: true })
+    }
+
+    private updateDealer() {
+        const { game } = this.getGame()
+        const { dealer } = this.getNextDealer()
+
+        game.lastDealer = dealer.room.order
+
+        this.gameController.updateGameById(game)
+        this.playerController.updatePlayerById(dealer.id, { ...dealer, isDealer: true })
+    }
+
+    public getNextDealer() {
+        const { game } = this.getGame()
+        const { players } = this.getPlayersInGame()
+
+        const player = players.find(player => player.room.order > game.lastDealer) || (players[0] as PlayerModel)
+
+        return { dealer: player }
+    }
+
+    public getDealer() {
+        return this.playerController.query({
+            isDealer: true,
+            room: {
+                id: this.idRoom
+            }
+        })
     }
 
     private resetDeck() {
@@ -96,6 +130,7 @@ export class Game {
 
         players.forEach(player => {
             player.active = player.money > 0
+            player.isDealer = false
 
             this.playerController.updatePlayerById(player.id, player)
         })
@@ -158,6 +193,29 @@ export class Game {
         return { players: playersInOrder }
     }
 
+    getPlayersInOrderStartsDealer() {
+        const { players } = this.getPlayers()
+        const dealer = this.getDealer()
+
+        if (!dealer) {
+            return { players: [] }
+        }
+
+        const indexDealer = players.findIndex(player => player.id == dealer.id)
+
+        if (indexDealer < 0) {
+            return { players: [] }
+        }
+
+        for (let i = 0; i < players.length; i++) {
+            const indexAdjusted = i >= indexDealer ? i - indexDealer : i + indexDealer
+
+            console.log(players[indexAdjusted])
+        }
+
+        return { players: [] }
+    }
+
     getPlayersInGame() {
         const { players } = this.getPlayersInOrder()
 
@@ -197,9 +255,9 @@ export class Game {
     }
 
     getGame() {
-        const game = this.gameController.getGameById(this.idGame)
+        const game = this.gameController.getGameById(this.idGame) as GameModel
 
-        return game as GameModel
+        return { game }
     }
 
     getDeck() {

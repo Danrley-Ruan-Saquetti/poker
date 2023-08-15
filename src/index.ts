@@ -15,15 +15,26 @@ function bootstrap() {
     game.newPlayer({ money: 10000, name: 'Dan' })
     game.newPlayer({ money: 10000, name: 'Ruan' })
     game.newPlayer({ money: 10000, name: 'Davi' })
-    // game.newPlayer({ money: 10000, name: 'Dan' })
-    // game.newPlayer({ money: 10000, name: 'Dan' })
-    // game.newPlayer({ money: 10000, name: 'Dan' })
-    // game.newPlayer({ money: 10000, name: 'Dan' })
-    // game.newPlayer({ money: 10000, name: 'Dan' })
-    // game.newPlayer({ money: 10000, name: 'Dan' })
+
+    game.newRound()
+
+    game.newPlayer({ money: 10000, name: 'Ze' })
+    game.newPlayer({ money: 10000, name: 'Ze' })
+    game.newPlayer({ money: 10000, name: 'Ze' })
+    game.newPlayer({ money: 10000, name: 'Ze' })
+    game.newPlayer({ money: 10000, name: 'Ze' })
+    game.newPlayer({ money: 10000, name: 'Ze' })
+
+    game.startRound()
+
+    console.log(game.getPlayersInOrderStartsDealer())
 
     app.get('/', (req, res) => {
-        res.send(game.getState())
+        res.send({ ...game.getState(), ...game.getGame() })
+    })
+
+    app.get('/game', (req, res) => {
+        res.send(game.getGame())
     })
 
     app.get('/cards', (req, res) => {
@@ -41,7 +52,7 @@ function bootstrap() {
             return res.send({ player: null })
         }
 
-        res.send({ player: {...player, cards: game.getCardsOfPlayer(Number(req.params.id)).cards} })
+        res.send({ player: { ...player, cards: game.getCardsOfPlayer(Number(req.params.id)).cards } })
     })
 
     app.get('/deck', (req, res) => {

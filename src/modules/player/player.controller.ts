@@ -6,8 +6,8 @@ import { PlayerRepository } from './player.repository'
 export class PlayerController {
     private static repository = new PlayerRepository()
 
-    createPlayer({ money, name, room }: Omit<PlayerModel, 'id' | 'cards' | 'active' | 'isDealer'>) {
-        const playerDoc = PlayerController.repository.add({ money, name, room, cards: [], active: false, isDealer: false, inGame: true })
+    createPlayer({ money, name, room }: Omit<PlayerModel, 'id' | 'cards' | 'active' | 'isDealer' | 'inGame'>) {
+        const playerDoc = this.repository.create({ money, name, room, cards: [], active: false, isDealer: false, inGame: true })
 
         const player = new PlayerEntity(playerDoc)
 
@@ -15,22 +15,30 @@ export class PlayerController {
     }
 
     updatePlayerById(id: PlayerId, args: PartialDeep<Omit<PlayerModel, 'id'>>) {
-        PlayerController.repository.updateById(id, args)
+        this.repository.updateById(id, args)
     }
 
     removePlayerBy(id: PlayerId) {
-        PlayerController.repository.removeById(id)
+        this.repository.removeById(id)
     }
 
     getPlayerById(id: PlayerId) {
-        return PlayerController.repository.findById(id)
+        return this.repository.findById(id)
     }
 
     getPlayersById(ids: PlayerId[]) {
-        return PlayerController.repository.findManyWithOr(ids.map(id => ({ id })))
+        return this.repository.findManyWithOr(ids.map(id => ({ id })))
+    }
+
+    query(argsOr: PartialDeep<PlayerModel>) {
+        return this.repository.findFirst(argsOr)
     }
 
     getPlayersByIdRoom(roomId: RoomId) {
-        return PlayerController.repository.findMany({ room: { id: roomId } })
+        return this.repository.findMany({ room: { id: roomId } })
+    }
+
+    private get repository() {
+        return PlayerController.repository
     }
 }

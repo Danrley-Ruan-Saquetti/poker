@@ -17,26 +17,30 @@ export class GameController {
     }
 
     getGames() {
-        return GameController.repository.findAll()
+        return this.repository.findAll()
     }
 
     createGame() {
-        const gameDoc = GameController.repository.add({ isRunning: false })
+        const gameDoc = this.repository.create({ isRunning: false, lastDealer: 0 })
 
-        const game = new GameEntity(gameDoc.id, gameDoc.isRunning)
+        const game = new GameEntity(gameDoc.id, gameDoc.isRunning, gameDoc.lastDealer)
 
         return game
     }
 
     updateGameById(args: GameModel) {
-        GameController.repository.updateById(args.id, args)
+        this.repository.updateById(args.id, args)
     }
 
     getGameById(id: GameId) {
-        return GameController.repository.findById(id)
+        return this.repository.findById(id)
     }
 
     getGamesById(ids: GameId[]) {
-        return GameController.repository.findManyWithOr(ids.map(id => ({ id })))
+        return this.repository.findManyWithOr(ids.map(id => ({ id })))
+    }
+
+    private get repository() {
+        return GameController.repository
     }
 }
