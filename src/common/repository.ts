@@ -1,4 +1,4 @@
-import { PartialDeep } from 'src/util'
+import { deepClone, PartialDeep } from 'src/util'
 
 export type RepositoryModel = { id: number }
 export type ArgsDefault<Model extends RepositoryModel> = Omit<Model, 'id'>
@@ -6,10 +6,11 @@ export type CreateArgs<Model extends RepositoryModel> = { data: ArgsDefault<Mode
 export type CreateManyArgs<Model extends RepositoryModel> = { data: ArgsDefault<Model>[] }
 export type QueryArgsDefault<Model extends RepositoryModel> = PartialDeep<Model>
 export type QueryArgs<Model extends RepositoryModel> = { where: QueryArgsDefault<Model> }
+export type QueryManyArgs<Model extends RepositoryModel> = { where: QueryArgsDefault<Model>[] }
 export type DeleteArgs<Model extends RepositoryModel> = { where: QueryArgsDefault<Model> }
 export type DeleteManyArgs<Model extends RepositoryModel> = { where: QueryArgsDefault<Model> }
 export type UpdateArgsDefault<Model extends RepositoryModel> = PartialDeep<ArgsDefault<Model>>
-export type UpdateArgs<Model extends RepositoryModel> = { where: QueryArgs<Model>; data: UpdateArgsDefault<Model> }
+export type UpdateArgs<Model extends RepositoryModel> = { where: QueryArgsDefault<Model>; data: UpdateArgsDefault<Model> }
 
 export class Repository<Model extends RepositoryModel> {
     protected documents: Model[]
@@ -29,7 +30,7 @@ export class Repository<Model extends RepositoryModel> {
 
         this.documents.push(data)
 
-        return { ...data } as Model
+        return deepClone({ ...data }) as Model
     }
 
     createMany({ data }: CreateManyArgs<Model>) {
@@ -48,14 +49,14 @@ export class Repository<Model extends RepositoryModel> {
 
     deleteMany(args: DeleteArgs<Model>) {
         for (let i = 0; i < this.documents.length; i++) {
-            if (this.validDocQuery(this.documents[i], args)) {
+            if (this.validDocQuery(this.documents[i], args.where)) {
                 this.documents.splice(i, 1)
             }
         }
     }
 
     update(args: UpdateArgs<Model>) {
-        const index = this.findIndex(args.where)
+        const index = this.findIndex(args)
 
         if (index < 0) {
             return
@@ -80,54 +81,54 @@ export class Repository<Model extends RepositoryModel> {
     }
 
     private findIndex(args: QueryArgs<Model>) {
-        return this.documents.findIndex(doc => this.validDocQuery(doc, args))
+        return this.documents.findIndex(doc => this.validDocQuery(doc, args.where))
     }
 
     findAll() {
-        return [...this.documents] as Model[]
+        return deepClone([...this.documents]) as Model[]
     }
 
     findFirst(args: QueryArgs<Model>) {
-        return ({ ...this.documents.find(doc => this.validDocQuery(doc, args)) } || null) as Model | null
+        return (deepClone({ ...this.documents.find(doc => this.validDocQuery(doc, args.where)) }) || null) as Model | null
     }
 
     findMany(args: QueryArgs<Model>) {
-        return [...this.documents.filter(doc => this.validDocQuery(doc, args))] as Model[]
+        return deepClone([...this.documents.filter(doc => this.validDocQuery(doc, args.where))]) as Model[]
     }
 
-    findManyOR(args: QueryArgs<Model>[]) {
+    findManyOR(args: QueryManyArgs<Model>) {
         return this.findManyOperator(args, 'OR')
     }
 
-    findManyAND(args: QueryArgs<Model>[]) {
+    findManyAND(args: QueryManyArgs<Model>) {
         return this.findManyOperator(args, 'AND')
     }
 
-    private findManyOperator(args: QueryArgs<Model>[], operator: 'OR' | 'AND') {
+    private findManyOperator(args: QueryManyArgs<Model>, operator: 'OR' | 'AND') {
         const isOR = operator == 'OR'
 
-        return [
-            ...this.documents.filter(doc => {
-                for (let i = 0; i < args.length; i++) {
-                    const arg = args[i]
+        const docs = this.documents.filter(doc => {
+            for (let i = 0; i < args.where.length; i++) {
+                const arg = args.where[i]
 
-                    if (this.validDocQuery(doc, arg)) {
-                        if (isOR) {
-                            return true
-                        }
-                    } else {
-                        if (!isOR) {
-                            return false
-                        }
+                if (this.validDocQuery(doc, arg)) {
+                    if (isOR) {
+                        return true
+                    }
+                } else {
+                    if (!isOR) {
+                        return false
                     }
                 }
+            }
 
-                return !isOR
-            })
-        ] as Model[]
+            return !isOR
+        })
+
+        return deepClone([...docs])
     }
 
-    private validDocQuery(doc: Model, query: QueryArgs<Model>) {
+    private validDocQuery(doc: Model, query: QueryArgsDefault<Model>) {
         for (const argKey in query) {
             const arg = query[argKey]
             const docArg = doc[argKey]
@@ -137,6 +138,7 @@ export class Repository<Model extends RepositoryModel> {
             }
 
             if (typeof arg == 'object') {
+                // @ts-expect-error
                 if (!this.validDocQuery(docArg, arg)) {
                     return false
                 }

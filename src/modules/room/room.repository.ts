@@ -8,7 +8,8 @@ import {
     QueryArgs,
     QueryArgsDefault,
     UpdateArgs,
-    UpdateArgsDefault
+    UpdateArgsDefault,
+    QueryManyArgs
 } from 'src/common/repository'
 import { RoomModel } from './room.entity'
 
@@ -21,5 +22,6 @@ export type RoomQueryArgs = QueryArgs<RoomModel>
 export type RoomQueryArgsDefault = QueryArgsDefault<RoomModel>
 export type RoomUpdateArgs = UpdateArgs<RoomModel>
 export type RoomUpdateArgsDefault = UpdateArgsDefault<RoomModel>
+export type RoomQueryManyArgs = QueryManyArgs<RoomModel>
 
 export class RoomRepository extends Repository<RoomModel> {}

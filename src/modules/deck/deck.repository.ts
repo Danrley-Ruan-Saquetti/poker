@@ -8,7 +8,8 @@ import {
     QueryArgs,
     QueryArgsDefault,
     UpdateArgs,
-    UpdateArgsDefault
+    UpdateArgsDefault,
+    QueryManyArgs
 } from 'src/common/repository'
 import { DeckModel } from './deck.entity'
 
@@ -21,5 +22,6 @@ export type DeckQueryArgs = QueryArgs<DeckModel>
 export type DeckQueryArgsDefault = QueryArgsDefault<DeckModel>
 export type DeckUpdateArgs = UpdateArgs<DeckModel>
 export type DeckUpdateArgsDefault = UpdateArgsDefault<DeckModel>
+export type DeckQueryManyArgs = QueryManyArgs<DeckModel>
 
 export class DeckRepository extends Repository<DeckModel> {}

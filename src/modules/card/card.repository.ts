@@ -8,7 +8,8 @@ import {
     QueryArgs,
     QueryArgsDefault,
     UpdateArgs,
-    UpdateArgsDefault
+    UpdateArgsDefault,
+    QueryManyArgs
 } from 'src/common/repository'
 import { CardModel } from './card.entity'
 
@@ -18,6 +19,7 @@ export type CardCreateManyArgs = CreateManyArgs<CardModel>
 export type CardDeleteArgs = DeleteArgs<CardModel>
 export type CardDeleteManyArgs = DeleteManyArgs<CardModel>
 export type CardQueryArgs = QueryArgs<CardModel>
+export type CardQueryManyArgs = QueryManyArgs<CardModel>
 export type CardQueryArgsDefault = QueryArgsDefault<CardModel>
 export type CardUpdateArgs = UpdateArgs<CardModel>
 export type CardUpdateArgsDefault = UpdateArgsDefault<CardModel>

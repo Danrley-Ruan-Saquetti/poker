@@ -1,6 +1,6 @@
 import { RULES_GAME } from 'src/common/rules'
 import { Card, CardId, CardSuit } from './card.entity'
-import { CardRepository, CardArgsDefault } from './card.repository'
+import { CardRepository, CardArgsDefault, CardQueryManyArgs } from './card.repository'
 
 export type { CardArgsDefault }
 
@@ -29,18 +29,20 @@ export class CardController {
         return cards
     }
 
-    getCards() {
+    getAllCards() {
         return this.repository.findAll()
     }
 
-    query() {}
+    query(args: CardQueryManyArgs) {
+        return this.repository.findManyAND(args)
+    }
 
     getCardById(id: CardId) {
-        return this.repository.findById(id)
+        return this.repository.findFirst({ where: { id } })
     }
 
     getCardsById(ids: CardId[]) {
-        return this.repository.findManyWithOr(ids.map(id => ({ id })))
+        return this.repository.findManyOR({ where: ids.map(id => ({ id })) })
     }
 
     private get repository() {

@@ -17,9 +17,9 @@ export class DeckController {
     }
 
     createDeck(roomId: RoomId) {
-        const cards = this.cardController.getCards()
+        const cards = this.cardController.getAllCards()
 
-        const deckDoc = this.repository.create({ cards: cards.map(({ id }) => ({ id, inDeck: true })), roomId })
+        const deckDoc = this.repository.create({ data: { cards: cards.map(({ id }) => ({ id, inDeck: true })), roomId } })
 
         const deck = new Deck(deckDoc)
 
@@ -27,23 +27,18 @@ export class DeckController {
     }
 
     removeDeckById(args: Deck) {
-        this.repository.removeById(args.id)
+        this.repository.delete({ where: { id: args.id } })
     }
 
     updateDeckById(id: DeckId, args: Partial<Omit<Deck, 'id'>>) {
-        this.repository.updateById(id, args)
+        this.repository.update({ where: { id }, data: { ...args } })
     }
 
     updateCardById(deckId: DeckId, cardId: CardId, args: Partial<Omit<{ inDeck?: boolean }, 'id'>>) {
         const deck = this.getDeckById(deckId)
+        const cardIndex = this.getIndexCardByIdAndDeck(deckId, cardId)
 
-        if (!deck) {
-            return
-        }
-
-        const cardIndex = deck.cards.findIndex(card => card.id == cardId)
-
-        if (cardIndex < 0) {
+        if (!deck || cardIndex < 0) {
             return
         }
 
@@ -51,18 +46,48 @@ export class DeckController {
             ...deck.cards[cardIndex],
             ...args
         }
+
+        this.repository.update({ where: { id: deckId }, data: { cards: deck.cards } })
+    }
+
+    getCardByIdAndDeck(deckId: DeckId, cardId: CardId) {
+        const deck = this.getDeckById(deckId)
+
+        if (!deck) {
+            return null
+        }
+
+        const cardIndex = deck.cards.findIndex(card => card.id == cardId)
+
+        if (cardIndex < 0) {
+            return null
+        }
+
+        return deck.cards[cardIndex]
+    }
+
+    getIndexCardByIdAndDeck(deckId: DeckId, cardId: CardId) {
+        const deck = this.getDeckById(deckId)
+
+        if (!deck) {
+            return -1
+        }
+
+        const cardIndex = deck.cards.findIndex(card => card.id == cardId)
+
+        return cardIndex
     }
 
     getDeckById(id: DeckId) {
-        return this.repository.findById(id)
+        return this.repository.findFirst({ where: { id } })
     }
 
     getDeckByIdRoom(roomId: RoomId) {
-        return this.repository.findFirst({ roomId })
+        return this.repository.findFirst({ where: { roomId } })
     }
 
     getCardsByIdDeck(deckId: DeckId) {
-        const deck = this.repository.findById(deckId)
+        const deck = this.repository.findFirst({ where: { id: deckId } })
 
         if (!deck) {
             return []
@@ -80,7 +105,7 @@ export class DeckController {
     }
 
     getCardsByIdDeckAndIsInDeck(deckId: DeckId, inDeck: boolean) {
-        const deck = this.repository.findById(deckId)
+        const deck = this.repository.findFirst({ where: { id: deckId } })
 
         if (!deck) {
             return []

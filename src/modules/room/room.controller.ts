@@ -12,27 +12,27 @@ export class RoomController {
     }
 
     createRoom(gameId: GameId) {
-        const roomDoc = this.repository.create({ gameId })
+        const roomDoc = this.repository.create({ data: { gameId } })
 
         const room = new RoomEntity(roomDoc.id, roomDoc.gameId)
 
         return room
     }
 
-    updateRoomById(args: RoomModel) {
-        this.repository.updateById(args.id, args)
+    updateRoomById(id: RoomId, args: Omit<RoomModel, 'id'>) {
+        this.repository.update({ where: { id }, data: { ...args } })
     }
 
     getRoomById(id: RoomId) {
-        return this.repository.findById(id)
+        return this.repository.findFirst({ where: { id } })
     }
 
     getRoomsByd(ids: RoomId[]) {
-        return this.repository.findManyWithOr(ids.map(id => ({ id })))
+        return this.repository.findManyOR({ where: ids.map(id => ({ id })) })
     }
 
     getRoomByIdGame(gameId: GameId) {
-        return this.repository.findFirst({ gameId })
+        return this.repository.findFirst({ where: { gameId } })
     }
 
     private get repository() {

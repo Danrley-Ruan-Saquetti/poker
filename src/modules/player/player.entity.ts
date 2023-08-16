@@ -11,6 +11,7 @@ export interface PlayerModel {
     active: boolean
     inGame: boolean
     isDealer: boolean
+    isBetting: boolean
     room: {
         id: RoomId
         order: number
@@ -25,12 +26,13 @@ export class PlayerEntity implements PlayerModel {
     active: boolean
     inGame: boolean
     isDealer: boolean
+    isBetting: boolean
     room: {
         id: RoomId
         order: number
     }
 
-    constructor({ id, money, name, room, cards, active, isDealer, inGame }: PlayerModel) {
+    constructor({ id, money, name, room, cards, active, isDealer, inGame, isBetting }: PlayerModel) {
         this.id = id
         this.inGame = inGame
         this.isDealer = isDealer
@@ -39,5 +41,6 @@ export class PlayerEntity implements PlayerModel {
         this.room = room
         this.cards = cards
         this.active = active
+        this.isBetting = isBetting
     }
 }

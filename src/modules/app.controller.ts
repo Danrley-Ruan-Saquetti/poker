@@ -1,5 +1,6 @@
 import { Game } from './game/game'
 import { GameController } from './game/game.controller'
+import { GameId } from './game/game.entity'
 
 export class AppController {
     private gameController: GameController
@@ -20,5 +21,9 @@ export class AppController {
         game.initComponents()
 
         return game
+    }
+
+    getGameById(gameId: GameId) {
+        return new Game(gameId)
     }
 }

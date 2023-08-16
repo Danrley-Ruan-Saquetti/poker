@@ -21,23 +21,23 @@ export class GameController {
     }
 
     createGame() {
-        const gameDoc = this.repository.create({ isRunning: false, lastDealer: 0 })
+        const gameDoc = this.repository.create({ data: { isRunning: false, currentDealer: 0, currentPlayerBetting: 0 } })
 
-        const game = new GameEntity(gameDoc.id, gameDoc.isRunning, gameDoc.lastDealer)
+        const game = new GameEntity(gameDoc)
 
         return game
     }
 
     updateGameById(args: GameModel) {
-        this.repository.updateById(args.id, args)
+        this.repository.update({ where: { id: args.id }, data: { ...args } })
     }
 
     getGameById(id: GameId) {
-        return this.repository.findById(id)
+        return this.repository.findFirst({ where: { id } })
     }
 
     getGamesById(ids: GameId[]) {
-        return this.repository.findManyWithOr(ids.map(id => ({ id })))
+        return this.repository.findManyOR({ where: ids.map(id => ({ id })) })
     }
 
     private get repository() {

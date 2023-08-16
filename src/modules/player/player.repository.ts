@@ -8,7 +8,8 @@ import {
     QueryArgs,
     QueryArgsDefault,
     UpdateArgs,
-    UpdateArgsDefault
+    UpdateArgsDefault,
+    QueryManyArgs
 } from 'src/common/repository'
 import { PlayerModel } from './player.entity'
 
@@ -21,5 +22,6 @@ export type PlayerQueryArgs = QueryArgs<PlayerModel>
 export type PlayerQueryArgsDefault = QueryArgsDefault<PlayerModel>
 export type PlayerUpdateArgs = UpdateArgs<PlayerModel>
 export type PlayerUpdateArgsDefault = UpdateArgsDefault<PlayerModel>
+export type PlayerQueryManyArgs = QueryManyArgs<PlayerModel>
 
 export class PlayerRepository extends Repository<PlayerModel> {}

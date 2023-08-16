@@ -27,8 +27,6 @@ function bootstrap() {
 
     game.startRound()
 
-    console.log(game.getPlayersInOrderStartsDealer())
-
     app.get('/', (req, res) => {
         res.send({ ...game.getState(), ...game.getGame() })
     })
@@ -42,17 +40,15 @@ function bootstrap() {
     })
 
     app.get('/players', (req, res) => {
+        res.send({ players: game.getPlayers().players })
+    })
+
+    app.get('/players/gaming', (req, res) => {
         res.send({ players: game.getPlayersInGameWithCards().players })
     })
 
     app.get('/players/:id', (req, res) => {
-        const player = game.getState().players.find(player => player.id == req.params.id)
-
-        if (!player) {
-            return res.send({ player: null })
-        }
-
-        res.send({ player: { ...player, cards: game.getCardsOfPlayer(Number(req.params.id)).cards } })
+        res.send({ player: game.getPlayerById(Number(req.params.id)).player })
     })
 
     app.get('/deck', (req, res) => {
@@ -65,3 +61,5 @@ function bootstrap() {
 }
 
 app.listen(8080, bootstrap)
+
+// bootstrap()
