@@ -12,6 +12,24 @@ export type DeleteManyArgs<Model extends RepositoryModel> = { where: QueryArgsDe
 export type UpdateArgsDefault<Model extends RepositoryModel> = PartialDeep<ArgsDefault<Model>>
 export type UpdateArgs<Model extends RepositoryModel> = { where: QueryArgsDefault<Model>; data: UpdateArgsDefault<Model> }
 
+function DeepClone() {
+    return function (target, property, descriptor) {
+        const originalMethod = descriptor.value
+
+        descriptor.value = function (...args) {
+            const result = originalMethod.apply(this, args)
+
+            if (!result) {
+                return result
+            }
+
+            return deepClone(result)
+        }
+
+        return descriptor
+    }
+}
+
 export class Repository<Model extends RepositoryModel> {
     protected documents: Model[]
     private lastIndex: number
@@ -21,6 +39,7 @@ export class Repository<Model extends RepositoryModel> {
         this.documents = []
     }
 
+    @DeepClone()
     create(args: CreateArgs<Model>) {
         this.lastIndex++
 
@@ -30,7 +49,7 @@ export class Repository<Model extends RepositoryModel> {
 
         this.documents.push(data)
 
-        return deepClone({ ...data }) as Model
+        return data as Model
     }
 
     createMany({ data }: CreateManyArgs<Model>) {
@@ -84,16 +103,19 @@ export class Repository<Model extends RepositoryModel> {
         return this.documents.findIndex(doc => this.validDocQuery(doc, args.where))
     }
 
+    @DeepClone()
     findAll() {
-        return deepClone([...this.documents]) as Model[]
+        return this.documents as Model[]
     }
 
+    @DeepClone()
     findFirst(args: QueryArgs<Model>) {
-        return (deepClone({ ...this.documents.find(doc => this.validDocQuery(doc, args.where)) }) || null) as Model | null
+        return this.documents.find(doc => this.validDocQuery(doc, args.where)) || null
     }
 
+    @DeepClone()
     findMany(args: QueryArgs<Model>) {
-        return deepClone([...this.documents.filter(doc => this.validDocQuery(doc, args.where))]) as Model[]
+        return this.documents.filter(doc => this.validDocQuery(doc, args.where))
     }
 
     findManyOR(args: QueryManyArgs<Model>) {
@@ -104,6 +126,7 @@ export class Repository<Model extends RepositoryModel> {
         return this.findManyOperator(args, 'AND')
     }
 
+    @DeepClone()
     private findManyOperator(args: QueryManyArgs<Model>, operator: 'OR' | 'AND') {
         const isOR = operator == 'OR'
 
@@ -125,7 +148,7 @@ export class Repository<Model extends RepositoryModel> {
             return !isOR
         })
 
-        return deepClone([...docs])
+        return docs
     }
 
     private validDocQuery(doc: Model, query: QueryArgsDefault<Model>) {

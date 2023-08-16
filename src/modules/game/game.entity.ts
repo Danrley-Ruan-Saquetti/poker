@@ -5,6 +5,8 @@ export interface GameModel {
     isRunning: boolean
     currentDealer: number
     currentPlayerBetting: number
+    biggestBet: number
+    playerCheckpointBiggestBet: number
 }
 
 export class GameEntity implements GameModel {
@@ -12,11 +14,15 @@ export class GameEntity implements GameModel {
     isRunning: boolean
     currentDealer: number
     currentPlayerBetting: number
+    biggestBet: number
+    playerCheckpointBiggestBet: number
 
-    constructor({ currentPlayerBetting, id, isRunning, currentDealer }: GameModel) {
+    constructor({ currentPlayerBetting, id, isRunning, currentDealer, biggestBet, playerCheckpointBiggestBet }: GameModel) {
         this.currentPlayerBetting = currentPlayerBetting
         this.id = id
         this.isRunning = isRunning
         this.currentDealer = currentDealer
+        this.biggestBet = biggestBet
+        this.playerCheckpointBiggestBet = playerCheckpointBiggestBet
     }
 }

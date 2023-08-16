@@ -82,12 +82,67 @@ export class Game {
     startRound() {
         const { game } = this.getGame()
 
-        this.gameController.updateGameById({ ...game, isRunning: true })
-
-        this.startBettingRound()
+        this.gameController.updateGameById(game.id, { ...game, isRunning: true })
     }
 
-    startBettingRound() {}
+    playerBet(playerId: PlayerId, value: number) {
+        const { game } = this.getGame()
+        const { player } = this.getPlayerById(playerId)
+
+        if (!player) {
+            return { message: 'Player not found' }
+        }
+
+        const isValidBet = this.validBet(player, value)
+
+        if (!isValidBet) {
+            return { message: 'Bet not valid' }
+        }
+
+        this.playerController.updatePlayerById(player.id, {
+            ...player,
+            isBetting: false,
+            money: player.money - value
+        })
+
+        if (value > game.biggestBet) {
+            this.gameController.updateGameById(game.id, {
+                ...game,
+                biggestBet: value,
+                playerCheckpointBiggestBet: player.room.order
+            })
+        }
+
+        const { playerPreviewBetting } = this.getLastPlayerBetInRound()
+
+        if (playerPreviewBetting.room.order == player.room.order) {
+            console.log('End round')
+        }
+
+        this.updatePlayerBetting()
+
+        return { message: `${player.name} bet R$${value}` }
+    }
+
+    private validBet(player: PlayerModel, value: number) {
+        const { game } = this.getGame()
+
+        if (player.room.order != game.currentPlayerBetting) {
+            return false
+        }
+
+        if (player.money < value) {
+            return false
+        }
+
+        if (game.biggestBet > value) {
+            return false
+        }
+
+        return true
+    }
+
+    private finalRoundOfBetting() {}
 
     private updateDealer() {
         const { game } = this.getGame()
@@ -95,7 +150,7 @@ export class Game {
 
         game.currentDealer = dealer.room.order
 
-        this.gameController.updateGameById(game)
+        this.gameController.updateGameById(game.id, game)
         this.playerController.updatePlayerById(dealer.id, { ...dealer, isDealer: true })
     }
 
@@ -105,11 +160,11 @@ export class Game {
 
         game.currentPlayerBetting = playerBetting.room.order
 
-        this.gameController.updateGameById(game)
+        this.gameController.updateGameById(game.id, game)
         this.playerController.updatePlayerById(playerBetting.id, { ...playerBetting, isBetting: true })
     }
 
-    public getNextDealer() {
+    getNextDealer() {
         const { game } = this.getGame()
         const { players } = this.getPlayersInGame()
 
@@ -118,17 +173,38 @@ export class Game {
         return { dealer: player }
     }
 
-    public getNextPlayerBetting() {
+    getNextPlayerBetting() {
         const { game } = this.getGame()
         const { players } = this.getPlayersInGame()
 
-        const player =
-            players.find(player => player.room.order != game.currentDealer && player.room.order > game.currentPlayerBetting) || (players[0] as PlayerModel)
+        const indexCurrentOrder =
+            players.findIndex(player => player.room.order == game.currentPlayerBetting) || players.findIndex(player => player.room.order == game.currentDealer)
 
-        return { playerBetting: player }
+        const indexNextOrder = indexCurrentOrder < 0 ? players.findIndex(player => player.room.order == game.currentDealer) + 1 : indexCurrentOrder + 1
+
+        const indexNextPlayer = indexNextOrder >= players.length ? 0 : indexNextOrder
+
+        return { playerBetting: players[indexNextPlayer] }
     }
 
-    public getDealer() {
+    getLastPlayerBetInRound() {
+        const { game } = this.getGame()
+        const { players } = this.getPlayersInGame()
+
+        const indexCheckpointBiggestBet = players.findIndex(player => player.room.order == game.playerCheckpointBiggestBet)
+
+        if (indexCheckpointBiggestBet < 0) {
+            return { playerPreviewBetting: players[players.length - 1] }
+        }
+
+        const indexNextOrder = indexCheckpointBiggestBet - 1
+
+        const indexNextPlayer = indexNextOrder < 0 ? players.length - 1 : indexNextOrder
+
+        return { playerPreviewBetting: players[indexNextPlayer] }
+    }
+
+    getDealer() {
         return this.playerController.query({
             isDealer: true,
             room: {
@@ -137,7 +213,7 @@ export class Game {
         })
     }
 
-    public getPlayerBetting() {
+    getPlayerBetting() {
         return this.playerController.query({
             isBetting: true,
             room: {
@@ -258,6 +334,14 @@ export class Game {
         const playersInGame = players.filter(({ active }) => active)
 
         return { players: playersInGame }
+    }
+
+    getPlayersNotInGame() {
+        const { players } = this.getPlayersInOrder()
+
+        const playersNotInGame = players.filter(({ active }) => !active)
+
+        return { players: playersNotInGame }
     }
 
     getPlayersInGameWithCards() {

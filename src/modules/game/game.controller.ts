@@ -21,15 +21,17 @@ export class GameController {
     }
 
     createGame() {
-        const gameDoc = this.repository.create({ data: { isRunning: false, currentDealer: 0, currentPlayerBetting: 0 } })
+        const gameDoc = this.repository.create({
+            data: { isRunning: false, currentDealer: 0, currentPlayerBetting: 0, biggestBet: 0, playerCheckpointBiggestBet: 0 }
+        })
 
         const game = new GameEntity(gameDoc)
 
         return game
     }
 
-    updateGameById(args: GameModel) {
-        this.repository.update({ where: { id: args.id }, data: { ...args } })
+    updateGameById(gameId: GameId, args: Omit<GameModel, 'id'>) {
+        this.repository.update({ where: { id: gameId }, data: { ...args } })
     }
 
     getGameById(id: GameId) {

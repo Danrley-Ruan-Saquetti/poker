@@ -1,7 +1,12 @@
+import bodyParser from 'body-parser'
+import cors from 'cors'
 import express from 'express'
 import { AppController } from './modules/app.controller'
 
 const app = express()
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 
 function bootstrap() {
     console.log('Server listen on port 8080')
@@ -47,8 +52,32 @@ function bootstrap() {
         res.send({ players: game.getPlayersInGameWithCards().players })
     })
 
+    app.get('/players/not-gaming', (req, res) => {
+        res.send({ players: game.getPlayersNotInGame().players })
+    })
+
+    app.post('/players/:id/bet', (req, res) => {
+        const { value } = req.body
+
+        if (!value || isNaN(Number(value))) {
+            return res.status(400).send({ message: 'Value invalid' })
+        }
+
+        const response = game.playerBet(Number(req.params.id), Number(value))
+
+        res.send(response || { ok: true })
+    })
+
     app.get('/players/:id', (req, res) => {
-        res.send({ player: game.getPlayerById(Number(req.params.id)).player })
+        const { player } = game.getPlayerById(Number(req.params.id))
+
+        if (!player) {
+            return res.send({ player: null })
+        }
+
+        player.cards = game.getCardsOfPlayer(player.id).cards as any
+
+        res.send({ player })
     })
 
     app.get('/deck', (req, res) => {
