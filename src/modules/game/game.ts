@@ -71,16 +71,18 @@ export class Game {
     }
 
     // Game Logic
-    newRound() {
+    newMath() {
         this.resetDeck()
         this.updateListPlayersInGame()
         this.updateDealer()
-        this.updatePlayerBetting()
         this.distributeCards()
+        this.startRound()
     }
 
     startRound() {
         const { game } = this.getGame()
+
+        this.resetRound()
 
         this.gameController.updateGameById(game.id, { ...game, isRunning: true })
     }
@@ -115,11 +117,11 @@ export class Game {
 
         const { playerPreviewBetting } = this.getLastPlayerBetInRound()
 
-        if (playerPreviewBetting.room.order == player.room.order) {
-            console.log('End round')
-        }
-
         this.updatePlayerBetting()
+
+        if (playerPreviewBetting.room.order == player.room.order) {
+            this.finalRoundOfBetting()
+        }
 
         return { message: `${player.name} bet R$${value}` }
     }
@@ -164,6 +166,35 @@ export class Game {
         this.playerController.updatePlayerById(playerBetting.id, { ...playerBetting, isBetting: true })
     }
 
+    private resetRound() {
+        const { players } = this.getPlayersInGame()
+
+        players.forEach(player => {
+            this.playerController.updatePlayerById(player.id, {
+                ...player,
+                isBetting: false
+            })
+        })
+
+        this.resetPlayerBetting()
+    }
+
+    private resetPlayerBetting() {
+        const { players } = this.getPlayersInGame()
+        const { dealer } = this.getDealer()
+
+        const indexDealer = dealer ? players.findIndex(player => player.room.order == dealer.room.order) + 1 : -1
+
+        const indexNextOrder = indexDealer < players.length ? indexDealer : 0
+
+        const nextPlayer = players[indexNextOrder]
+
+        this.playerController.updatePlayerById(nextPlayer.id, {
+            ...nextPlayer,
+            isBetting: true
+        })
+    }
+
     getNextDealer() {
         const { game } = this.getGame()
         const { players } = this.getPlayersInGame()
@@ -175,10 +206,9 @@ export class Game {
 
     getNextPlayerBetting() {
         const { game } = this.getGame()
-        const { players } = this.getPlayersInGame()
+        const { players } = this.getPlayersInGameValidForPlay()
 
-        const indexCurrentOrder =
-            players.findIndex(player => player.room.order == game.currentPlayerBetting) || players.findIndex(player => player.room.order == game.currentDealer)
+        const indexCurrentOrder = players.findIndex(player => player.room.order == game.currentPlayerBetting)
 
         const indexNextOrder = indexCurrentOrder < 0 ? players.findIndex(player => player.room.order == game.currentDealer) + 1 : indexCurrentOrder + 1
 
@@ -189,7 +219,7 @@ export class Game {
 
     getLastPlayerBetInRound() {
         const { game } = this.getGame()
-        const { players } = this.getPlayersInGame()
+        const { players } = this.getPlayersInGameValidForPlay()
 
         const indexCheckpointBiggestBet = players.findIndex(player => player.room.order == game.playerCheckpointBiggestBet)
 
@@ -205,12 +235,14 @@ export class Game {
     }
 
     getDealer() {
-        return this.playerController.query({
-            isDealer: true,
-            room: {
-                id: this.idRoom
-            }
-        })
+        return {
+            dealer: this.playerController.query({
+                isDealer: true,
+                room: {
+                    id: this.idRoom
+                }
+            })
+        }
     }
 
     getPlayerBetting() {
@@ -238,6 +270,11 @@ export class Game {
         const { players } = this.getPlayersInOrder()
 
         players.forEach(player => {
+            if (!player.inGame) {
+                this.playerController.removePlayerBy(player.id)
+                return
+            }
+
             player.active = player.money > 0
             player.isDealer = false
             player.isBetting = false
@@ -257,9 +294,9 @@ export class Game {
 
         players.forEach(player => {
             player.cards.push(this.chooseCard())
-        })
 
-        players.forEach(player => this.playerController.updatePlayerById(player.id, player))
+            this.playerController.updatePlayerById(player.id, player)
+        })
     }
 
     private chooseCard() {
@@ -305,7 +342,7 @@ export class Game {
 
     getPlayersInOrderStartsDealer() {
         const { players: playersInGame } = this.getPlayersInGame()
-        const dealer = this.getDealer()
+        const { dealer } = this.getDealer()
 
         if (!dealer) {
             return { players: [] }
@@ -332,6 +369,20 @@ export class Game {
         const { players } = this.getPlayersInOrder()
 
         const playersInGame = players.filter(({ active }) => active)
+
+        return { players: playersInGame }
+    }
+
+    getPlayersInGameValidForPlay() {
+        const { players } = this.getPlayersInGame()
+
+        const playersInGame = players.filter(player => {
+            if (player.money < 0) {
+                return false
+            }
+
+            return true
+        })
 
         return { players: playersInGame }
     }

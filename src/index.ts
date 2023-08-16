@@ -21,7 +21,7 @@ function bootstrap() {
     game.newPlayer({ money: 10000, name: 'Ruan' })
     game.newPlayer({ money: 10000, name: 'Davi' })
 
-    game.newRound()
+    game.newMath()
 
     game.newPlayer({ money: 10000, name: 'Ze' })
     game.newPlayer({ money: 10000, name: 'Ze' })
@@ -29,8 +29,6 @@ function bootstrap() {
     game.newPlayer({ money: 10000, name: 'Ze' })
     game.newPlayer({ money: 10000, name: 'Ze' })
     game.newPlayer({ money: 10000, name: 'Ze' })
-
-    game.startRound()
 
     app.get('/', (req, res) => {
         res.send({ ...game.getState(), ...game.getGame() })
