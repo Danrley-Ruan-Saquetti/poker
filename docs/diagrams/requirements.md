@@ -20,10 +20,12 @@
 17 - O sistema deve validar a ação do jogador
 18 - O sistema deve obrigar que os jogadores paguem o blind da partida
 19 - O sistema deve classificar as mãos dos jogadores
-20 - O sistema deve calcular o ranking de pontos das cartas dos jogadores
-21 - O sistema deve classificar os ganhadores
-22 - O sistema deve recopensar os ganhadores da partida
-23 - O sistema deve gerenciar o fluxo da partida
+20 - O sistema deve classificar os pontos dos jogadores
+21 - O sistema deve calcular o desempate de jogadores com a mesma quantidade de pontos
+22 - O sistema deve calcular o ranking de pontos das cartas dos jogadores
+23 - O sistema deve classificar os ganhadores
+24 - O sistema deve recopensar os ganhadores da partida
+25 - O sistema deve gerenciar o fluxo da partida
 
 ## Requisitos Não Funcionais
 
@@ -93,7 +95,9 @@
 18
     O jogador que é Small Blind e o Big Blind deve obrigatoriamente pagar a metade do valor da aposta inicial e o valor da aposta inicial, respectivamente
 19
-    A classificação das cartas se da pelo seguinte forma: Royal Flush (Sequência Real), Straight Flush (Sequência de Mesmo Naipe), Four of a Kind (Quadra), Full House (Full House ou Casa Cheia), Flush (Cores), Straight (Sequência), Three of a Kind (Trinca), Two Pair (Dois Pares), One Pair (Um Par) e High Card (Carta Mais Alta)
+    Uma mão é composta por 5 cartas, as 2 cartas do jogador + 3 cartas da mesa. É considerado as 5 cartas que possam ter a maior classificação possível
+    A classificação das mão, do mais forte para o mais fraca, se da pela seguinte forma:
+    Royal Flush (Sequência Real) - 10 Pontos, Straight Flush (Sequência de Mesmo Naipe) - 10 Pontos, Four of a Kind (Quadra) - 10 Pontos, Full House (Full House ou Casa Cheia) - 10 Pontos, Flush (Cores) - 10 Pontos, Straight (Sequência) - 10 Pontos, Three of a Kind (Trinca) - 10 Pontos, Two Pair (Dois Pares) - 10 Pontos, One Pair (Um Par) - 10 Pontos e High Card (Carta Mais Alta) - 10 Pontos
     Royal Flush: A, K, Q, J, 10, todos do mesmo naipe. Esta é a mão mais forte possível no poker
     Straight Flush: Cinco cartas em sequência, todas do mesmo naipe
     Four of a Kind: Quatro cartas do mesmo valor
@@ -104,3 +108,13 @@
     Two Pair: 2x Duas cartas do mesmo valor
     One Pair: 1x Duas cartas do mesmo valor
     High Card: Se nenhuma das mãos acima for formada, a mão é classificada pelo valor da carta mais alta. Se os jogadores tiverem a mesma carta alta, as cartas subsequentes decidem a mão vencedora
+20
+    A classificação de pontos da mão de um jogador deve seguir a seguinte fomrula: classificação da mão + carta mais alta que que faz parte da classificação da mão
+21
+    Em caso de empate: usa-se a fórmula anterior + carta mais alta que restou na mão do jogador e que não faz parte da classificação da mão
+22
+    O ranking dos jogadores é dado pela soma dos pontos da mão do jogador, do maior para o menor jogador
+23
+    O fluxo da partida se da pela seguinte forma:
+    É definido o Dealer
+    É definido os Blinds
