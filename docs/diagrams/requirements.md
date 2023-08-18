@@ -19,10 +19,11 @@
 16 - O sistema deve gerenciar a ordem de turnos dos jogadores para realizar a ação
 17 - O sistema deve validar a ação do jogador
 18 - O sistema deve obrigar que os jogadores paguem o blind da partida
-19 - O sistema deve calcular o ranking de pontos das cartas dos jogadores
-20 - O sistema deve classificar os ganhadores
-21 - O sistema deve recopensar os ganhadores da partida
-22 - O sistema deve gerenciar o fluxo da partida
+19 - O sistema deve classificar as mãos dos jogadores
+20 - O sistema deve calcular o ranking de pontos das cartas dos jogadores
+21 - O sistema deve classificar os ganhadores
+22 - O sistema deve recopensar os ganhadores da partida
+23 - O sistema deve gerenciar o fluxo da partida
 
 ## Requisitos Não Funcionais
 
@@ -91,3 +92,15 @@
     Quando o jogador der Fold, todo o dinheiro apostado por ele não é retornado e fica no pote da mesa para o ganhador
 18
     O jogador que é Small Blind e o Big Blind deve obrigatoriamente pagar a metade do valor da aposta inicial e o valor da aposta inicial, respectivamente
+19
+    A classificação das cartas se da pelo seguinte forma: Royal Flush (Sequência Real), Straight Flush (Sequência de Mesmo Naipe), Four of a Kind (Quadra), Full House (Full House ou Casa Cheia), Flush (Cores), Straight (Sequência), Three of a Kind (Trinca), Two Pair (Dois Pares), One Pair (Um Par) e High Card (Carta Mais Alta)
+    Royal Flush: A, K, Q, J, 10, todos do mesmo naipe. Esta é a mão mais forte possível no poker
+    Straight Flush: Cinco cartas em sequência, todas do mesmo naipe
+    Four of a Kind: Quatro cartas do mesmo valor
+    Full House: Três cartas do mesmo valor, combinadas com um par de cartas de outro valor
+    Flush: Cinco cartas do mesmo naipe, não em sequência. Se as cartas forem colocadas em ordem, o valor da carta mais alta determina a força da mão em caso de empate
+    Straight: Cinco cartas em sequência, não necessariamente do mesmo naipe. Assim como no flush, a carta mais alta determina a força da mão em caso de empate
+    Three of a Kind: Três cartas do mesmo valor
+    Two Pair: 2x Duas cartas do mesmo valor
+    One Pair: 1x Duas cartas do mesmo valor
+    High Card: Se nenhuma das mãos acima for formada, a mão é classificada pelo valor da carta mais alta. Se os jogadores tiverem a mesma carta alta, as cartas subsequentes decidem a mão vencedora
