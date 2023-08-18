@@ -16,7 +16,7 @@
 13 - O sistema deve realizar a distribuição de cartas para os jogadores
 14 - O sistema deve realizar o "vira" das cartas na mesa
 15 - O sistema deve permitir que o jogador realize ações durante a rodada
-16 - O sistema deve gerenciar a ordem de turnos dos jogadores para apostar
+16 - O sistema deve gerenciar a ordem de turnos dos jogadores para realizar a ação
 17 - O sistema deve validar a ação do jogador
 18 - O sistema deve obrigar que os jogadores paguem o blind da partida
 19 - O sistema deve calcular o ranking de pontos das cartas dos jogadores
@@ -72,4 +72,22 @@
     Durante a rodada, quando ninguém fez nenhuma aposta, o jogador pode: Bet, Check, All In ou Fold
     Durante a rodada, quando já foi feito uma aposta, o jogador pode: Call, Raise, All In ou Fold
 16
-    A rodada de aposta começa no Small Blind
+    A rodada de aposta começa no Small Blind, que deverá pagar a metade do valor inicial
+    Depois é o Blind, que deverá pagar o valor inicial
+    Então começa a rodada a partir do próximo jogador, onde ele poderá escolher se quer pagar (Bet), aumentar (Raise) o valor inicial da aposta ou desistir (Fold)
+    O último jogador a apostar será o Small Blind, onde ele deverá pagar o resto do valor inicial da aposta
+    Caso algum jogador aumentar o valor da aposta, o último jogador a apostar passa a ser o anterior do jogador que aumentou a aposta
+    A rodada de aposta acaba quando todos pagarem o valor da aposta
+    A partir da segunda rodada, os jogadores podem passar a vez da aposta (Check)
+    Todo o valor apostado é acumulado no Pote da mesa
+17
+    O jogador deve esperar a sua vez para realizar a ação
+    O jogador só pode dar Check quando ninguém fez nenhuma aposta
+    O jogador só pode dar Bet quando ninguém fez nenhuma aposta e o valor apostado deve ser no mínimo o valor inicial da aposta
+    Caso o jogador tenha dinheiro inferior ao valor a pagar, ele deve dar All In
+    O jogador só pode dar Raise caso o valor da aposta seja maior que o valor a ser pago
+    O jogador pode dar All In em qualquer momento
+    O jogador pode dar Fold em qualquer momento
+    Quando o jogador der Fold, todo o dinheiro apostado por ele não é retornado e fica no pote da mesa para o ganhador
+18
+    O jogador que é Small Blind e o Big Blind deve obrigatoriamente pagar a metade do valor da aposta inicial e o valor da aposta inicial, respectivamente
