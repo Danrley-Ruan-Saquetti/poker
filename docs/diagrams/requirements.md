@@ -21,9 +21,9 @@ O sistema deve recompensar o(s) ganhador(es) da partida
 
 ## Regras de Negócio
 
-A criação de uma sala deve conter um identificador único, o valor da aposta mínimo, o valor da aposta atual da rodada, o valor do pote, o atual Dealer (sua ordem na mesa), o atual Small Blind (sua ordem na mesa), o atual Big Blind (sua ordem na mesa), o atual jogador a fazer o lance (sua ordem na mesa) e tempo limite para cada jogador realizar o lance
+A criação de uma sala deve conter um identificador único, o valor da aposta mínimo, o valor da aposta atual da rodada, o valor do pote, o atual Dealer (sua ordem na mesa), o atual Small Blind (sua ordem na mesa), o atual Big Blind (sua ordem na mesa), o atual jogador a fazer o lance (sua ordem na mesa), o tempo limite para cada jogador realizar o lance e o baralho de cartas
 
-A criação de um jogador deve conter um identificador único, o nome, seu dinheiro, identificador da sala, sua ordem na mesa da sala, se é o Dealer, se é o Blind, qual o Blind, se é o atual apostador
+A criação de um jogador deve conter um identificador único, o nome, seu dinheiro, identificador da sala, sua ordem na mesa da sala, se é o Dealer, se é o Blind, qual o Blind, se é o atual apostador, as cartas (Hole Cards)
 
 A ordem do jogador deve ser única dentre os jogadores da mesma sala
 
@@ -75,7 +75,7 @@ Cada rodada de apostas possui no mínimo 1 "giro"
 
 No início de cada rodada, o valor da aposta começa com zero
 
-Por turnos, cada jogador deve dar um lance, que consiste em: Bet (apostar), Check (passar a vez), Call (pagar a aposta), All In (apostar tudo), Raise (aumentar a aposta), Fold (desistir)
+Por turnos, cada jogador deve dar um lance, que consiste em: Bet (apostar), Check (passar a vez), Call (pagar a aposta), All-In (apostar tudo), Raise (aumentar a aposta), Fold (desistir)
 
 O lance do jogador deve ser feita em menos de 15 segundos
 
@@ -164,5 +164,7 @@ Two Pair: Se mais os jogadores tiverem dois pares, o par mais alto ganha; Se amb
 One Pair: Se mais jogadores têm um par, o par mais alto ganha. Se os jogadores tiverem pares do mesmo valor, o kicker decide.
 
 High Card: Se nenhum jogador tem uma combinação, a mão é determinada pela carta mais alta. Se mais jogadores têm a mesma carta mais alta, a segunda carta mais alta é usada para desempatar e assim por diante.
+
+Toda carta deve ser escolhida aleatoriamente
 
 Ao final de cada partida, as cartas são devolvidas ao baralho
