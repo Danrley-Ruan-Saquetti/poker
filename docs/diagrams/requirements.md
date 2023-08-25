@@ -83,7 +83,9 @@ Caso o jogador não tenha feito o lance no tempo limite e o valor da aposta seja
 
 Caso o jogador não tenha feito o lance no tempo limite e não foi feito nenhuma a posta, então ele passa a vez (Bet)
 
-Quando o valor de aposta atual da rodada for zero, ou seja, ninguém fez nenhuma aposta, o Jogador pode dar Check - passar a vez, dar Bet - pagar o valor mínimo da aposta - ou dar Fold - desistir
+Quando o valor de aposta atual da rodada for zero, ou seja, ninguém fez nenhuma aposta, o Jogador pode dar Check - passar a vez, dar Bet - pagar o valor mínimo da aposta -, Raise - aumentar o valor da aposta - ou dar Fold - desistir
+
+Caso o valor de aposta atual da rodada for zero e o Jogador queira dar Raise, ele deve primeiro pagar o valor mínimo da aposta e o quanto que ele quer aumentar + o valor mínimo da aposta
 
 Caso um jogador já tenha feito uma aposta, o Jogador pode dar Bet - pagar o valor da aposta, dar Fold - desistir - ou dar Raise - aumentar o valor da aposta
 
