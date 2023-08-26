@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-08-26T01:24:07.356Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/101.0.0.0" etag="7ojQffhoYmPoNXRIhTfI" version="21.6.9" type="github">
+<mxfile host="app.diagrams.net" modified="2023-08-26T01:25:21.919Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/101.0.0.0" etag="TBCWc2vuOZP_-IoMbiMK" version="21.6.9" type="github">
   <diagram name="Page-1" id="rut9_6CQOEPtHjp8Rf0L">
     <mxGraphModel dx="1088" dy="1612" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -13,7 +13,7 @@
         <mxCell id="spJ10TGmZAzzF4JB76id-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="spJ10TGmZAzzF4JB76id-1" target="spJ10TGmZAzzF4JB76id-2">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="85" y="500" />
+              <mxPoint x="85" y="530" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -28,7 +28,7 @@
           <mxGeometry x="70" y="310" width="30" height="60" as="geometry" />
         </mxCell>
         <mxCell id="spJ10TGmZAzzF4JB76id-2" value="Entrar na Sala" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="140" y="460" width="120" height="80" as="geometry" />
+          <mxGeometry x="140" y="490" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="spJ10TGmZAzzF4JB76id-3" value="Sair da Sala" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="140" y="240" width="120" height="80" as="geometry" />
@@ -49,7 +49,7 @@
           <mxGeometry x="290" y="350" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="spJ10TGmZAzzF4JB76id-12" value="Mostrar Erro para Entrar na Sala" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="140" y="580" width="120" height="80" as="geometry" />
+          <mxGeometry x="140" y="620" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="spJ10TGmZAzzF4JB76id-13" value="Mostra Erro de Lance Inválido" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="540" y="-105" width="120" height="80" as="geometry" />
@@ -117,8 +117,15 @@
         </mxCell>
         <mxCell id="spJ10TGmZAzzF4JB76id-49" value="&amp;lt;&amp;lt;extends&amp;gt;&amp;gt;" style="html=1;verticalAlign=bottom;labelBackgroundColor=none;endArrow=open;endFill=0;dashed=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="spJ10TGmZAzzF4JB76id-12" target="spJ10TGmZAzzF4JB76id-2">
           <mxGeometry x="-0.5" width="160" relative="1" as="geometry">
-            <mxPoint x="345" y="520.0000000000002" as="sourcePoint" />
-            <mxPoint x="505" y="520.0000000000002" as="targetPoint" />
+            <mxPoint x="345" y="550.0000000000002" as="sourcePoint" />
+            <mxPoint x="505" y="550.0000000000002" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="spJ10TGmZAzzF4JB76id-50" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="html=1;verticalAlign=bottom;labelBackgroundColor=none;endArrow=open;endFill=0;dashed=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="spJ10TGmZAzzF4JB76id-4" target="spJ10TGmZAzzF4JB76id-2">
+          <mxGeometry x="0.2" width="160" relative="1" as="geometry">
+            <mxPoint x="290" y="480.0000000000002" as="sourcePoint" />
+            <mxPoint x="450" y="480.0000000000002" as="targetPoint" />
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
