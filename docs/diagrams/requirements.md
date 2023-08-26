@@ -4,7 +4,7 @@ O sistema deve realizar o encerramento de salas
 O sistema deve permitir a entrada de um jogador em uma sala
 O sistema deve permitir a saída de um jogador de uma sala
 O sistema deve realizar o gerenciamento da ordem dos jogadores dentro da sala
-O sistema deve realizar o gerenciamento de status de um jogador
+O sistema deve realizar o gerenciamento de estatus de um jogador
 O sistema deve gerenciar o fluxo da partida
 O sistema deve escolher o Dealer
 O sistema deve escolher dos Blinds
@@ -23,7 +23,7 @@ O sistema deve recompensar o(s) ganhador(es) da partida
 
 A criação de uma sala deve conter um identificador único, o valor da aposta mínimo, o valor da aposta atual da rodada, o valor do pote, o atual Dealer (sua ordem na mesa), o atual Small Blind (sua ordem na mesa), o atual Big Blind (sua ordem na mesa), o atual jogador a fazer o lance (sua ordem na mesa), o tempo limite para cada jogador realizar o lance e o baralho de cartas
 
-A criação de um jogador deve conter um identificador único, o nome, seu dinheiro, identificador da sala, sua ordem na mesa da sala, se é o Dealer, se é o Blind, qual o Blind, se é o atual apostador, as cartas (Hole Cards) e o atual status
+A criação de um jogador deve conter um identificador único, o nome, seu dinheiro, identificador da sala, sua ordem na mesa da sala, se é o Dealer, se é o Blind, qual o Blind, se é o atual apostador, as cartas (Hole Cards) e o atual estatus
 
 A ordem do jogador deve ser única dentre os jogadores da mesma sala
 
@@ -31,17 +31,17 @@ Não é permitido a alteração da ordem do jogador uma vez que ela é definida
 
 Quando um jogador sair da sala, a sua ordem pode ser reutilizada
 
-O status do jogador consiste em: Aguardando, Pronto, Jogando e Fora
+O estatus do jogador consiste em: Aguardando, Pronto, Jogando e Fora
 
-Antes de iniciar a partida, todos os jogadores ficam com o status de Aguardando
+Antes de iniciar a partida, todos os jogadores ficam com o estatus de Aguardando
 
-Quando um jogador entra em uma sala, ele fica com o status de Aguardando
+Quando um jogador entra em uma sala, ele fica com o estatus de Aguardando
 
-Caso ele tenha dinheiro para jogar, então ele fica com o status de Pronto
+Caso ele tenha dinheiro para jogar, então ele fica com o estatus de Pronto
 
-Quando a partida começa, os jogadores que estiverem com o status Pronto, passam a ficar com o status de Jogando
+Quando a partida começa, os jogadores que estiverem com o estatus Pronto, passam a ficar com o estatus de Jogando
 
-Quando um jogador que estiver com o status Jogando desiste da partida, ele fica com o status Fora
+Quando um jogador que estiver com o estatus Jogando desiste da partida, ele fica com o estatus Fora
 
 No início de cada partida, o pote começa com o valor zero
 
@@ -79,7 +79,7 @@ Por turnos, cada jogador deve dar um lance, que consiste em: Bet (apostar), Chec
 
 O lance do jogador deve ser feita em menos de 15 segundos
 
-Caso o jogador não tenha feito o lance no tempo limite e o valor da aposta seja superior a zero, ou seja, um jogador já fez uma aposta, o jogador automaticamente da Fold e fica com o status de Fora
+Caso o jogador não tenha feito o lance no tempo limite e o valor da aposta seja superior a zero, ou seja, um jogador já fez uma aposta, o jogador automaticamente da Fold e fica com o estatus de Fora
 
 Caso o jogador não tenha feito o lance no tempo limite e não foi feito nenhuma a posta, então ele passa a vez (Bet)
 
