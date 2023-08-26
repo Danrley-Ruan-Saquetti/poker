@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-08-26T19:21:57.062Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/101.0.0.0" etag="IowzIv7qkwKPjsOdyd4y" version="21.6.9" type="github">
+<mxfile host="app.diagrams.net" modified="2023-08-26T19:30:46.313Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/101.0.0.0" etag="EfzFqPzmUjmVXYM2RXi5" version="21.6.9" type="github">
   <diagram name="Main" id="rut9_6CQOEPtHjp8Rf0L">
     <mxGraphModel dx="1665" dy="1882" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -398,6 +398,45 @@
             <mxPoint x="761.79" y="400" as="targetPoint" />
             <mxPoint as="offset" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-4" value="Iniciar Partida" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="892" y="980" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-5" value="Escolher o Dealer" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="920" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-6" value="Escolher os Blinds" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="820" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-7" value="Escolher os Blinds" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="770" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-8" value="Perfomar Início da Partida" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="950" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-9" value="Efetuar Pagamento dos&amp;nbsp;Blinds" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="830" y="780" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-10" value="Distribuir Cartas para os Jogadores" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1022" y="790" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-11" value="Efetuar Pré-Flop" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1207" y="790" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-12" value="Efetuar Flop" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="790" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-13" value="Efetuar Rodada de Apostas" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1392" y="680" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-14" value="Efetuar Turn" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1592" y="780" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-15" value="Efetuar River" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1800" y="780" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="1RWsdQzD09i4ip1Iz8b1-16" value="Efetuar Showdown" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="910" width="120" height="80" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
