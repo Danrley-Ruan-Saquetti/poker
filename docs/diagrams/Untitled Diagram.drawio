@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-08-29T13:25:56.336Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="aebj0t23lnkDqO-qRmij" version="21.6.9" type="github">
+<mxfile host="app.diagrams.net" modified="2023-08-29T13:45:53.302Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="3YGpfXwoaUXTpvmUvViN" version="21.6.9" type="github">
   <diagram name="Main" id="rut9_6CQOEPtHjp8Rf0L">
-    <mxGraphModel dx="3333" dy="2709" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1304" dy="1730" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -589,9 +589,9 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="8a_0RHx1kYQGgkmSq5uj-16" value="Verificar se é a Última Etapa do Fluxo da Rodada" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="1660" y="1010" width="120" height="80" as="geometry" />
+          <mxGeometry x="1820" y="1010" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="8a_0RHx1kYQGgkmSq5uj-17" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="html=1;verticalAlign=bottom;labelBackgroundColor=none;endArrow=open;endFill=0;dashed=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="8a_0RHx1kYQGgkmSq5uj-1" target="8a_0RHx1kYQGgkmSq5uj-16" edge="1">
+        <mxCell id="8a_0RHx1kYQGgkmSq5uj-17" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="html=1;verticalAlign=bottom;labelBackgroundColor=none;endArrow=open;endFill=0;dashed=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;" parent="1" source="8a_0RHx1kYQGgkmSq5uj-1" target="8a_0RHx1kYQGgkmSq5uj-16" edge="1">
           <mxGeometry x="0.5" width="160" relative="1" as="geometry">
             <mxPoint x="1162" y="1102" as="sourcePoint" />
             <mxPoint x="1670" y="940" as="targetPoint" />
@@ -695,6 +695,22 @@
             <mxPoint x="1121" y="1400" as="sourcePoint" />
             <mxPoint x="1046" y="1400" as="targetPoint" />
             <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nGyq8Bxn8HwhKrmaXoKY-26" value="Performar Final da Partida" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="1100" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nGyq8Bxn8HwhKrmaXoKY-27" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="html=1;verticalAlign=bottom;labelBackgroundColor=none;endArrow=open;endFill=0;dashed=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="1RWsdQzD09i4ip1Iz8b1-16" target="nGyq8Bxn8HwhKrmaXoKY-26">
+          <mxGeometry x="-0.1111" width="160" relative="1" as="geometry">
+            <mxPoint x="1340" y="1190" as="sourcePoint" />
+            <mxPoint x="1340" y="1246" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="nGyq8Bxn8HwhKrmaXoKY-28" value="&amp;lt;&amp;lt;extends&amp;gt;&amp;gt;" style="html=1;verticalAlign=bottom;labelBackgroundColor=none;endArrow=open;endFill=0;dashed=1;rounded=0;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="nGyq8Bxn8HwhKrmaXoKY-26" target="8a_0RHx1kYQGgkmSq5uj-1">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="1110" y="1110" as="sourcePoint" />
+            <mxPoint x="1670" y="940" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
