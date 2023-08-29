@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2023-08-29T13:17:31.033Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="bqmDHCj69tNwfpVy585q" version="21.6.9" type="github">
+<mxfile host="app.diagrams.net" modified="2023-08-29T13:25:56.336Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" etag="aebj0t23lnkDqO-qRmij" version="21.6.9" type="github">
   <diagram name="Main" id="rut9_6CQOEPtHjp8Rf0L">
-    <mxGraphModel dx="2143" dy="2134" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="3333" dy="2709" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -95,7 +95,7 @@
         <mxCell id="spJ10TGmZAzzF4JB76id-25" value="Verificar se Não há uma Aposta Feita" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1410" y="270" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="spJ10TGmZAzzF4JB76id-26" value="Verificar se o Valor Aumentado é Maior ou Igual ao Valor Mínimo da Aposta" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="spJ10TGmZAzzF4JB76id-26" value="Verificar se o da Aposta é Maior ou Igual ao Valor da Aposta Atual" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1728" y="265" width="130" height="90" as="geometry" />
         </mxCell>
         <mxCell id="spJ10TGmZAzzF4JB76id-27" value="Validar Call" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -478,7 +478,7 @@
             <mxPoint x="1150" y="160" as="targetPoint" />
             <Array as="points">
               <mxPoint x="1684" y="110" />
-              <mxPoint x="1290" y="110" />
+              <mxPoint x="1291" y="110" />
             </Array>
           </mxGeometry>
         </mxCell>
