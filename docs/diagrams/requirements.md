@@ -30,6 +30,8 @@ Não é permitido a alteração da ordem do jogador uma vez que ela é definida
 
 Quando um jogador sair da sala, a sua ordem pode ser reutilizada
 
+Quando o último jogador da sala sair da mesma, o sistema deve encerrar ela logo em seguida
+
 O estatus do jogador consiste em: Aguardando, Pronto, Jogando e Fora
 
 Antes de iniciar a partida, todos os jogadores ficam com o estatus de Aguardando
