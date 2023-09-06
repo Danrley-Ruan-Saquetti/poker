@@ -22,7 +22,7 @@ O sistema deve recompensar o(s) ganhador(es) da partida
 ## Regras de Negócio
 A criação de uma sala deve conter um identificador único, o valor da aposta mínimo, o valor da aposta atual da rodada, o valor do pote, o atual Dealer (sua ordem na mesa), o atual Small Blind (sua ordem na mesa), o atual Big Blind (sua ordem na mesa), o atual jogador a fazer o lance (sua ordem na mesa), o tempo limite para cada jogador realizar o lance, o baralho de cartas e a lista com a sequência da ordem dos jogadores do giro
 
-A criação de um jogador deve conter um identificador único, o nome, seu dinheiro, identificador da sala, sua ordem na mesa da sala, se é o Dealer, se é o Blind, qual o Blind, se é o atual apostador, as cartas (Hole Cards), o atual estatus e a classificação da mão
+A criação de um jogador deve conter um identificador único, o nome, seu dinheiro, identificador da sala, sua ordem na mesa da sala, se é o Dealer, se é o Blind, qual o Blind, se é o atual jogador a dar o lance, as cartas (Hole Cards), o atual estatus e a classificação da mão
 
 A ordem do jogador deve ser única dentre os jogadores da mesma sala
 
