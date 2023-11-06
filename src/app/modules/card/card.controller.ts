@@ -1,4 +1,4 @@
 import { Controller } from '@common/module/decorator'
 
 @Controller()
-export class PlayerController {}
+export class CardController {}
