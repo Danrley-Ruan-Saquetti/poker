@@ -2,6 +2,7 @@ import { ID } from '@@types/index'
 import { Document } from '@esliph/repository-memory'
 
 export type RoomModel = {
+    gameId: ID
     minimumBetAmount: number
     betValueCurrentRound: number
     potAmmount: number
@@ -10,7 +11,6 @@ export type RoomModel = {
     orderCurrentBigBlind: number
     orderCurrentBidding: number
     betTimeout: number
-    deckId: ID
 }
 
 export type Room = Document<RoomModel>
