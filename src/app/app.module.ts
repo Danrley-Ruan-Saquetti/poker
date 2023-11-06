@@ -1,4 +1,4 @@
-import { Module } from '@common/module'
+import { Module } from '@common/decorator'
 import { PlayerModule } from '@modules/player/player.module'
 
 @Module({

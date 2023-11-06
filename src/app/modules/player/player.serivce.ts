@@ -1,4 +1,4 @@
-import { Service } from '@common/service'
+import { Service } from '@common/decorator'
 
 @Service({ name: 'player.service' })
 export class PlayerService {}
