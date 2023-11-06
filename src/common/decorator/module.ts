@@ -1,6 +1,6 @@
 import { Construtor } from '@@types/index'
 import { DecoratorMetadata, Metadata } from '@esliph/metadata'
-import { METADATA_MODULE_KEY } from '@constants/index'
+import { METADATA_MODULE_CONFIG_KEY, METADATA_MODULE_KEY } from '@constants/index'
 import { isController } from '@common/controller'
 import { isService } from '@common/service'
 import { ResultException } from '@esliph/common'
@@ -18,9 +18,9 @@ export type ModuleConfig = {
     provider: (Construtor | Partial<ProviderOptions>)[]
 }
 
-export function Module(config?: Partial<ModuleConfig>) {
+export function Module(config: Partial<ModuleConfig> = {}) {
     function handle(constructor: any) {
-        if (config?.controllers) {
+        if (config.controllers) {
             config.controllers.forEach(controller => {
                 if (!isController(controller)) {
                     throw new ResultException({
@@ -30,7 +30,7 @@ export function Module(config?: Partial<ModuleConfig>) {
                 }
             })
         }
-        if (config?.provider) {
+        if (config.provider) {
             config.provider.forEach(service => {
                 if (isInstance(service)) {
                     const ser = service as Construtor
@@ -55,6 +55,14 @@ export function Module(config?: Partial<ModuleConfig>) {
                 // Injection.whenCall(serviceOptions.whenCall).use(serviceOptions.use)
             })
         }
+
+        Metadata.Create.Class(
+            {
+                key: METADATA_MODULE_CONFIG_KEY,
+                value: { imports: config.imports || [], controllers: config.controllers || [], provider: config.provider || [] }
+            },
+            constructor
+        )
     }
 
     return DecoratorMetadata.Create.Class({ key: METADATA_MODULE_KEY, value: true }, handle)
