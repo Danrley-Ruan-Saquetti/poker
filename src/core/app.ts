@@ -1,12 +1,24 @@
+import express from 'express'
 import { Construtor } from '@@types/index'
-import { ModuleConfig } from '@common/decorator'
+import { ModuleConfig } from '@common/module/decorator'
 import { isModule } from '@common/module'
-import { METADATA_MODULE_CONFIG_KEY } from '@constants/index'
+import { METADATA_EVENT_HANDLER_KEY, METADATA_HTTP_ROUTER_HANDLER_KEY, METADATA_MODULE_CONFIG_KEY } from '@constants/index'
 import { ResultException } from '@esliph/common'
+import { Injection } from '@esliph/injection'
 import { Metadata } from '@esliph/metadata'
+import { ObserverListener } from '@esliph/observer'
+import { getMethodNamesByClass } from '@util/index'
 
 export class Application {
+    static server = express()
+    private static listener = new ObserverListener()
     private static appModule: Construtor
+
+    static listen(port: number) {
+        Application.server.listen(port, () => {
+            console.log('Server running on port', port)
+        })
+    }
 
     static fabric(appModule: Construtor) {
         if (!isModule(appModule)) {
@@ -21,7 +33,7 @@ export class Application {
     private static initComponents() {
         const modules = Application.initModule(Application.appModule, true)
 
-        console.log(modules)
+        Application.initControllers(modules.controllers)
     }
 
     private static initModule(module: Construtor, include = false) {
@@ -48,5 +60,46 @@ export class Application {
             controllers,
             providers
         }
+    }
+
+    private static initControllers(controllers: Construtor[]) {
+        controllers.map(controller => {
+            const events = getMethodNamesByClass(controller)
+                .map(methodName => {
+                    const metadataValueEvent = Metadata.Get.Method<string>(METADATA_EVENT_HANDLER_KEY, controller, methodName)
+
+                    if (metadataValueEvent) {
+                        return { method: methodName, event: metadataValueEvent, type: 'EVENT' }
+                    }
+
+                    const metadataValueHttp = Metadata.Get.Method<{ event: string; method: string }>(METADATA_HTTP_ROUTER_HANDLER_KEY, controller, methodName)
+
+                    return { method: methodName, event: metadataValueHttp, type: 'HTTP' }
+                })
+                .filter(({ event }) => !!event)
+
+            const instance = Injection.resolve(controller)
+
+            events.map(event => {
+                if (typeof instance[event.method] == 'undefined') {
+                    return
+                }
+
+                if (event.type == 'EVENT') {
+                    // @ts-expect-error
+                    Application.listener.on(event.event, instance[event.method])
+                } else if (event.type == 'HTTP') {
+                    console.log(event.event.method, event.event.event, instance[event.method])
+                    // @ts-expect-error
+                    Application.server[event.event.method](event.event.event, async (req, res) => {
+                        const response = await instance[event.method](req, res)
+
+                        if (typeof response != 'undefined') {
+                            res.send(response)
+                        }
+                    })
+                }
+            })
+        })
     }
 }

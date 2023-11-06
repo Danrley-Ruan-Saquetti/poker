@@ -3,4 +3,5 @@ import { Application } from '@core/app'
 
 export function Bootstrap(appModule: Construtor) {
     Application.fabric(appModule)
+    Application.listen(8080)
 }

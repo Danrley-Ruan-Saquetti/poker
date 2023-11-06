@@ -7,3 +7,6 @@ export const METADATA_SERVICE_KEY = 'class.service'
 export const METADATA_MODULE_CONFIG_KEY = `${METADATA_MODULE_KEY}.options`
 export const METADATA_CONTROLLER_CONFIG_KEY = `${METADATA_CONTROLLER_KEY}.options`
 export const METADATA_SERVICE_CONFIG_KEY = `${METADATA_SERVICE_KEY}.options`
+
+export const METADATA_EVENT_HANDLER_KEY = 'event.handler'
+export const METADATA_HTTP_ROUTER_HANDLER_KEY = 'http.router.event'
