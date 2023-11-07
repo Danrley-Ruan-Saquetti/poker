@@ -1,5 +1,4 @@
 import { Request, Response } from '@esliph/http'
-import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
 import { Filter, FilterPerform } from '@common/module/decorator/filter'
 import { AuthService } from '@modules/auth/auth.service'

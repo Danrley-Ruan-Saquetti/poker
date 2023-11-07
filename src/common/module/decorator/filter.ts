@@ -18,7 +18,6 @@ export function Filter(config: Partial<FilterConfig> = {}) {
         Metadata.Create.Class({ key: METADATA_FILTER_CONFIG_KEY, value: config }, constructor)
     }
 
-
     return DecoratorMetadata.Create.Class({ key: METADATA_FILTER_KEY, value: true }, handle)
 }
 

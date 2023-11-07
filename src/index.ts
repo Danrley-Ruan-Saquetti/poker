@@ -6,7 +6,17 @@ Bootstrap(MainModule, { serverLocal: true, port: 8080 })
 
 const client = new Client()
 
-client.on('request/error', arg => console.log(arg))
+// client.on('request/error', arg => console.log(arg))
+
+async function App() {
+    const users = [
+        await newUser({ balance: 5000, name: 'Dan Ruan', login: 'dan.ruan@gmail.com', password: '123' }),
+        await newUser({ balance: 5000, name: 'Ruan', login: 'ruan@gmail.com', password: '123' }),
+        await newUser({ balance: 5000, name: 'Davi', login: 'davi@gmail.com', password: '123' }),
+        await newUser({ balance: 5000, name: 'Nick', login: 'nick@gmail.com', password: '123' }),
+        await newUser({ balance: 5000, name: 'Marcoto', login: 'marcoto@gmail.com', password: '123' }),
+    ]
+}
 
 async function newUser(data: any) {
     const clientUser = new Client()
@@ -22,18 +32,6 @@ async function newUser(data: any) {
     clientUser.use({ headers: { Authorization: `Bearer ${responseToken.getValue().token}` } })
 
     return clientUser
-}
-
-async function App() {
-    const users = [
-        await newUser({ balance: 5000, name: 'Dan Ruan', login: 'dan.ruan@gmail.com', password: '123' }),
-        await newUser({ balance: 5000, name: 'Ruan', login: 'ruan@gmail.com', password: '123' }),
-        await newUser({ balance: 5000, name: 'Davi', login: 'davi@gmail.com', password: '123' }),
-        await newUser({ balance: 5000, name: 'Nick', login: 'nick@gmail.com', password: '123' }),
-        await newUser({ balance: 5000, name: 'Marcoto', login: 'marcoto@gmail.com', password: '123' }),
-    ]
-
-    users[0].get('/hello')
 }
 
 App()

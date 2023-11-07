@@ -1,9 +1,8 @@
 import { Request, Response } from '@esliph/http'
-import { Get, Post } from '@common/http'
+import { Post } from '@common/http'
 import { Injection } from '@esliph/injection'
 import { Controller } from '@common/module/decorator'
 import { AuthService } from '@modules/auth/auth.service'
-import { Guard } from '@common/module/decorator/guard'
 
 @Controller()
 export class AuthController {

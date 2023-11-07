@@ -13,6 +13,7 @@ import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
 import { GuardConfig } from '@common/module/decorator/guard'
 import { FilterConfig } from '@common/module/decorator/filter'
+import console from 'console'
 
 export class Application {
     static server = express()
@@ -84,8 +85,13 @@ export class Application {
                 const middlewares: ((...args: any[]) => any)[] = []
 
                 if (isGuard(controller, event.method)) {
-                    const a = Metadata.Get.Method<GuardConfig>(METADATA_GUARD_CONFIG_KEY, controller, event.method)
-                    middlewares.push(filters.find(filter => filter.metadata.name = a.name)?.instance.perform)
+                    const methodMetadata = Metadata.Get.Method<GuardConfig>(METADATA_GUARD_CONFIG_KEY, controller, event.method)
+
+                    const filter = filters.find(filter => filter.metadata.name = methodMetadata.name)
+
+                    if (filter && filter.instance.perform) {
+                        middlewares.push(filter.instance.perform)
+                    }
                 }
 
                 server[event.metadata.method](event.metadata.event, ...middlewares, async (req, res) => {
