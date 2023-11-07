@@ -1,7 +1,7 @@
 import { Injection } from '@esliph/injection';
 import { Controller } from '@common/module/decorator'
 import { PlayerService } from '@modules/player/player.service';
-import { Post } from '@common/http';
+import { Get, Post } from '@common/http';
 import { Request, Response } from '@esliph/http';
 
 @Controller()
@@ -10,10 +10,13 @@ export class PlayerController {
         @Injection.Inject('player.service') private playerService: PlayerService,
     ) {}
 
-    @Post('/player/create')
+    @Post('/players/create')
     create(req: Request, res: Response) {
-        const player = this.playerService.create(req.body)
+        return this.playerService.create(req.body)
+    }
 
-        return player
+    @Get('/players')
+    findAll(req: Request, res: Response) {
+        return this.playerService.findAll()
     }
 }

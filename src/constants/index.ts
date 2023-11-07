@@ -1,3 +1,7 @@
+// # Global Config
+export const KEY_SECRET_SERVER = 'ksnfijubd g fgifbijbgi dfjg odfn goindfoi gndoifngiodfnhgiudf d'
+export const EXPIRE_TOKEN_JWT = 60 * 60 * 24 // 24h in seconds
+
 // # Metadata
 
 export const METADATA_MODULE_KEY = 'class.modulated'

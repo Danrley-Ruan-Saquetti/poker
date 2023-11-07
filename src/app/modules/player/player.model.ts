@@ -12,6 +12,8 @@ export enum PlayerStatus {
 }
 
 export type PlayerModel = {
+    login: string,
+    password: string,
     name: string
     balance: number
     roomId: number | null

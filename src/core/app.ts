@@ -94,9 +94,7 @@ export class Application {
                     server[event.event.method](event.event.event, async (req, res) => {
                         const response = await instance[event.method](req, res)
 
-                        if (typeof response != 'undefined') {
-                            res.send(response)
-                        }
+                        return response
                     })
                 }
             })
