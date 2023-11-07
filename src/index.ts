@@ -6,7 +6,7 @@ Bootstrap(MainModule, { serverLocal: true, port: 8080 })
 
 const client = new Client()
 
-// client.on('request/error', arg => console.log(arg))
+client.on('request/error', arg => console.log(arg))
 
 async function App() {
     const users = [
@@ -16,6 +16,8 @@ async function App() {
         await newUser({ balance: 5000, name: 'Nick', login: 'nick@gmail.com', password: '123' }),
         await newUser({ balance: 5000, name: 'Marcoto', login: 'marcoto@gmail.com', password: '123' }),
     ]
+
+    // await users[0].post('/rooms/create')
 }
 
 async function newUser(data: any) {

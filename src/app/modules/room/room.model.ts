@@ -5,7 +5,7 @@ export type RoomModel = {
     gameId: ID
     minimumBetAmount: number
     betValueCurrentRound: number
-    potAmmount: number
+    potAmount: number
     orderCurrentDealer: number
     orderCurrentSmallBlind: number
     orderCurrentBigBlind: number

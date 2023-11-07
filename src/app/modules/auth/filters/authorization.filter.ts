@@ -8,9 +8,7 @@ export class AuthorizationFilter implements FilterPerform {
     constructor(@Injection.Inject('auth.service') private authService: AuthService) { }
 
     async perform(req: Request<any>, res: Response<any>) {
-        const instance = this || Injection.resolve(AuthorizationFilter)
-
-        const response = instance.authService.authorization(req.headers.Authorization || '')
+        const response = this.authService.authorization(req.headers.Authorization || '')
 
         if (response.isSuccess()) {
             req.headers['playerId'] = response.getValue().sub

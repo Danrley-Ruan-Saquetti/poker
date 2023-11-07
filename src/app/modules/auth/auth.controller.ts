@@ -12,8 +12,6 @@ export class AuthController {
 
     @Post('/auth/login')
     login(req: Request, res: Response) {
-        const instance = this || Injection.resolve(AuthController)
-
-        return instance.authService.login(req.body)
+        return this.authService.login(req.body)
     }
 }

@@ -82,7 +82,7 @@ export class Application {
             const instance = Injection.resolve(controller)
 
             events.map(event => {
-                const middlewares: ((...args: any[]) => any)[] = []
+                const handlers: ((...args: any[]) => any)[] = []
 
                 if (isGuard(controller, event.method)) {
                     const methodMetadata = Metadata.Get.Method<GuardConfig>(METADATA_GUARD_CONFIG_KEY, controller, event.method)
@@ -90,15 +90,17 @@ export class Application {
                     const filter = filters.find(filter => filter.metadata.name = methodMetadata.name)
 
                     if (filter && filter.instance.perform) {
-                        middlewares.push(filter.instance.perform)
+                        handlers.push(filter.instance.perform)
                     }
                 }
 
-                server[event.metadata.method](event.metadata.event, ...middlewares, async (req, res) => {
+                handlers.push(async (req, res) => {
                     const response = await instance[event.method](req, res)
 
                     return response
                 })
+
+                server[event.metadata.method](event.metadata.event, ...handlers)
             })
         })
     }
