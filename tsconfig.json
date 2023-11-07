@@ -36,6 +36,7 @@
             "@common/*": ["src/common/*"],
             "@core/*": ["src/core/*"],
             "@@types/*": ["src/@types/*"],
+            "@services/*": ["src/services/*"],
             "@util/*": ["src/util/*"]
         }
     },
