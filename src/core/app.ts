@@ -8,11 +8,14 @@ import { Injection } from '@esliph/injection'
 import { Metadata } from '@esliph/metadata'
 import { ObserverListener } from '@esliph/observer'
 import { getMethodNamesByClass } from '@util/index'
+import { Server } from '@esliph/http'
 
 export class Application {
     static server = express()
+    static serverLocal = new Server()
     private static listener = new ObserverListener()
     private static appModule: Construtor
+    private static options: { serverLocal?: boolean }
 
     static listen(port: number) {
         Application.server.listen(port, () => {
@@ -20,12 +23,13 @@ export class Application {
         })
     }
 
-    static fabric(appModule: Construtor) {
+    static fabric(appModule: Construtor, options?: { serverLocal?: boolean }) {
         if (!isModule(appModule)) {
             throw new ResultException({ title: `Class "${appModule.name}" is not a module`, message: `Apply decorator "Module" in class "${appModule.name}"` })
         }
 
         Application.appModule = appModule
+        Application.options = {serverLocal: !!options?.serverLocal}
 
         Application.initComponents()
     }
@@ -63,15 +67,11 @@ export class Application {
     }
 
     private static initControllers(controllers: Construtor[]) {
-        controllers.map(controller => {
+            const server = !Application.options.serverLocal ? Application.server : Application.serverLocal
+            
+            controllers.map(controller => {
             const events = getMethodNamesByClass(controller)
                 .map(methodName => {
-                    const metadataValueEvent = Metadata.Get.Method<string>(METADATA_EVENT_HANDLER_KEY, controller, methodName)
-
-                    if (metadataValueEvent) {
-                        return { method: methodName, event: metadataValueEvent, type: 'EVENT' }
-                    }
-
                     const metadataValueHttp = Metadata.Get.Method<{ event: string; method: string }>(METADATA_HTTP_ROUTER_HANDLER_KEY, controller, methodName)
 
                     return { method: methodName, event: metadataValueHttp, type: 'HTTP' }
@@ -91,10 +91,7 @@ export class Application {
                         instance[event.method](data)
                     })
                 } else if (event.type == 'HTTP') {
-                    // @ts-expect-error
-                    console.log(event.event.method, event.event.event, instance[event.method])
-                    // @ts-expect-error
-                    Application.server[event.event.method](event.event.event, async (req, res) => {
+                    server[event.event.method](event.event.event, async (req, res) => {
                         const response = await instance[event.method](req, res)
 
                         if (typeof response != 'undefined') {

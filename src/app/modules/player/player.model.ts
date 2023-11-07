@@ -14,11 +14,11 @@ export enum PlayerStatus {
 export type PlayerModel = {
     name: string
     balance: number
-    roomId: number
+    roomId: number | null
     order: number
     status: PlayerStatus
     isDealer: boolean
-    blindType: BlindType
+    blindType: BlindType | null
     isCurrentBidding: false
 }
 

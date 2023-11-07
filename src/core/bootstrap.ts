@@ -1,10 +1,10 @@
 import { Construtor } from '@@types/index'
 import { Application } from '@core/app'
 
-export function Bootstrap(appModule: Construtor, listenConfig: {active?: boolean, port: number}) {
-    Application.fabric(appModule)
+export function Bootstrap(appModule: Construtor, listenConfig: { port: number, serverLocal?: boolean }) {
+    Application.fabric(appModule, {serverLocal: listenConfig.serverLocal})
 
-    if (listenConfig.active) {
+    if (!listenConfig.serverLocal) {
         Application.listen(listenConfig.port)
     }
 }
