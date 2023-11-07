@@ -89,6 +89,7 @@ export class Application {
                     // @ts-expect-error
                     Application.listener.on(event.event, instance[event.method])
                 } else if (event.type == 'HTTP') {
+                    // @ts-expect-error
                     console.log(event.event.method, event.event.event, instance[event.method])
                     // @ts-expect-error
                     Application.server[event.event.method](event.event.event, async (req, res) => {

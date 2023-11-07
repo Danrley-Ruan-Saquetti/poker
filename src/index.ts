@@ -1,4 +1,3 @@
-
 import { Bootstrap } from '@core/bootstrap'
 import { MainModule } from './main.module'
 

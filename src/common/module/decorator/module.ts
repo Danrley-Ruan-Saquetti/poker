@@ -51,8 +51,7 @@ export function Module(config: Partial<ModuleConfig> = {}) {
                     return
                 }
 
-                // Enable this line code when @esliph/injection update version to 1.0.1
-                // Injection.whenCall(serviceOptions.whenCall).use(serviceOptions.use)
+                Injection.whenCall(serviceOptions.whenCall).use(serviceOptions.use)
             })
         }
 
