@@ -87,7 +87,9 @@ export class Application {
 
                 if (event.type == 'EVENT') {
                     // @ts-expect-error
-                    Application.listener.on(event.event, instance[event.method])
+                    Application.listener.on(event.event, (data) => {
+                        instance[event.method](data)
+                    })
                 } else if (event.type == 'HTTP') {
                     // @ts-expect-error
                     console.log(event.event.method, event.event.event, instance[event.method])

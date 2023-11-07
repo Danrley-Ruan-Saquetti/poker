@@ -31,13 +31,7 @@
         "resolveJsonModule": true,
         "paths": {
             "@modules/*": ["src/app/modules/*"],
-            "@app/*": ["src/app/*"],
-            "@constants/*": ["src/constants/*"],
-            "@common/*": ["src/common/*"],
-            "@core/*": ["src/core/*"],
-            "@@types/*": ["src/@types/*"],
-            "@services/*": ["src/services/*"],
-            "@util/*": ["src/util/*"]
+            "@*": ["src/*"]
         }
     },
     "exclude": ["node_modules"]
