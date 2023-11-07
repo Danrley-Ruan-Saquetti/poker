@@ -13,13 +13,13 @@ async function newUser(data: any) {
 
     const responseCreate = await clientUser.post('/players/create', data)
 
-    if (!responseCreate.isSuccess()) {return clientUser}
-    
-    const responseToken = await clientUser.post('/auth/login', { login: data.login, password: data.password })
-    
-    if (!responseToken.isSuccess()) {return clientUser}
+    if (!responseCreate.isSuccess()) { return clientUser }
 
-    clientUser.use({ headers: {Authorization: `Bearer ${responseToken.getValue().token}`} })
+    const responseToken = await clientUser.post('/auth/login', { login: data.login, password: data.password })
+
+    if (!responseToken.isSuccess()) { return clientUser }
+
+    clientUser.use({ headers: { Authorization: `Bearer ${responseToken.getValue().token}` } })
 
     return clientUser
 }
@@ -32,6 +32,8 @@ async function App() {
         await newUser({ balance: 5000, name: 'Nick', login: 'nick@gmail.com', password: '123' }),
         await newUser({ balance: 5000, name: 'Marcoto', login: 'marcoto@gmail.com', password: '123' }),
     ]
+
+    users[0].get('/hello')
 }
 
 App()

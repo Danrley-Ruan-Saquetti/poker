@@ -1,14 +1,18 @@
 import express from 'express'
-import { Construtor } from '@@types/index'
-import { ModuleConfig } from '@common/module/decorator'
-import { isModule } from '@common/module'
-import { METADATA_EVENT_HANDLER_KEY, METADATA_HTTP_ROUTER_HANDLER_KEY, METADATA_MODULE_CONFIG_KEY } from '@constants/index'
 import { ResultException } from '@esliph/common'
 import { Injection } from '@esliph/injection'
 import { Metadata } from '@esliph/metadata'
 import { ObserverListener } from '@esliph/observer'
-import { getMethodNamesByClass } from '@util/index'
 import { Server } from '@esliph/http'
+import { Construtor } from '@@types/index'
+import { ModuleConfig } from '@common/module/decorator'
+import { isModule } from '@common/module'
+import { METADATA_FILTER_CONFIG_KEY, METADATA_GUARD_CONFIG_KEY, METADATA_HTTP_ROUTER_HANDLER_KEY, METADATA_MODULE_CONFIG_KEY } from '@constants/index'
+import { getMethodNamesByClass, isInstance } from '@util/index'
+import { isFilter } from '@common/filter'
+import { isGuard } from '@common/guard'
+import { GuardConfig } from '@common/module/decorator/guard'
+import { FilterConfig } from '@common/module/decorator/filter'
 
 export class Application {
     static server = express()
@@ -29,7 +33,7 @@ export class Application {
         }
 
         Application.appModule = appModule
-        Application.options = {serverLocal: !!options?.serverLocal}
+        Application.options = { serverLocal: !!options?.serverLocal }
 
         Application.initComponents()
     }
@@ -37,7 +41,7 @@ export class Application {
     private static initComponents() {
         const modules = Application.initModule(Application.appModule, true)
 
-        Application.initControllers(modules.controllers)
+        Application.initControllers(modules.controllers, modules.providers)
     }
 
     private static initModule(module: Construtor, include = false) {
@@ -54,9 +58,9 @@ export class Application {
         configModule.imports.map(module => {
             const configs = Application.initModule(module)
 
-            configs.modules.forEach(impo => modules.push(impo))
-            configs.controllers.forEach(impo => controllers.push(impo))
-            configs.providers.forEach(impo => providers.push(impo))
+            configs.modules.forEach(imp => modules.push(imp))
+            configs.controllers.forEach(imp => controllers.push(imp))
+            configs.providers.forEach(imp => providers.push(imp))
         })
 
         return {
@@ -66,38 +70,34 @@ export class Application {
         }
     }
 
-    private static initControllers(controllers: Construtor[]) {
-            const server = !Application.options.serverLocal ? Application.server : Application.serverLocal
-            
-            controllers.map(controller => {
-            const events = getMethodNamesByClass(controller)
-                .map(methodName => {
-                    const metadataValueHttp = Metadata.Get.Method<{ event: string; method: string }>(METADATA_HTTP_ROUTER_HANDLER_KEY, controller, methodName)
+    private static initControllers(controllers: Construtor[], providers: any[]) {
+        const server = !Application.options.serverLocal ? Application.server : Application.serverLocal
 
-                    return { method: methodName, event: metadataValueHttp, type: 'HTTP' }
-                })
-                .filter(({ event }) => !!event)
+        const filters = providers.filter(provider => isInstance(provider) && isFilter(provider)).map(filter => ({ instance: Injection.resolve(filter), class: filter, metadata: Metadata.Get.Class<FilterConfig>(METADATA_FILTER_CONFIG_KEY, filter) }))
+
+        controllers.map(controller => {
+            const events = Application.getMethodsInClassByMetadataKey<{ event: string; method: string }>(controller, METADATA_HTTP_ROUTER_HANDLER_KEY)
 
             const instance = Injection.resolve(controller)
 
             events.map(event => {
-                if (typeof instance[event.method] == 'undefined') {
-                    return
+                const middlewares: ((...args: any[]) => any)[] = []
+
+                if (isGuard(controller, event.method)) {
+                    const a = Metadata.Get.Method<GuardConfig>(METADATA_GUARD_CONFIG_KEY, controller, event.method)
+                    middlewares.push(filters.find(filter => filter.metadata.name = a.name)?.instance.perform)
                 }
 
-                if (event.type == 'EVENT') {
-                    // @ts-expect-error
-                    Application.listener.on(event.event, (data) => {
-                        instance[event.method](data)
-                    })
-                } else if (event.type == 'HTTP') {
-                    server[event.event.method](event.event.event, async (req, res) => {
-                        const response = await instance[event.method](req, res)
+                server[event.metadata.method](event.metadata.event, ...middlewares, async (req, res) => {
+                    const response = await instance[event.method](req, res)
 
-                        return response
-                    })
-                }
+                    return response
+                })
             })
         })
+    }
+
+    private static getMethodsInClassByMetadataKey<Metadata = any>(classConstructor: Construtor, key: string) {
+        return getMethodNamesByClass(classConstructor).map(methodName => ({ method: methodName, metadata: Metadata.Get.Method<Metadata>(key, classConstructor, methodName) })).filter(({ metadata }) => !!metadata)
     }
 }
