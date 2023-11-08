@@ -35,11 +35,21 @@ export class PlayerService {
         return Result.success<{ ok: boolean }>({ ok: true })
     }
 
-    findById(id: number) {
-        const player = this.playerRepository.findFirst({ where: { id: { equals: id } } })
+    isInGame(data: { playerId: ID }) {
+        const resultPlayer = this.findById(data)
+
+        if (!resultPlayer.isSuccess()) {
+            return Result.inherit<{ inGame: boolean }>(resultPlayer.getResponse() as any)
+        }
+
+        return Result.success<{ inGame: boolean }>({ inGame: !!resultPlayer.getValue().roomId })
+    }
+
+    findById(data: { playerId: number }) {
+        const player = this.playerRepository.findFirst({ where: { id: { equals: data.playerId } } })
 
         if (!player) {
-            return Result.failure({ title: 'Find Player', message: 'Cannot found player' })
+            return Result.failure<Omit<Player, 'password'>>({ title: 'Find Player', message: 'Cannot found player' })
         }
 
         return Result.success<Omit<Player, 'password'>>(removeAttributesOfObject({ ...player }, 'password'))

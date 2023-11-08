@@ -28,6 +28,16 @@ export class GameService {
             return Result.failure<{ ok: boolean }>({ title: 'Joint Game', message: 'Game not found' })
         }
 
+        const resultPlayerAlreadyInGame = this.playerService.isInGame({ playerId: data.playerId })
+
+        if (!resultPlayerAlreadyInGame.isSuccess()) {
+            return Result.inherit(resultPlayerAlreadyInGame.getResponse())
+        }
+
+        if (resultPlayerAlreadyInGame.getValue().inGame) {
+            return Result.failure<{ ok: boolean }>({ title: 'Joint Game', message: 'Player already in game' })
+        }
+
         this.playerService.joinGame({ playerId: data.playerId, roomId: data.roomId })
 
         return Result.success<{ ok: boolean }>({ ok: true })

@@ -28,12 +28,12 @@ export class PlayerController {
     @Guard({ name: 'authorization' })
     @Get('/players/:id')
     findFirst(req: Request, res: Response) {
-        return this.playerService.findById(req.params.playerId)
+        return this.playerService.findById({playerId: req.params.playerId})
     }
 
     @Guard({ name: 'authorization' })
     @Get('/players/current')
     findMe(req: Request, res: Response) {
-        return this.playerService.findById(req.headers.playerId)
+        return this.playerService.findById({playerId: req.headers.playerId})
     }
 }
