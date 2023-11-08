@@ -1,6 +1,6 @@
 import { Request, Response } from '@esliph/http'
 import { Injection } from '@esliph/injection'
-import { Filter, FilterPerform } from '@common/module/decorator/filter'
+import { Filter, FilterPerform } from '@common/module/decorator'
 import { AuthService } from '@modules/auth/auth.service'
 
 @Filter({ name: 'authorization.filter' })

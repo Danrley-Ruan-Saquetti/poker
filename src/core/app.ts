@@ -11,8 +11,7 @@ import { METADATA_EVENT_CONFIG_KEY, METADATA_EVENT_HANDLER_KEY, METADATA_FILTER_
 import { getMethodNamesByClass, isInstance } from '@util/index'
 import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
-import { GuardConfig } from '@common/module/decorator/guard'
-import { FilterConfig } from '@common/module/decorator/filter'
+import { GuardConfig, FilterConfig } from '@common/module/decorator'
 import console from 'console'
 
 export class Application {
@@ -52,8 +51,8 @@ export class Application {
         Application.controllers = modules.controllers
         Application.providers = modules.providers
 
-        Application.initControllers()
         Application.initFilters()
+        Application.initControllers()
     }
 
     private static initModule(module: Construtor, include = false) {

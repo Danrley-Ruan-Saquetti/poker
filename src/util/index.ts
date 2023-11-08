@@ -16,3 +16,11 @@ export function getMethodNamesByClass(className: Construtor) {
     const prototype = className.prototype
     return Object.getOwnPropertyNames(prototype).filter(name => typeof prototype[name] === 'function' && name !== 'constructor') as string[]
 }
+
+export function removeAttributesOfObject<T extends object>(obj: T, ...keys: (keyof T)[]) {
+    keys.map(key => {
+        delete obj[key]
+    })
+
+    return { ...obj }
+}
