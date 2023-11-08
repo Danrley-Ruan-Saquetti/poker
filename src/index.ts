@@ -16,8 +16,6 @@ async function App() {
         await newUser({ balance: 5000, name: 'Nick', login: 'nick@gmail.com', password: '123' }),
         await newUser({ balance: 5000, name: 'Marcoto', login: 'marcoto@gmail.com', password: '123' }),
     ]
-
-    // await users[0].post('/rooms/create')
 }
 
 async function newUser(data: any) {

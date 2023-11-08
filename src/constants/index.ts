@@ -15,5 +15,6 @@ export const METADATA_SERVICE_CONFIG_KEY = `${METADATA_SERVICE_KEY}.options`
 export const METADATA_GUARD_CONFIG_KEY = `${METADATA_GUARD_KEY}.options`
 export const METADATA_FILTER_CONFIG_KEY = `${METADATA_FILTER_KEY}.options`
 
-export const METADATA_EVENT_HANDLER_KEY = 'event.handler'
+export const METADATA_EVENT_HANDLER_KEY = 'listener.handler.event'
+export const METADATA_EVENT_CONFIG_KEY = `${METADATA_EVENT_HANDLER_KEY}.options`
 export const METADATA_HTTP_ROUTER_HANDLER_KEY = 'http.router.event'
