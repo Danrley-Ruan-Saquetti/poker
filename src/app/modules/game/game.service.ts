@@ -5,6 +5,7 @@ import { Service } from '@common/module/decorator'
 import { GameRepository } from '@modules/game/game.repository'
 import { PlayerService } from '@modules/player/player.service'
 import { RoomService } from '@modules/room/room.service'
+import { GameType } from '@modules/game/game.model'
 
 @Service({ name: 'game.service' })
 export class GameService {
@@ -14,8 +15,8 @@ export class GameService {
         @Injection.Inject('room.service') private roomService: RoomService,
     ) { }
 
-    create(data: { playerId: number }) {
-        const game = this.gameRepository.create({ data: { isRunning: false } })
+    create(data: { playerId: number, type: GameType }) {
+        const game = this.gameRepository.create({ data: { isRunning: false, type: data.type } })
         const room = this.roomService.create({ gameId: game.id })
 
         this.playerService.joinGame({ playerId: data.playerId, roomId: room.getValue().id })

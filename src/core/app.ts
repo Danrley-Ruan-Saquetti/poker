@@ -60,7 +60,7 @@ export class Application {
 
         const modules: Construtor[] = []
         const controllers: Construtor[] = configModule.controllers
-        const providers: any[] = configModule.provider
+        const providers: any[] = configModule.providers
 
         if (include) {
             modules.push(module)

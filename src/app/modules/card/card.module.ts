@@ -5,6 +5,6 @@ import { CardService } from '@modules/card/card.service'
 
 @Module({
     controllers: [CardController],
-    provider: [CardRepository, CardService]
+    providers: [CardRepository, CardService]
 })
-export class CardModule {}
+export class CardModule { }

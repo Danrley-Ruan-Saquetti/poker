@@ -15,7 +15,7 @@ type ProviderOptions = {
 export type ModuleConfig = {
     imports: Construtor[]
     controllers: Construtor[]
-    provider: (Construtor | Partial<ProviderOptions>)[]
+    providers: (Construtor | Partial<ProviderOptions>)[]
 }
 
 export function Module(config: Partial<ModuleConfig> = {}) {
@@ -30,8 +30,8 @@ export function Module(config: Partial<ModuleConfig> = {}) {
                 }
             })
         }
-        if (config.provider) {
-            config.provider.forEach(service => {
+        if (config.providers) {
+            config.providers.forEach(service => {
                 if (isInstance(service)) {
                     const ser = service as Construtor
 
@@ -58,7 +58,7 @@ export function Module(config: Partial<ModuleConfig> = {}) {
         Metadata.Create.Class(
             {
                 key: METADATA_MODULE_CONFIG_KEY,
-                value: { imports: config.imports || [], controllers: config.controllers || [], provider: config.provider || [] }
+                value: { imports: config.imports || [], controllers: config.controllers || [], providers: config.providers || [] }
             },
             constructor
         )

@@ -5,7 +5,7 @@ import { AuthorizationFilter } from '@modules/auth/filters/authorization.filter'
 
 @Module({
     controllers: [AuthController],
-    provider: [
+    providers: [
         AuthorizationFilter, { whenCall: 'authorization', use: 'authorization.filter' }, AuthService, { whenCall: 'auth.service', use: 'auth.service' }
     ]
 })

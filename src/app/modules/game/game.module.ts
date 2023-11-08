@@ -5,6 +5,6 @@ import { GameService } from '@modules/game/game.service'
 
 @Module({
     controllers: [GameController],
-    provider: [GameRepository, GameService]
+    providers: [GameRepository, GameService]
 })
-export class GameModule {}
+export class GameModule { }

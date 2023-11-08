@@ -4,9 +4,9 @@ import { JWTService } from '@services/jwt.service'
 
 @Module({
     imports: [AppModule],
-    provider: [
+    providers: [
         JWTService,
         { whenCall: 'jwt', use: 'global.service.jwt' }
     ]
 })
-export class MainModule {}
+export class MainModule { }

@@ -14,7 +14,7 @@ export class GameController {
     @Guard({ name: 'authorization' })
     @Post('/games/create')
     create(req: Request) {
-        const game = this.gameService.create({ playerId: req.headers.playerId })
+        const game = this.gameService.create({ playerId: req.headers.playerId, type: req.body.gameType })
 
         return game
     }

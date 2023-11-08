@@ -5,6 +5,6 @@ import { PlayerService } from '@modules/player/player.service'
 
 @Module({
     controllers: [PlayerController],
-    provider: [PlayerRepository, PlayerService]
+    providers: [PlayerRepository, PlayerService]
 })
-export class PlayerModule {}
+export class PlayerModule { }
