@@ -9,7 +9,7 @@ export class Emitter extends ObserverEmitter {
 }
 
 @Service({ name: 'observer.listener' })
-export class Listener extends ObserverListener{
+export class Listener extends ObserverListener {
     constructor() {
         super({})
     }

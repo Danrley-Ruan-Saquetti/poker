@@ -1,9 +1,9 @@
 import express from 'express'
 import { ResultException } from '@esliph/common'
 import { Injection } from '@esliph/injection'
+import { Listener } from '@services/observer.service'
 import { Metadata } from '@esliph/metadata'
-import { ObserverListener } from '@esliph/observer'
-import { Server } from '@esliph/http'
+import { Client, Server } from '@esliph/http'
 import { Construtor } from '@@types/index'
 import { Logger } from '@services/logger.service'
 import { ModuleConfig } from '@common/module/decorator'
@@ -13,12 +13,12 @@ import { getMethodNamesByClass, isInstance } from '@util/index'
 import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
 import { GuardConfig, FilterConfig } from '@common/module/decorator'
-import module from 'module'
 
 export class Application {
     static server = express()
     static serverLocal = new Server()
-    private static listener = new ObserverListener()
+    private static listener = new Listener()
+    private static clientServer = new Client()
     private static logger = new Logger({ context: 'Server' })
     private static appModule: Construtor
     private static options: { serverLocal?: boolean }
@@ -34,9 +34,11 @@ export class Application {
         if (!Application.options.serverLocal) {
             Application.server.listen(port, () => {
                 Application.logger.log(`Server running on port ${port}`)
+                console.log()
             })
         } else {
             Application.logger.log('Server started')
+            console.log()
         }
     }
 
@@ -61,6 +63,7 @@ export class Application {
 
         Application.initFilters()
         Application.initControllers()
+        Application.initObserverListeners()
     }
 
     private static initModule(module: Construtor, include = false) {
@@ -153,6 +156,12 @@ export class Application {
             Application.listener.on(event.event, async body => {
                 await instance[event.method](body)
             })
+        })
+    }
+
+    private static initObserverListeners() {
+        Application.clientServer.on('request/error', arg => {
+            Application.logger.error(`${arg.request.method} ${arg.request.name} = ${arg.response.getError().message}`, null, { context: '[HTPP]' })
         })
     }
 

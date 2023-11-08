@@ -9,7 +9,7 @@ Bootstrap(MainModule, { serverLocal: true, port: 8080 })
 
 const client = new Client()
 
-client.on('request/error', arg => console.log(arg))
+client.on('request/error', () => { console.log('!') })
 
 async function App() {
     const users = [
@@ -21,6 +21,8 @@ async function App() {
     ]
 
     const resultCreateGame = await users[0].post('/games/create', { gameType: GameType.TEXAS_HOLDEM })
+
+    await users[0].post('/games/create', { gameType: GameType.TEXAS_HOLDEM })
 
     for (let i = 1; i < users.length; i++) {
         users[i].post('/games/join', {}, { params: { roomId: resultCreateGame.getValue().id } })
