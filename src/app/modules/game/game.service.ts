@@ -6,7 +6,7 @@ import { GameRepository } from '@modules/game/game.repository'
 import { PlayerService } from '@modules/player/player.service'
 import { RoomService } from '@modules/room/room.service'
 import { GameType } from '@modules/game/game.model'
-import { Emitter } from '@services/observers'
+import { Emitter } from '@services/observer.service'
 
 @Service({ name: 'game.service' })
 export class GameService {

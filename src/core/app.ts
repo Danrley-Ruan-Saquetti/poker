@@ -5,6 +5,7 @@ import { Metadata } from '@esliph/metadata'
 import { ObserverListener } from '@esliph/observer'
 import { Server } from '@esliph/http'
 import { Construtor } from '@@types/index'
+import { Logger } from '@services/logger.service'
 import { ModuleConfig } from '@common/module/decorator'
 import { isModule } from '@common/module'
 import { METADATA_EVENT_CONFIG_KEY, METADATA_EVENT_HANDLER_KEY, METADATA_FILTER_CONFIG_KEY, METADATA_GUARD_CONFIG_KEY, METADATA_HTTP_ROUTER_HANDLER_KEY, METADATA_MODULE_CONFIG_KEY } from '@constants/index'
@@ -12,12 +13,13 @@ import { getMethodNamesByClass, isInstance } from '@util/index'
 import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
 import { GuardConfig, FilterConfig } from '@common/module/decorator'
-import console from 'console'
+import module from 'module'
 
 export class Application {
     static server = express()
     static serverLocal = new Server()
     private static listener = new ObserverListener()
+    private static logger = new Logger({ context: 'Server' })
     private static appModule: Construtor
     private static options: { serverLocal?: boolean }
     private static controllers: Construtor[]
@@ -29,12 +31,17 @@ export class Application {
     }[]
 
     static listen(port: number) {
-        Application.server.listen(port, () => {
-            console.log('Server running on port', port)
-        })
+        if (!Application.options.serverLocal) {
+            Application.server.listen(port, () => {
+                Application.logger.log(`Server running on port ${port}`)
+            })
+        } else {
+            Application.logger.log('Server started')
+        }
     }
 
     static fabric(appModule: Construtor, options?: { serverLocal?: boolean }) {
+        Application.logger.log('Loading components...')
         if (!isModule(appModule)) {
             throw new ResultException({ title: `Class "${appModule.name}" is not a module`, message: `Apply decorator "Module" in class "${appModule.name}"` })
         }
@@ -43,6 +50,7 @@ export class Application {
         Application.options = { serverLocal: !!options?.serverLocal }
 
         Application.initComponents()
+        Application.logger.log('Components initialized')
     }
 
     private static initComponents() {
@@ -56,6 +64,8 @@ export class Application {
     }
 
     private static initModule(module: Construtor, include = false) {
+        Application.logger.log(`Loading module "${module.name}"`)
+
         const configModule = Metadata.Get.Class<ModuleConfig>(METADATA_MODULE_CONFIG_KEY, module)
 
         const modules: Construtor[] = []
@@ -82,7 +92,11 @@ export class Application {
     }
 
     private static initFilters() {
-        Application.filters = Application.providers.filter(provider => isInstance(provider) && isFilter(provider)).map(filter => ({ instance: Injection.resolve(filter), class: filter, metadata: Metadata.Get.Class<FilterConfig>(METADATA_FILTER_CONFIG_KEY, filter) }))
+        Application.filters = Application.providers.filter(provider => isInstance(provider) && isFilter(provider)).map(filter => {
+            Application.logger.log(`Loading filter "${filter.name}"`)
+
+            return { instance: Injection.resolve(filter), class: filter, metadata: Metadata.Get.Class<FilterConfig>(METADATA_FILTER_CONFIG_KEY, filter) }
+        })
     }
 
     private static initControllers() {
@@ -90,6 +104,8 @@ export class Application {
     }
 
     private static initController(controller: Construtor) {
+        Application.logger.log(`Loading controller "${controller.name}"`)
+
         const instance = Injection.resolve(controller)
 
         Application.loadEventsHttp(controller, instance)
@@ -100,6 +116,8 @@ export class Application {
         const events = Application.getMethodsInClassByMetadataKey<{ event: string; method: string }>(controller, METADATA_HTTP_ROUTER_HANDLER_KEY)
 
         events.map(event => {
+            Application.logger.log(`Loading event HTTP ${event.metadata.method.toUpperCase()} ${event.metadata.event}`)
+
             const handlers: ((...args: any[]) => any)[] = []
 
             if (isGuard(controller, event.method)) {
@@ -130,6 +148,8 @@ export class Application {
         const events = Application.getMethodsInClassByMetadataKey<{ event: string; method: string }>(controller, METADATA_EVENT_HANDLER_KEY).map(event => ({ ...event, event: Metadata.Get.Method<{ event: string }>(METADATA_EVENT_CONFIG_KEY, controller, event.method).event }))
 
         events.forEach(event => {
+            Application.logger.log(`Loading event Listener ${event.event}`)
+
             Application.listener.on(event.event, async body => {
                 await instance[event.method](body)
             })

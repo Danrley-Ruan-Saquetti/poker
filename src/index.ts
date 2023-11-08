@@ -1,3 +1,5 @@
+console.clear()
+
 import { Client } from '@esliph/http'
 import { Bootstrap } from '@core/bootstrap'
 import { MainModule } from '@main.module'
