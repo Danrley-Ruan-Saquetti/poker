@@ -1,3 +1,4 @@
+import { ID } from '@@types/index'
 import { Service } from '@common/module/decorator'
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
@@ -5,6 +6,7 @@ import { UpdateArgs, UpdateManyArgs } from '@esliph/repository-memory'
 import { Player, PlayerModel, PlayerStatus } from '@modules/player/player.model'
 import { PlayerRepository } from '@modules/player/player.repository'
 import { removeAttributesOfObject } from '@util'
+import { GameService } from '@modules/game/game.service'
 
 @Service({ name: 'player.service' })
 export class PlayerService {
@@ -47,11 +49,21 @@ export class PlayerService {
         return Result.success<Player[]>(this.playerRepository.findMany())
     }
 
-    update(args: UpdateArgs<Player>) {
-        this.playerRepository.update(args)
+    findManyByRoomId(data: { roomId: ID }) {
+        const players = this.playerRepository.findMany({ where: { roomId: { equals: data.roomId } }, orderBy: { order: 'ASC' } })
+
+        return Result.success<Omit<Player, 'password'>[]>(players.map(player => removeAttributesOfObject(player, 'password')))
     }
 
-    updateMany(args: UpdateManyArgs<Player>) {
-        this.playerRepository.updateMany(args)
+    update(data: UpdateArgs<Player>) {
+        this.playerRepository.update(data)
+    }
+
+    updateMany(data: UpdateManyArgs<Player>) {
+        this.playerRepository.updateMany(data)
+    }
+
+    joinGame(data: { playerId: ID, roomId: ID }) {
+        this.playerRepository.update({ where: { id: { equals: data.playerId } }, data: { roomId: data.roomId } })
     }
 }

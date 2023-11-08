@@ -1,5 +1,5 @@
-import { Bootstrap } from '@core/bootstrap'
 import { Client } from '@esliph/http'
+import { Bootstrap } from '@core/bootstrap'
 import { MainModule } from '@main.module'
 
 Bootstrap(MainModule, { serverLocal: true, port: 8080 })
@@ -17,7 +17,11 @@ async function App() {
         await newUser({ balance: 5000, name: 'Marcoto', login: 'marcoto@gmail.com', password: '123' }),
     ]
 
-    await users[0].post('/games/create')
+    const resultCreateGame = await users[0].post('/games/create')
+
+    for (let i = 1; i < users.length; i++) {
+        users[i].post('/games/join', {}, { params: { roomId: resultCreateGame.getValue().id } })
+    }
 }
 
 async function newUser(data: any) {

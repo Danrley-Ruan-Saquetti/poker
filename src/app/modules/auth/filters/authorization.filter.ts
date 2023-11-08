@@ -12,8 +12,8 @@ export class AuthorizationFilter implements FilterPerform {
 
         if (response.isSuccess()) {
             req.headers['playerId'] = response.getValue().sub
+        } else {
+            return response
         }
-
-        return response
     }
 }

@@ -1,3 +1,4 @@
+import { ID } from '@@types/index'
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
 import { Service } from '@common/module/decorator'
@@ -17,8 +18,28 @@ export class GameService {
         const game = this.gameRepository.create({ data: { isRunning: false } })
         const room = this.roomService.create({ gameId: game.id })
 
-        this.playerService.update({ where: { id: { equals: data.playerId } }, data: { roomId: room.getValue().id } })
+        this.playerService.joinGame({ playerId: data.playerId, roomId: room.getValue().id })
 
         return Result.success({ id: game.id })
+    }
+
+    joinGame(data: { playerId: ID, roomId: ID }) {
+        if (!this.gameRepository.isExists({ where: { id: { equals: data.roomId } } })) {
+            return Result.failure<{ ok: boolean }>({ title: 'Joint Game', message: 'Game not found' })
+        }
+
+        this.playerService.joinGame({ playerId: data.playerId, roomId: data.roomId })
+
+        return Result.success<{ ok: boolean }>({ ok: true })
+    }
+
+    getPlayersByGameId(data: { gameId: ID }) {
+        const resultRoom = this.roomService.getRoomByGameId({ gameId: data.gameId })
+
+        if (!resultRoom.isSuccess()) {
+            return Result.failure({ title: 'Find Players in Game', message: 'Cannot found room' })
+        }
+
+        return Result.success(this.playerService.findManyByRoomId({ roomId: resultRoom.getValue().id }))
     }
 }
