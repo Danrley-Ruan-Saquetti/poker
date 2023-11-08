@@ -3,4 +3,3 @@ node_modules
 dist
 docs
 **/node_modules
-src/yo/generators/**/template

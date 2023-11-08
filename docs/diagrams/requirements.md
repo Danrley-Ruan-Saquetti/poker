@@ -20,16 +20,19 @@ O sistema deve realizar o desempate de classificação entre os jogadores
 O sistema deve recompensar o(s) ganhador(es) da partida
 
 ## Regras de Negócio
+A criação de uma sala deve conter um identificador único, o valor da aposta mínimo, o valor da aposta atual da rodada, o valor do pote, o atual Dealer (sua ordem na mesa), o atual Small Blind (sua ordem na mesa), o atual Big Blind (sua ordem na mesa), o atual jogador a fazer o lance (sua ordem na mesa), o tempo limite para cada jogador realizar o lance, o baralho de cartas e a lista com a sequência da ordem dos jogadores do giro
 
-A criação de uma sala deve conter um identificador único, o valor da aposta mínimo, o valor da aposta atual da rodada, o valor do pote, o atual Dealer (sua ordem na mesa), o atual Small Blind (sua ordem na mesa), o atual Big Blind (sua ordem na mesa), o atual jogador a fazer o lance (sua ordem na mesa), o tempo limite para cada jogador realizar o lance e o baralho de cartas
+A criação de um jogador deve conter um identificador único, o nome, seu dinheiro, identificador da sala, sua ordem na mesa da sala, se é o Dealer, se é o Blind, qual o Blind, se é o atual jogador a dar o lance, as cartas (Hole Cards), o atual estatus e a classificação da mão
 
-A criação de um jogador deve conter um identificador único, o nome, seu dinheiro, identificador da sala, sua ordem na mesa da sala, se é o Dealer, se é o Blind, qual o Blind, se é o atual apostador, as cartas (Hole Cards) e o atual estatus
+Para entrar na sala, o jogador não pode ter seu saldo de dinheiro zerado
 
 A ordem do jogador deve ser única dentre os jogadores da mesma sala
 
 Não é permitido a alteração da ordem do jogador uma vez que ela é definida
 
 Quando um jogador sair da sala, a sua ordem pode ser reutilizada
+
+Quando o último jogador da sala sair da mesma, o sistema deve encerrar ela logo em seguida
 
 O estatus do jogador consiste em: Aguardando, Pronto, Jogando e Fora
 
