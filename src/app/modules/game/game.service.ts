@@ -6,6 +6,7 @@ import { GameRepository } from '@modules/game/game.repository'
 import { PlayerService } from '@modules/player/player.service'
 import { RoomService } from '@modules/room/room.service'
 import { GameType } from '@modules/game/game.model'
+import { Emitter } from '@services/observers'
 
 @Service({ name: 'game.service' })
 export class GameService {
@@ -13,13 +14,13 @@ export class GameService {
         @Injection.Inject('game.repository') private gameRepository: GameRepository,
         @Injection.Inject('player.service') private playerService: PlayerService,
         @Injection.Inject('room.service') private roomService: RoomService,
+        @Injection.Inject('observer.emitter') private emitter: Emitter,
     ) { }
 
     create(data: { playerId: number, type: GameType }) {
         const game = this.gameRepository.create({ data: { isRunning: false, type: data.type } })
-        const room = this.roomService.create({ gameId: game.id })
 
-        this.playerService.joinGame({ playerId: data.playerId, roomId: room.getValue().id })
+        this.emitter.emit('game.create', { ...data, gameId: game.id })
 
         return Result.success({ id: game.id })
     }

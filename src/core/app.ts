@@ -130,8 +130,8 @@ export class Application {
         const events = Application.getMethodsInClassByMetadataKey<{ event: string; method: string }>(controller, METADATA_EVENT_HANDLER_KEY).map(event => ({ ...event, event: Metadata.Get.Method<{ event: string }>(METADATA_EVENT_CONFIG_KEY, controller, event.method).event }))
 
         events.forEach(event => {
-            Application.listener.on(event.event, body => {
-                instance[event.method](body)
+            Application.listener.on(event.event, async body => {
+                await instance[event.method](body)
             })
         })
     }

@@ -1,8 +1,7 @@
 import { Request } from '@esliph/http'
 import { Injection } from '@esliph/injection'
 import { GameService } from '@modules/game/game.service'
-import { Controller } from '@common/module/decorator'
-import { Guard } from '@common/module/decorator'
+import { Controller, Guard } from '@common/module/decorator'
 import { Get, Post } from '@common/http'
 
 @Controller()
