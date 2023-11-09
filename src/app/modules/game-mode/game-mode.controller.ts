@@ -11,8 +11,4 @@ export class GameModeController {
         @Injection.Inject('game-mode.service') private gameModeService: GameModeService
     ) { }
 
-    @OnEvent('game.create')
-    createGame(data: { playerId: ID, type: GameType, gameId: ID }) {
-        this.gameModeService.createGame(data)
-    }
 }
