@@ -84,7 +84,7 @@ export class Application {
 
             configs.modules.forEach(imp => modules.push(imp))
             configs.controllers.forEach(imp => controllers.push(imp))
-            configs.providers.forEach(imp => providers.push(imp))
+            configs.providers.forEach(imp => providers.push(imp) && isInstance(imp) && Application.logger.log(`Loading service ${imp.name}`))
         })
 
         return {

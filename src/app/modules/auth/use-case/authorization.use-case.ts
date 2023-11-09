@@ -1,33 +1,17 @@
-import { Injection } from '@esliph/injection'
 import { Result } from '@esliph/common'
+import { Injection } from '@esliph/injection'
 import { Service } from '@common/module/decorator'
-import { PlayerRepository } from '@modules/player/player.repository'
+import { KEY_SECRET_SERVER } from '@constants'
 import { JWTService } from '@services/jwt.service'
-import { PayloadJWT } from '@@types/index'
-import { EXPIRE_TOKEN_JWT, KEY_SECRET_SERVER } from '@constants'
+import { PayloadJWT } from '@@types'
 
-@Service({ name: 'auth.service' })
-export class AuthService {
+@Service({ name: 'auth.use-case.authorization' })
+export class AuthAuthorizationUseCase {
     constructor(
-        @Injection.Inject('player.repository') private playerRepository: PlayerRepository,
         @Injection.Inject('jwt') private jwtService: JWTService
     ) { }
 
-    login(data: { login: string, password: string }) {
-        const player = this.playerRepository.findFirst({ where: { login: { equals: data.login } } })
-
-        if (!player || player.password != data.password) {
-            return Result.failure<{ token: string }>({ title: 'Authentication Player', message: 'Email or passowrd invalid' })
-        }
-
-        const token = this.jwtService.encode({
-            sub: player.id
-        }, { exp: EXPIRE_TOKEN_JWT, secret: KEY_SECRET_SERVER })
-
-        return Result.success({ token })
-    }
-
-    authorization(Authorization: string) {
+    perform(Authorization: string) {
         if (!Authorization) {
             throw Result.failure<PayloadJWT>({ title: 'Authorization Player', message: 'Token for authorization not defined' })
         }
