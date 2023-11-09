@@ -14,6 +14,8 @@ import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
 import { GuardConfig, FilterConfig } from '@common/module/decorator'
 
+type ApplicationOptions = { serverLocal?: boolean, log?: { load?: boolean } }
+
 export class Application {
     static server = express()
     static serverLocal = new Server()
@@ -21,7 +23,7 @@ export class Application {
     private static clientServer = new Client()
     private static logger = new Logger({ context: 'Server' })
     private static appModule: Construtor
-    private static options: { serverLocal?: boolean }
+    private static options: ApplicationOptions
     private static controllers: Construtor[]
     private static providers: any[]
     private static filters: {
@@ -42,17 +44,17 @@ export class Application {
         }
     }
 
-    static fabric(appModule: Construtor, options?: { serverLocal?: boolean }) {
-        Application.logger.log('Loading components...')
+    static fabric(appModule: Construtor, options?: ApplicationOptions) {
+        Application.logLoad('Loading components...')
         if (!isModule(appModule)) {
             throw new ResultException({ title: `Class "${appModule.name}" is not a module`, message: `Apply decorator "Module" in class "${appModule.name}"` })
         }
 
         Application.appModule = appModule
-        Application.options = { serverLocal: !!options?.serverLocal }
+        Application.options = { serverLocal: !!options?.serverLocal, log: { load: !!options?.log?.load } }
 
         Application.initComponents()
-        Application.logger.log('Components initialized')
+        Application.logLoad('Components initialized')
     }
 
     private static initComponents() {
@@ -67,7 +69,7 @@ export class Application {
     }
 
     private static initModule(module: Construtor, include = false) {
-        Application.logger.log(`Loading Module "${module.name}"`)
+        Application.logLoad(`Loading Module "${module.name}"`)
 
         const configModule = Metadata.Get.Class<ModuleConfig>(METADATA_MODULE_CONFIG_KEY, module)
 
@@ -91,7 +93,7 @@ export class Application {
 
                 const metadata = Metadata.Get.Class<ServiceConfig>(METADATA_SERVICE_CONFIG_KEY, imp) || {}
 
-                Application.logger.log(`Loading${metadata.context ? ` ${metadata.context}` : ' Service'} "${imp.name}"`)
+                Application.logLoad(`Loading${metadata.context ? ` ${metadata.context}` : ' Service'} "${imp.name}"`)
             })
         })
 
@@ -111,7 +113,7 @@ export class Application {
     }
 
     private static initController(controller: Construtor) {
-        Application.logger.log(`Loading Controller "${controller.name}"`)
+        Application.logLoad(`Loading Controller "${controller.name}"`)
 
         const instance = Injection.resolve(controller)
 
@@ -123,7 +125,7 @@ export class Application {
         const events = Application.getMethodsInClassByMetadataKey<{ event: string; method: string }>(controller, METADATA_HTTP_ROUTER_HANDLER_KEY)
 
         events.map(event => {
-            Application.logger.log(`Loading Event HTTP ${event.metadata.method.toUpperCase()} "${event.metadata.event}"`)
+            Application.logLoad(`Loading Event HTTP ${event.metadata.method.toUpperCase()} "${event.metadata.event}"`)
 
             const handlers: ((...args: any[]) => any)[] = []
 
@@ -133,7 +135,7 @@ export class Application {
                 const filter = Application.filters.find(filter => filter.metadata.name = methodMetadata.name)
 
                 if (filter && filter.instance.perform) {
-                    Application.logger.log(`Loading Guard HTTP "${filter.class.name}" in "${event.metadata.event}"`)
+                    Application.logLoad(`Loading Guard HTTP "${filter.class.name}" in "${event.metadata.event}"`)
 
                     handlers.push(async (req, res) => {
                         const response = await filter.instance.perform(req, res)
@@ -169,6 +171,12 @@ export class Application {
         Application.clientServer.on('request/error', arg => {
             Application.logger.error(`${arg.request.method} ${arg.request.name} = ${arg.response.getError().message}`, null, { context: '[HTTP]' })
         })
+    }
+
+    private static logLoad(message: any) {
+        if (!Application.options?.log?.load) { return }
+
+        Application.logger.log(message)
     }
 
     private static getMethodsInClassByMetadataKey<Metadata = any>(classConstructor: Construtor, key: string) {

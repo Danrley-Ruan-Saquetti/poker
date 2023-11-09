@@ -22,6 +22,6 @@ export class GameCreateUseCase {
 
         this.playerJoinGameUC.perform({ playerId: data.playerId, roomId: room.getValue().id })
 
-        return Result.success({ id: game.id })
+        return Result.success({ ok: true })
     }
 }
