@@ -33,7 +33,7 @@ export class GameService {
         const resultPlayerAlreadyInGame = this.playerService.isInGame({ playerId: data.playerId })
 
         if (!resultPlayerAlreadyInGame.isSuccess()) {
-            return Result.inherit(resultPlayerAlreadyInGame.getResponse())
+            return Result.inherit<{ ok: boolean }>(resultPlayerAlreadyInGame.getResponse() as any)
         }
 
         if (resultPlayerAlreadyInGame.getValue().inGame) {

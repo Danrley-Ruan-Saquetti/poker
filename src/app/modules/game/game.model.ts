@@ -1,7 +1,7 @@
 import { Document } from '@esliph/repository-memory'
 
 export enum GameType {
-    TEXAS_HOLDEM = 'Texas Holdem'
+    TEXAS_HOLDEM = 'TEXAS_HOLDEM'
 }
 
 export type GameModel = {

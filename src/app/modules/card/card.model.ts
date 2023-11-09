@@ -2,10 +2,10 @@ import { ID } from '@@types/index'
 import { Document } from '@esliph/repository-memory'
 
 export enum CardSuit {
-    Hearts = 'Hearts',
-    Spades = 'Spades',
-    Clubs = 'Clubs',
-    Diamonds = 'Diamonds'
+    HEARTS = 'HEARTS',
+    SPADES = 'SPADES',
+    CLUBS = 'CLUBS',
+    DIAMONDS = 'DIAMONDS'
 }
 
 export interface CardModel {

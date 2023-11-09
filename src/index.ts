@@ -1,9 +1,11 @@
-console.clear()
+import { Console } from '@esliph/console'
+
+Console.clear()
 
 import { Client } from '@esliph/http'
 import { Bootstrap } from '@core/bootstrap'
 import { MainModule } from '@main.module'
-import { GameType } from './app/modules/game/game.model'
+import { GameType } from '@modules/game/game.model'
 
 Bootstrap(MainModule, { serverLocal: true, port: 8080 })
 

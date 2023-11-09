@@ -1,14 +1,14 @@
 import { Document } from '@esliph/repository-memory'
 
 export enum BlindType {
-    SMALL_BLIND = 'Small Blind',
-    BIG_BLIND = 'Big Blind'
+    SMALL_BLIND = 'SMALL_BLIND',
+    BIG_BLIND = 'BIG_BLINDd'
 }
 export enum PlayerStatus {
-    WAITING = 'Waiting',
-    READY = 'Ready',
-    PLAYING = 'Playing',
-    AWAY = 'Away'
+    WAITING = 'WAITING',
+    READY = 'READY',
+    PLAYING = 'PLAYING',
+    AWAY = 'AWAYy'
 }
 
 export type PlayerModel = {
