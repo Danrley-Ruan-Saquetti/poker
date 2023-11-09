@@ -1,19 +1,19 @@
 import { ID } from '@@types/index'
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
+import { Emitter } from '@services/observer.service'
 import { Service } from '@common/module/decorator'
 import { GameRepository } from '@modules/game/game.repository'
 import { PlayerService } from '@modules/player/player.service'
-import { RoomService } from '@modules/room/room.service'
 import { GameType } from '@modules/game/game.model'
-import { Emitter } from '@services/observer.service'
+import { RoomQueryUseCase } from '@modules/room/use-case/query.use-case'
 
 @Service({ name: 'game.service' })
 export class GameService {
     constructor(
         @Injection.Inject('game.repository') private gameRepository: GameRepository,
         @Injection.Inject('player.service') private playerService: PlayerService,
-        @Injection.Inject('room.service') private roomService: RoomService,
+        @Injection.Inject('room.use-case.query') private roomQueryUC: RoomQueryUseCase,
         @Injection.Inject('observer.emitter') private emitter: Emitter,
     ) { }
 
@@ -46,7 +46,7 @@ export class GameService {
     }
 
     getPlayersByGameId(data: { gameId: ID }) {
-        const resultRoom = this.roomService.getRoomByGameId({ gameId: data.gameId })
+        const resultRoom = this.roomQueryUC.getRoomByGameId({ gameId: data.gameId })
 
         if (!resultRoom.isSuccess()) {
             return Result.failure({ title: 'Find Players in Game', message: 'Cannot found room' })
