@@ -1,15 +1,15 @@
-import { RoomCreateUseCase } from '@modules/room/use-case/create.use-case'
 import { Injection } from '@esliph/injection'
-import { PlayerService } from '@modules/player/player.service'
 import { Service } from '@common/module/decorator'
-import { GameType } from '@modules/game/game.model'
 import { ID } from '@@types/index'
+import { GameType } from '@modules/game/game.model'
+import { RoomCreateUseCase } from '@modules/room/use-case/create.use-case'
+import { PlayerJoinGameUseCase } from '@modules/player/use-case/join-game.use-case'
 
 @Service({ name: 'game-mode.service' })
 export class GameModeService {
     constructor(
         @Injection.Inject('room.use-case.create') private roomCreateUC: RoomCreateUseCase,
-        @Injection.Inject('player.service') private playerService: PlayerService,
+        @Injection.Inject('player.use-case.join-game') private playerJoinGameUC: PlayerJoinGameUseCase,
     ) { }
 
     createGame(data: { playerId: ID, type: GameType, gameId: ID }) {
@@ -19,6 +19,6 @@ export class GameModeService {
     }
 
     joinPlayer(data: { playerId: ID, roomId: ID }) {
-        this.playerService.joinGame({ playerId: data.playerId, roomId: data.roomId })
+        this.playerJoinGameUC.perform({ playerId: data.playerId, roomId: data.roomId })
     }
 }

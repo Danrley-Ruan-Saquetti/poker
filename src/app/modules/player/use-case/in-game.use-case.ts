@@ -7,7 +7,7 @@ import { PlayerQueryUseCase } from '@modules/player/use-case/query.use-case'
 @Service({ name: 'player.use-case.in-game', context: 'Use Case' })
 export class PlayerInGameUseCase {
     constructor(
-        @Injection.Inject('player.sue-case.query') private playerQueryUC: PlayerQueryUseCase,
+        @Injection.Inject('player.use-case.query') private playerQueryUC: PlayerQueryUseCase,
     ) { }
 
     perform(data: { playerId: ID }) {
