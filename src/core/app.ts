@@ -111,6 +111,8 @@ export class Application {
     }
 
     private static initController(controller: Construtor) {
+        console.clear()
+
         Application.logger.log(`Loading Controller "${controller.name}"`)
 
         const instance = Injection.resolve(controller)

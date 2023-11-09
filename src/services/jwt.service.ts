@@ -1,7 +1,7 @@
 import { Service } from '@common/module/decorator'
 import crypto from 'crypto'
 
-@Service({ name: 'global.service.jwt', context: 'Service' })
+@Service({ name: 'global.service.jwt' })
 export class JWTService {
     encode(payload: { [x: string]: any }, config: { secret: string, exp: number }) {
         const header = { alg: 'HS256', typ: 'JWT' }

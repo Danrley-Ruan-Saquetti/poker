@@ -1,9 +1,9 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
 import { Service } from '@common/module/decorator'
-import { GameRepository } from '@modules/game/game.repository'
 import { Emitter } from '@services/observer.service'
 import { GameType } from '@modules/game/game.model'
+import { GameRepository } from '@modules/game/game.repository'
 
 @Service({ name: 'game.use-case.create', context: 'Use Case' })
 export class GameCreateUseCase {

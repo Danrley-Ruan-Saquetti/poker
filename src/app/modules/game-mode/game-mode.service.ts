@@ -5,7 +5,7 @@ import { Service } from '@common/module/decorator'
 import { GameType } from '@modules/game/game.model'
 import { ID } from '@@types/index'
 
-@Service({ name: 'game-mode.service', context: 'Service' })
+@Service({ name: 'game-mode.service' })
 export class GameModeService {
     constructor(
         @Injection.Inject('room.use-case.create') private roomCreateUC: RoomCreateUseCase,

@@ -7,7 +7,7 @@ import { Player, PlayerModel, PlayerStatus } from '@modules/player/player.model'
 import { PlayerRepository } from '@modules/player/player.repository'
 import { removeAttributesOfObject } from '@util'
 
-@Service({ name: 'player.service', context: 'Service' })
+@Service({ name: 'player.service' })
 export class PlayerService {
 
     constructor(
