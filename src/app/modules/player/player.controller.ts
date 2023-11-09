@@ -3,6 +3,7 @@ import { Request, Response } from '@esliph/http'
 import { Controller, Guard } from '@common/module/decorator'
 import { PlayerService } from '@modules/player/player.service'
 import { Get, Post } from '@common/http'
+import { GUARD_AUTHORIZATION } from '@constants'
 
 @Controller()
 export class PlayerController {
@@ -25,15 +26,15 @@ export class PlayerController {
         return this.playerService.findManyByRoomId({ roomId: req.params.roomId })
     }
 
-    @Guard({ name: 'authorization' })
+    @Guard({ name: GUARD_AUTHORIZATION })
     @Get('/players/:id')
     findFirst(req: Request, res: Response) {
-        return this.playerService.findById({playerId: req.params.playerId})
+        return this.playerService.findById({ playerId: req.params.playerId })
     }
 
-    @Guard({ name: 'authorization' })
+    @Guard({ name: GUARD_AUTHORIZATION })
     @Get('/players/current')
     findMe(req: Request, res: Response) {
-        return this.playerService.findById({playerId: req.headers.playerId})
+        return this.playerService.findById({ playerId: req.headers.playerId })
     }
 }
