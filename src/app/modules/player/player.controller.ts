@@ -28,6 +28,11 @@ export class PlayerController {
         return this.queryUC.findManyByRoomId({ roomId: req.params.roomId })
     }
 
+    @Get('/players/:gameId')
+    findManyByIdGame(req: Request, res: Response) {
+        return this.queryUC.findManyByGameId({ gameId: req.params.gameId })
+    }
+
     @Guard({ name: GUARD_AUTHORIZATION })
     @Get('/players/:id')
     findFirst(req: Request, res: Response) {
