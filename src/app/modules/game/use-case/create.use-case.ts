@@ -5,7 +5,7 @@ import { GameRepository } from '@modules/game/game.repository'
 import { Emitter } from '@services/observer.service'
 import { GameType } from '@modules/game/game.model'
 
-@Service({ name: 'game.use-case.create' })
+@Service({ name: 'game.use-case.create', context: 'Use Case' })
 export class GameCreateUseCase {
     constructor(
         @Injection.Inject('game.repository') private gameRepository: GameRepository,

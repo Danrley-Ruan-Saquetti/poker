@@ -4,12 +4,14 @@ import { Service } from '@common/module/decorator'
 import { ID } from '@@types'
 import { GameRepository } from '@modules/game/game.repository'
 import { PlayerService } from '@modules/player/player.service'
+import { PlayerInGameUseCase } from '@modules/player/use-case/in-game.use-case'
 
-@Service({ name: 'game.use-case.join-game' })
+@Service({ name: 'game.use-case.join-game', context: 'Use Case' })
 export class GameJoinGameUseCase {
     constructor(
         @Injection.Inject('game.repository') private gameRepository: GameRepository,
         @Injection.Inject('player.service') private playerService: PlayerService,
+        @Injection.Inject('player.use-case.in-game') private playerInGameUC: PlayerInGameUseCase,
     ) { }
 
     perform(data: { playerId: ID, roomId: ID }) {
@@ -17,7 +19,7 @@ export class GameJoinGameUseCase {
             return Result.failure<{ ok: boolean }>({ title: 'Joint Game', message: 'Game not found' })
         }
 
-        const resultPlayerAlreadyInGame = this.playerService.isInGame({ playerId: data.playerId })
+        const resultPlayerAlreadyInGame = this.playerInGameUC.perform({ playerId: data.playerId })
 
         if (!resultPlayerAlreadyInGame.isSuccess()) {
             return Result.inherit<{ ok: boolean }>(resultPlayerAlreadyInGame.getResponse() as any)

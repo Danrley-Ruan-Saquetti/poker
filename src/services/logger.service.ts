@@ -6,7 +6,7 @@ const TEMPLATE_ERROR = '<prefix?value="#"&styles=italic> <dateTime>  <method?bac
 const TEMPLATE_WARN = '<prefix?value="#"&styles=italic> <dateTime>  <method?background=yellow&color=black>  <context?color=green&styles=bold>: <message>'
 const TEMPLATE_INFO = '<prefix?value="#"&styles=italic> <dateTime>  <method?background=white>  <context?color=green&styles=bold>: <message>'
 
-@Service({ name: 'logger' })
+@Service({ name: 'logger', context: 'Service' })
 export class Logger extends Console<typeof TEMPLATE_LOG, typeof TEMPLATE_ERROR, typeof TEMPLATE_WARN, typeof TEMPLATE_INFO> {
     constructor(args: { context?: string } = {}) {
         super({

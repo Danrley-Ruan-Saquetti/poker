@@ -5,7 +5,7 @@ import { KEY_SECRET_SERVER } from '@constants'
 import { JWTService } from '@services/jwt.service'
 import { PayloadJWT } from '@@types'
 
-@Service({ name: 'auth.use-case.authorization' })
+@Service({ name: 'auth.use-case.authorization', context: 'Use Case' })
 export class AuthAuthorizationUseCase {
     constructor(
         @Injection.Inject('jwt') private jwtService: JWTService

@@ -6,9 +6,9 @@ import { Metadata } from '@esliph/metadata'
 import { Client, Server } from '@esliph/http'
 import { Construtor } from '@@types/index'
 import { Logger } from '@services/logger.service'
-import { ModuleConfig } from '@common/module/decorator'
+import { ModuleConfig, ServiceConfig } from '@common/module/decorator'
 import { isModule } from '@common/module'
-import { METADATA_EVENT_CONFIG_KEY, METADATA_EVENT_HANDLER_KEY, METADATA_FILTER_CONFIG_KEY, METADATA_GUARD_CONFIG_KEY, METADATA_HTTP_ROUTER_HANDLER_KEY, METADATA_MODULE_CONFIG_KEY } from '@constants/index'
+import { METADATA_EVENT_CONFIG_KEY, METADATA_EVENT_HANDLER_KEY, METADATA_FILTER_CONFIG_KEY, METADATA_GUARD_CONFIG_KEY, METADATA_HTTP_ROUTER_HANDLER_KEY, METADATA_MODULE_CONFIG_KEY, METADATA_SERVICE_CONFIG_KEY } from '@constants/index'
 import { getMethodNamesByClass, isInstance } from '@util/index'
 import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
@@ -67,7 +67,7 @@ export class Application {
     }
 
     private static initModule(module: Construtor, include = false) {
-        Application.logger.log(`Loading module "${module.name}"`)
+        Application.logger.log(`Loading Module "${module.name}"`)
 
         const configModule = Metadata.Get.Class<ModuleConfig>(METADATA_MODULE_CONFIG_KEY, module)
 
@@ -84,7 +84,15 @@ export class Application {
 
             configs.modules.forEach(imp => modules.push(imp))
             configs.controllers.forEach(imp => controllers.push(imp))
-            configs.providers.forEach(imp => providers.push(imp) && isInstance(imp) && Application.logger.log(`Loading service ${imp.name}`))
+            configs.providers.forEach(imp => {
+                providers.push(imp)
+
+                if (!isInstance(imp)) { return }
+
+                const metadata = Metadata.Get.Class<ServiceConfig>(METADATA_SERVICE_CONFIG_KEY, imp) || {}
+
+                Application.logger.log(`Loading${metadata.context ? ` ${metadata.context}` : ' Service'} "${imp.name}"`)
+            })
         })
 
         return {
@@ -95,11 +103,7 @@ export class Application {
     }
 
     private static initFilters() {
-        Application.filters = Application.providers.filter(provider => isInstance(provider) && isFilter(provider)).map(filter => {
-            Application.logger.log(`Loading filter "${filter.name}"`)
-
-            return { instance: Injection.resolve(filter), class: filter, metadata: Metadata.Get.Class<FilterConfig>(METADATA_FILTER_CONFIG_KEY, filter) }
-        })
+        Application.filters = Application.providers.filter(provider => isInstance(provider) && isFilter(provider)).map(filter => ({ instance: Injection.resolve(filter), class: filter, metadata: Metadata.Get.Class<FilterConfig>(METADATA_FILTER_CONFIG_KEY, filter) }))
     }
 
     private static initControllers() {
@@ -107,7 +111,7 @@ export class Application {
     }
 
     private static initController(controller: Construtor) {
-        Application.logger.log(`Loading controller "${controller.name}"`)
+        Application.logger.log(`Loading Controller "${controller.name}"`)
 
         const instance = Injection.resolve(controller)
 
@@ -119,7 +123,7 @@ export class Application {
         const events = Application.getMethodsInClassByMetadataKey<{ event: string; method: string }>(controller, METADATA_HTTP_ROUTER_HANDLER_KEY)
 
         events.map(event => {
-            Application.logger.log(`Loading event HTTP ${event.metadata.method.toUpperCase()} ${event.metadata.event}`)
+            Application.logger.log(`Loading Event HTTP ${event.metadata.method.toUpperCase()} "${event.metadata.event}"`)
 
             const handlers: ((...args: any[]) => any)[] = []
 
@@ -129,6 +133,8 @@ export class Application {
                 const filter = Application.filters.find(filter => filter.metadata.name = methodMetadata.name)
 
                 if (filter && filter.instance.perform) {
+                    Application.logger.log(`Loading Guard HTTP "${filter.class.name}" in "${event.metadata.event}"`)
+
                     handlers.push(async (req, res) => {
                         const response = await filter.instance.perform(req, res)
 
@@ -151,7 +157,7 @@ export class Application {
         const events = Application.getMethodsInClassByMetadataKey<{ event: string; method: string }>(controller, METADATA_EVENT_HANDLER_KEY).map(event => ({ ...event, event: Metadata.Get.Method<{ event: string }>(METADATA_EVENT_CONFIG_KEY, controller, event.method).event }))
 
         events.forEach(event => {
-            Application.logger.log(`Loading event Listener ${event.event}`)
+            Application.logger.log(`Loading Event Listener "${event.event}"`)
 
             Application.listener.on(event.event, async body => {
                 await instance[event.method](body)
@@ -161,7 +167,7 @@ export class Application {
 
     private static initObserverListeners() {
         Application.clientServer.on('request/error', arg => {
-            Application.logger.error(`${arg.request.method} ${arg.request.name} = ${arg.response.getError().message}`, null, { context: '[HTPP]' })
+            Application.logger.error(`${arg.request.method} ${arg.request.name} = ${arg.response.getError().message}`, null, { context: '[HTTP]' })
         })
     }
 

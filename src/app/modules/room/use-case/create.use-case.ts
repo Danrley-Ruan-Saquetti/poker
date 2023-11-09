@@ -3,7 +3,7 @@ import { Injection } from '@esliph/injection'
 import { Service } from '@common/module/decorator'
 import { RoomRepository } from '@modules/room/room.repository'
 
-@Service({ name: 'room.use-case.create' })
+@Service({ name: 'room.use-case.create', context: 'Use Case' })
 export class RoomCreateUseCase {
     constructor(
         @Injection.Inject('room.repository') private roomRepository: RoomRepository,

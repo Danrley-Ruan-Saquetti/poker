@@ -5,7 +5,7 @@ import { ID } from '@@types'
 import { Room } from '@modules/room/room.model'
 import { RoomRepository } from '@modules/room/room.repository'
 
-@Service({ name: 'room.use-case.query' })
+@Service({ name: 'room.use-case.query', context: 'Use Case' })
 export class RoomQueryUseCase {
     constructor(
         @Injection.Inject('room.repository') private roomRepository: RoomRepository,

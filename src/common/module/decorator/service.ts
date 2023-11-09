@@ -3,7 +3,8 @@ import { METADATA_SERVICE_CONFIG_KEY, METADATA_SERVICE_KEY } from '@constants/in
 import { Injection } from '@esliph/injection'
 
 export type ServiceConfig = {
-    name: string
+    name: string,
+    context: string
 }
 
 export function Service(config: Partial<ServiceConfig> = {}) {

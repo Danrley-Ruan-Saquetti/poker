@@ -2,7 +2,7 @@ import { ModelSchema } from '@esliph/repository-memory'
 import { Service } from '@common/module/decorator'
 import { CardModel } from '@modules/card/card.model'
 
-@Service({ name: 'card.repository' })
+@Service({ name: 'card.repository', context: 'Repository' })
 export class CardRepository extends ModelSchema<CardModel> {
     constructor() {
         super('Card')

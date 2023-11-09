@@ -5,7 +5,7 @@ import { EXPIRE_TOKEN_JWT, KEY_SECRET_SERVER } from '@constants'
 import { JWTService } from '@services/jwt.service'
 import { PlayerRepository } from '@modules/player/player.repository'
 
-@Service({ name: 'auth.use-case.login' })
+@Service({ name: 'auth.use-case.login', context: 'Use Case' })
 export class AuthLoginUseCase {
     constructor(
         @Injection.Inject('player.repository') private playerRepository: PlayerRepository,
