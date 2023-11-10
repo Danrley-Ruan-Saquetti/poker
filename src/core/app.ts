@@ -14,14 +14,14 @@ import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
 import { GuardConfig, FilterConfig } from '@common/module/decorator'
 
-type ApplicationOptions = { serverLocal?: boolean, log?: { load?: boolean } }
+type ApplicationOptions = { serverLocal?: boolean, log?: { load?: boolean, eventHttp?: boolean, eventListener?: boolean } }
 
 export class Application {
-    static server = express()
-    static serverLocal = new Server()
-    private static listener = new Listener()
-    private static clientServer = new Client()
-    private static logger = new Logger({ context: 'Server' })
+    static serverHttp = express()
+    static server = new Server()
+    static listener = new Listener()
+    static client = new Client()
+    static logger = new Logger({ context: 'Server' })
     private static appModule: Construtor
     private static options: ApplicationOptions
     private static controllers: Construtor[]
@@ -34,7 +34,7 @@ export class Application {
 
     static listen(port: number) {
         if (!Application.options.serverLocal) {
-            Application.server.listen(port, () => {
+            Application.serverHttp.listen(port, () => {
                 Application.logger.log(`Server running on port ${port}`)
                 console.log()
             })
@@ -44,14 +44,14 @@ export class Application {
         }
     }
 
-    static fabric(appModule: Construtor, options?: ApplicationOptions) {
+    static fabric(appModule: Construtor, options: ApplicationOptions = {}) {
         Application.logLoad('Loading components...')
         if (!isModule(appModule)) {
             throw new ResultException({ title: `Class "${appModule.name}" is not a module`, message: `Apply decorator "Module" in class "${appModule.name}"` })
         }
 
         Application.appModule = appModule
-        Application.options = { serverLocal: !!options?.serverLocal, log: { load: !!options?.log?.load } }
+        Application.options = options
 
         Application.initComponents()
         Application.logLoad('Components initialized')
@@ -162,14 +162,19 @@ export class Application {
             Application.logLoad(`Loading Event Listener "${event.event}"`)
 
             Application.listener.on(event.event, async body => {
+                Application.logListener(event.event)
                 await instance[event.method](body)
             })
         })
     }
 
     private static initObserverListeners() {
-        Application.clientServer.on('request/error', arg => {
-            Application.logger.error(`${arg.request.method} ${arg.request.name} = ${arg.response.getError().message}`, null, { context: '[HTTP]' })
+        Application.client.on('request/end', arg => {
+            if (arg.response.isSuccess()) {
+                Application.logHttp(`${arg.request.method} ${arg.request.name}${arg.request.headers.playerId ? ` {"player": ${arg.request.headers.playerId}}` : ''}`)
+            } else {
+                Application.logger.error(`${arg.request.method} ${arg.request.name} {"error": "${arg.response.getError().message}"${arg.request.headers.playerId ? `, "player" ${arg.request.headers.playerId}}` : '}'}`, null, { context: '[HTTP]' })
+            }
         })
     }
 
@@ -179,11 +184,23 @@ export class Application {
         Application.logger.log(message)
     }
 
+    private static logHttp(message: any) {
+        if (!Application.options?.log?.eventHttp) { return }
+
+        Application.logger.log(message, null, { context: '[HTTP]' })
+    }
+
+    private static logListener(message: any) {
+        if (!Application.options?.log?.eventListener) { return }
+
+        Application.logger.log(message, null, { context: '[LISTENER]' })
+    }
+
     private static getMethodsInClassByMetadataKey<Metadata = any>(classConstructor: Construtor, key: string) {
         return getMethodNamesByClass(classConstructor).map(methodName => ({ method: methodName, metadata: Metadata.Get.Method<Metadata>(key, classConstructor, methodName) })).filter(({ metadata }) => !!metadata)
     }
 
     private static getServer() {
-        return !Application.options.serverLocal ? Application.server : Application.serverLocal
+        return !Application.options.serverLocal ? Application.serverHttp : Application.server
     }
 }

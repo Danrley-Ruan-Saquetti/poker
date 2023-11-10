@@ -3,11 +3,7 @@ import { Bootstrap } from '@core/bootstrap'
 import { MainModule } from '@main.module'
 import { GameType } from '@modules/game/game.model'
 
-Bootstrap(MainModule, { serverLocal: true, port: 8080, logLoad: false })
-
-const client = new Client()
-
-client.on('request/error', () => { console.log('!') })
+const application = Bootstrap(MainModule, { serverLocal: true, port: 8080, logLoad: true, logEventHttp: true, logEventListener: true })
 
 async function App() {
     const users = [
