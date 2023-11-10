@@ -38,7 +38,7 @@ export class PlayerJoinGameUseCase {
             return Result.failure<{ ok: boolean }>({ title: 'Join Game', message: 'Cannot join game because player already in game' })
         }
 
-        this.playerRepository.update({ where: { id: { equals: data.playerId } }, data: { roomId: data.roomId, status: PlayerStatus.PLAYING } })
+        this.playerRepository.update({ where: { id: { equals: data.playerId } }, data: { roomId: data.roomId, status: PlayerStatus.WAITING } })
 
         if (playersRoomResult.getValue().length == 2) {
             const roomResult = this.roomQueryUC.getRoomId({ roomId: data.roomId })

@@ -1,4 +1,3 @@
-import { PlayerJoinGameUseCase } from '@modules/player/use-case/join-game.use-case'
 import { Injection } from '@esliph/injection'
 import { Request, Response } from '@esliph/http'
 import { Controller, Guard } from '@common/module/decorator'
@@ -6,6 +5,7 @@ import { Get, Post } from '@common/http'
 import { GUARD_AUTHORIZATION } from '@constants'
 import { PlayerQueryUseCase } from '@modules/player/use-case/query.use-case'
 import { PlayerCreateUseCase } from '@modules/player/use-case/create.use-case'
+import { PlayerJoinGameUseCase } from '@modules/player/use-case/join-game.use-case'
 
 @Controller()
 export class PlayerController {
