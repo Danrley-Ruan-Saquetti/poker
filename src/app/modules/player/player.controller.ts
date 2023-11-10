@@ -1,3 +1,4 @@
+import { PlayerJoinGameUseCase } from '@modules/player/use-case/join-game.use-case'
 import { Injection } from '@esliph/injection'
 import { Request, Response } from '@esliph/http'
 import { Controller, Guard } from '@common/module/decorator'
@@ -11,11 +12,18 @@ export class PlayerController {
     constructor(
         @Injection.Inject('player.use-case.query') private queryUC: PlayerQueryUseCase,
         @Injection.Inject('player.use-case.create') private createUC: PlayerCreateUseCase,
+        @Injection.Inject('player.use-case.join-game') private joinGameUC: PlayerJoinGameUseCase,
     ) { }
 
     @Post('/players/create')
     create(req: Request, res: Response) {
         return this.createUC.perform(req.body)
+    }
+
+    @Guard({ name: GUARD_AUTHORIZATION })
+    @Post('/players/join-game')
+    joinGame(req: Request, res: Response) {
+        return this.joinGameUC.perform({ playerId: req.headers.playerId, roomId: req.params.roomId })
     }
 
     @Get('/players')

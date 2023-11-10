@@ -23,7 +23,7 @@ async function App() {
     const { roomId } = (await users[0].get('/players/current')).getValue()
 
     for (let i = 1; i < users.length; i++) {
-        await users[i].post('/games/join', {}, { params: { roomId } })
+        await users[i].post('/players/join-game', {}, { params: { roomId } })
     }
 }
 
