@@ -3,7 +3,7 @@ import { Bootstrap } from '@core/bootstrap'
 import { MainModule } from '@main.module'
 import { GameType } from '@modules/game/game.model'
 
-const application = Bootstrap(MainModule, { serverLocal: true, port: 8080, logLoad: false, logEventHttp: false, logEventListener: false, enableInputTerminal: true })
+const application = Bootstrap(MainModule, { serverLocal: true, port: 8080, logLoad: true, logEventHttp: true, logEventListener: true })
 
 async function App() {
     const users = [
@@ -21,8 +21,6 @@ async function App() {
     for (let i = 1; i < users.length; i++) {
         await users[i].post('/players/join-game', {}, { params: { roomId } })
     }
-
-    console.log(await users[0].get('/players/:roomId', null, {params: {roomId}}))
 }
 
 async function newUser(data: any) {

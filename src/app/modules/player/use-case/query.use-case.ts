@@ -14,6 +14,16 @@ export class PlayerQueryUseCase {
         @Injection.Inject('room.use-case.query') private roomQueryUC: RoomQueryUseCase,
     ) { }
 
+    queryById(data: { playerId: number }) {
+        const playerResult = this.findById(data)
+
+        if (!playerResult.isSuccess()) {
+            return playerResult
+        }
+
+        return Result.success<Omit<Player, 'password' | 'blindType' | 'isDealer ' | 'isCurrentBidding' | 'isDealer' | 'order' | 'status' | 'roomId'>>(removeAttributesOfObject(playerResult.getValue(), 'blindType', 'isDealer', 'isCurrentBidding', 'isDealer', 'order', 'status', 'roomId'))
+    }
+
     findById(data: { playerId: number }) {
         const player = this.playerRepository.findFirst({ where: { id: { equals: data.playerId } } })
 

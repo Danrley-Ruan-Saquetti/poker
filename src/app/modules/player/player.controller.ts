@@ -1,8 +1,8 @@
 import { Injection } from '@esliph/injection'
 import { Request, Response } from '@esliph/http'
-import { Controller, Guard } from '@common/module/decorator'
-import { Get, Post } from '@common/http'
 import { GUARD_AUTHORIZATION } from '@constants'
+import { Get, Post } from '@common/http'
+import { Controller, Guard } from '@common/module/decorator'
 import { PlayerQueryUseCase } from '@modules/player/use-case/query.use-case'
 import { PlayerCreateUseCase } from '@modules/player/use-case/create.use-case'
 import { PlayerJoinGameUseCase } from '@modules/player/use-case/join-game.use-case'
@@ -31,20 +31,20 @@ export class PlayerController {
         return this.queryUC.findAll()
     }
 
-    @Get('/players/:roomId')
+    @Get('/players?:roomId')
     findManyByIdRoom(req: Request, res: Response) {
         return this.queryUC.findManyByRoomId({ roomId: req.params.roomId })
     }
 
-    @Get('/players/:gameId')
+    @Get('/players?:gameId')
     findManyByIdGame(req: Request, res: Response) {
         return this.queryUC.findManyByGameId({ gameId: req.params.gameId })
     }
 
     @Guard({ name: GUARD_AUTHORIZATION })
-    @Get('/players/:id')
+    @Get('/players?:id')
     findFirst(req: Request, res: Response) {
-        return this.queryUC.findById({ playerId: req.params.playerId })
+        return this.queryUC.queryById({ playerId: req.params.playerId })
     }
 
     @Guard({ name: GUARD_AUTHORIZATION })
