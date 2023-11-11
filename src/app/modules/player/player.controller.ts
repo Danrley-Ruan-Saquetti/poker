@@ -28,7 +28,7 @@ export class PlayerController {
 
     @Get('/players')
     findAll(req: Request, res: Response) {
-        return this.queryUC.findAll()
+        return this.queryUC.queryAll()
     }
 
     @Get('/players?:roomId')

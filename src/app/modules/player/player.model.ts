@@ -8,7 +8,7 @@ export enum PlayerStatus {
     WAITING = 'WAITING',
     READY = 'READY',
     PLAYING = 'PLAYING',
-    AWAY = 'AWAYy'
+    AWAY = 'AWAY'
 }
 
 export type PlayerModel = {
@@ -23,5 +23,9 @@ export type PlayerModel = {
     blindType: BlindType | null
     isCurrentBidding: false
 }
+
+export type PlayerInfo = Omit<Player, 'password' | 'blindType' | 'isDealer ' | 'isCurrentBidding' | 'isDealer' | 'order' | 'status' | 'roomId'>
+
+export type PlayerWithoutPassword = Omit<Player, 'password'>
 
 export type Player = Document<PlayerModel>
