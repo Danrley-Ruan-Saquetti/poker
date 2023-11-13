@@ -8,11 +8,15 @@ export const METADATA_CONTROLLER_KEY = 'class.controller'
 export const METADATA_SERVICE_KEY = 'class.service'
 export const METADATA_FILTER_KEY = 'class.filter'
 export const METADATA_GUARD_KEY = 'method.guard'
+export const METADATA_VALIDATOR_KEY = 'class.validator'
+export const METADATA_VALIDATE_KEY = 'class.validate'
 
 export const METADATA_MODULE_CONFIG_KEY = `${METADATA_MODULE_KEY}.options`
 export const METADATA_CONTROLLER_CONFIG_KEY = `${METADATA_CONTROLLER_KEY}.options`
 export const METADATA_SERVICE_CONFIG_KEY = `${METADATA_SERVICE_KEY}.options`
 export const METADATA_GUARD_CONFIG_KEY = `${METADATA_GUARD_KEY}.options`
+export const METADATA_VALIDATOR_CONFIG_KEY = `${METADATA_VALIDATOR_KEY}.options`
+export const METADATA_VALIDATE_CONFIG_KEY = `${METADATA_VALIDATE_KEY}.options`
 export const METADATA_FILTER_CONFIG_KEY = `${METADATA_FILTER_KEY}.options`
 
 export const METADATA_EVENT_HANDLER_KEY = 'listener.handler.event'
