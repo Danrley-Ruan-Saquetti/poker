@@ -21,6 +21,7 @@ import { getMethodNamesByClass, isInstance } from '@util/index'
 import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
 import { GuardConfig, FilterConfig } from '@common/module/decorator'
+import { isValidator } from '@common/validator'
 
 type ApplicationOptions = { serverLocal?: boolean; log?: { load?: boolean; eventHttp?: boolean; eventListener?: boolean } }
 
@@ -35,6 +36,11 @@ export class Application {
     private static controllers: Construtor[]
     private static providers: any[]
     private static filters: {
+        instance: any
+        class: any
+        metadata: FilterConfig
+    }[]
+    private static validators: {
         instance: any
         class: any
         metadata: FilterConfig
@@ -75,6 +81,7 @@ export class Application {
         Application.initFilters()
         Application.initControllers()
         Application.initObserverListeners()
+        Application.initValidators()
     }
 
     private static initModule(module: Construtor, include = false) {
@@ -118,6 +125,16 @@ export class Application {
     private static initFilters() {
         Application.filters = Application.providers
             .filter(provider => isInstance(provider) && isFilter(provider))
+            .map(filter => ({
+                instance: Injection.resolve(filter),
+                class: filter,
+                metadata: Metadata.Get.Class<FilterConfig>(METADATA_FILTER_CONFIG_KEY, filter)
+            }))
+    }
+
+    private static initValidators() {
+        Application.providers
+            .filter(provider => isInstance(provider) && isValidator(provider))
             .map(filter => ({
                 instance: Injection.resolve(filter),
                 class: filter,
