@@ -13,8 +13,8 @@ export class GameModeController {
         @Injection.Inject('game.repository') private gameRepository: GameRepository,
         @Injection.Inject('game.use-case.query') private gameQueryUC: GameQueryUseCase,
         @Injection.Inject('deck.use-case.create') private deckCreateUC: DeckCreateUseCase,
-        @Injection.Inject('observer.emitter') private emitter: Emitter,
-    ) { }
+        @Injection.Inject('observer.emitter') private emitter: Emitter
+    ) {}
 
     @OnEvent('game.start')
     startGame(data: { gameId: ID }) {
@@ -28,7 +28,5 @@ export class GameModeController {
         this.deckCreateUC.perform({ gameId: data.gameId })
     }
 
-    getOrderEmpty(data: { gameId: ID }) {
-
-    }
+    getOrderEmpty(data: { gameId: ID }) {}
 }
