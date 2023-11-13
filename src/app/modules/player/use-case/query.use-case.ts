@@ -11,10 +11,10 @@ import { RoomQueryUseCase } from '@modules/room/use-case/query.use-case'
 export class PlayerQueryUseCase {
     constructor(
         @Injection.Inject('player.repository') private playerRepository: PlayerRepository,
-        @Injection.Inject('room.use-case.query') private roomQueryUC: RoomQueryUseCase,
-    ) { }
+        @Injection.Inject('room.use-case.query') private roomQueryUC: RoomQueryUseCase
+    ) {}
 
-    queryById(data: { playerId: number }) {
+    queryById(data: { id: number }) {
         const playerResult = this.findById(data)
 
         if (!playerResult.isSuccess()) {
@@ -24,7 +24,7 @@ export class PlayerQueryUseCase {
         return Result.success<PlayerInfo>(this.removeGeneralAttributesPlayer(playerResult.getValue()))
     }
 
-    queryLogin(data: { login: string }) {
+    queryByLogin(data: { login: string }) {
         const playerResult = this.findByLogin({ login: data.login })
 
         if (!playerResult.isSuccess()) {
@@ -38,8 +38,8 @@ export class PlayerQueryUseCase {
         return Result.success<PlayerWithoutPassword[]>(this.playerRepository.findMany().map(player => this.removePasswordAttributesPlayer(player)))
     }
 
-    findById(data: { playerId: number }) {
-        const player = this.playerRepository.findFirst({ where: { id: { equals: data.playerId } } })
+    findById(data: { id: number }) {
+        const player = this.playerRepository.findFirst({ where: { id: { equals: data.id } } })
 
         if (!player) {
             return Result.failure<Player>({ title: 'Find Player', message: 'Cannot found player' })
@@ -68,21 +68,18 @@ export class PlayerQueryUseCase {
         return Result.success<PlayerInfo[]>(playersResult.getValue().map(player => this.removeGeneralAttributesPlayer(player)))
     }
 
-    findManyByRoomId(data: { roomId: ID }) {
-        const players = this.playerRepository.findMany({ where: { roomId: { equals: data.roomId } }, orderBy: { order: 'ASC' } })
-
-        return Result.success<PlayerWithoutPassword[]>(players.map(player => this.removePasswordAttributesPlayer(player)))
-    }
-
     findManyByGameId(data: { gameId: ID }) {
-        const responseRoom = this.roomQueryUC.getRoomByGameId(data)
+        const roomResult = this.roomQueryUC.getRoomByGameId(data)
 
-        if (!responseRoom.isSuccess()) {
-            // @ts-expect-error
-            return responseRoom as Result<PlayerWithoutPassword[]>
+        if (!roomResult.isSuccess()) {
+            return Result.failure<PlayerWithoutPassword[]>(roomResult.getError())
         }
 
-        const players = this.playerRepository.findMany({ where: { roomId: { equals: responseRoom.getValue().id } }, orderBy: { order: 'ASC' } })
+        return this.findManyByRoomId({ id: roomResult.getValue().id })
+    }
+
+    findManyByRoomId(data: { id: ID }) {
+        const players = this.playerRepository.findMany({ where: { roomId: { equals: data.id } }, orderBy: { order: 'ASC' } })
 
         return Result.success<PlayerWithoutPassword[]>(players.map(player => this.removePasswordAttributesPlayer(player)))
     }
@@ -92,6 +89,16 @@ export class PlayerQueryUseCase {
     }
 
     private removeGeneralAttributesPlayer(player: Partial<Player>) {
-        return removeAttributesOfObject({ ...player }, 'password', 'blindType', 'isDealer', 'isCurrentBidding', 'isDealer', 'order', 'status', 'roomId') as PlayerInfo
+        return removeAttributesOfObject(
+            { ...player },
+            'password',
+            'blindType',
+            'isDealer',
+            'isCurrentBidding',
+            'isDealer',
+            'order',
+            'status',
+            'roomId'
+        ) as PlayerInfo
     }
 }
