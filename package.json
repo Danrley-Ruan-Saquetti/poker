@@ -12,10 +12,10 @@
     "license": "MIT",
     "dependencies": {
         "@esliph/common": "^1.0.2",
-        "@esliph/console": "^1.0.2",
+        "@esliph/console": "^1.0.3",
         "@esliph/decorator": "^1.0.2",
         "@esliph/http": "^1.0.2",
-        "@esliph/injection": "^1.0.2",
+        "@esliph/injection": "^1.0.3",
         "@esliph/metadata": "^1.0.1",
         "@esliph/module": "^1.0.0",
         "@esliph/observer": "^1.0.0",

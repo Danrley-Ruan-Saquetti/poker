@@ -8,13 +8,21 @@ import { Construtor } from '@@types/index'
 import { Logger } from '@services/logger.service'
 import { ModuleConfig, ServiceConfig } from '@common/module/decorator'
 import { isModule } from '@common/module'
-import { METADATA_EVENT_CONFIG_KEY, METADATA_EVENT_HANDLER_KEY, METADATA_FILTER_CONFIG_KEY, METADATA_GUARD_CONFIG_KEY, METADATA_HTTP_ROUTER_HANDLER_KEY, METADATA_MODULE_CONFIG_KEY, METADATA_SERVICE_CONFIG_KEY } from '@constants/index'
+import {
+    METADATA_EVENT_CONFIG_KEY,
+    METADATA_EVENT_HANDLER_KEY,
+    METADATA_FILTER_CONFIG_KEY,
+    METADATA_GUARD_CONFIG_KEY,
+    METADATA_HTTP_ROUTER_HANDLER_KEY,
+    METADATA_MODULE_CONFIG_KEY,
+    METADATA_SERVICE_CONFIG_KEY
+} from '@constants/index'
 import { getMethodNamesByClass, isInstance } from '@util/index'
 import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
 import { GuardConfig, FilterConfig } from '@common/module/decorator'
 
-type ApplicationOptions = { serverLocal?: boolean, log?: { load?: boolean, eventHttp?: boolean, eventListener?: boolean } }
+type ApplicationOptions = { serverLocal?: boolean; log?: { load?: boolean; eventHttp?: boolean; eventListener?: boolean } }
 
 export class Application {
     static serverHttp = express()
@@ -27,9 +35,9 @@ export class Application {
     private static controllers: Construtor[]
     private static providers: any[]
     private static filters: {
-        instance: any;
-        class: any;
-        metadata: FilterConfig;
+        instance: any
+        class: any
+        metadata: FilterConfig
     }[]
 
     static listen(port: number) {
@@ -45,13 +53,14 @@ export class Application {
     }
 
     static fabric(appModule: Construtor, options: ApplicationOptions = {}) {
+        Application.options = options
+
         Application.logLoad('Loading components...')
         if (!isModule(appModule)) {
             throw new ResultException({ title: `Class "${appModule.name}" is not a module`, message: `Apply decorator "Module" in class "${appModule.name}"` })
         }
 
         Application.appModule = appModule
-        Application.options = options
 
         Application.initComponents()
         Application.logLoad('Components initialized')
@@ -89,7 +98,9 @@ export class Application {
             configs.providers.forEach(imp => {
                 providers.push(imp)
 
-                if (!isInstance(imp)) { return }
+                if (!isInstance(imp)) {
+                    return
+                }
 
                 const metadata = Metadata.Get.Class<ServiceConfig>(METADATA_SERVICE_CONFIG_KEY, imp) || {}
 
@@ -105,7 +116,13 @@ export class Application {
     }
 
     private static initFilters() {
-        Application.filters = Application.providers.filter(provider => isInstance(provider) && isFilter(provider)).map(filter => ({ instance: Injection.resolve(filter), class: filter, metadata: Metadata.Get.Class<FilterConfig>(METADATA_FILTER_CONFIG_KEY, filter) }))
+        Application.filters = Application.providers
+            .filter(provider => isInstance(provider) && isFilter(provider))
+            .map(filter => ({
+                instance: Injection.resolve(filter),
+                class: filter,
+                metadata: Metadata.Get.Class<FilterConfig>(METADATA_FILTER_CONFIG_KEY, filter)
+            }))
     }
 
     private static initControllers() {
@@ -132,7 +149,7 @@ export class Application {
             if (isGuard(controller, event.method)) {
                 const methodMetadata = Metadata.Get.Method<GuardConfig>(METADATA_GUARD_CONFIG_KEY, controller, event.method)
 
-                const filter = Application.filters.find(filter => filter.metadata.name = methodMetadata.name)
+                const filter = Application.filters.find(filter => (filter.metadata.name = methodMetadata.name))
 
                 if (filter && filter.instance.perform) {
                     Application.logLoad(`Loading Guard HTTP "${filter.class.name}" in "${event.metadata.event}"`)
@@ -156,7 +173,10 @@ export class Application {
     }
 
     private static loadEventsListener(controller: Construtor, instance: any) {
-        const events = Application.getMethodsInClassByMetadataKey<{ event: string; method: string }>(controller, METADATA_EVENT_HANDLER_KEY).map(event => ({ ...event, event: Metadata.Get.Method<{ event: string }>(METADATA_EVENT_CONFIG_KEY, controller, event.method).event }))
+        const events = Application.getMethodsInClassByMetadataKey<{ event: string; method: string }>(controller, METADATA_EVENT_HANDLER_KEY).map(event => ({
+            ...event,
+            event: Metadata.Get.Method<{ event: string }>(METADATA_EVENT_CONFIG_KEY, controller, event.method).event
+        }))
 
         events.forEach(event => {
             Application.logLoad(`Loading Event Listener "${event.event}"`)
@@ -171,33 +191,49 @@ export class Application {
     private static initObserverListeners() {
         Application.client.on('request/end', arg => {
             if (arg.response.isSuccess()) {
-                Application.logHttp(`${arg.request.method} ${arg.request.name}${arg.request.headers.playerId ? ` {"player": ${arg.request.headers.playerId}}` : ''}`)
+                Application.logHttp(
+                    `${arg.request.method} ${arg.request.name}${arg.request.headers.playerId ? ` {"player": ${arg.request.headers.playerId}}` : ''}`
+                )
             } else {
-                Application.logger.error(`${arg.request.method} ${arg.request.name} {"error": "${arg.response.getError().message}"${arg.request.headers.playerId ? `, "player" ${arg.request.headers.playerId}}` : '}'}`, null, { context: '[HTTP]' })
+                Application.logger.error(
+                    `${arg.request.method} ${arg.request.name} {"error": "${arg.response.getError().message}"${
+                        arg.request.headers.playerId ? `, "player" ${arg.request.headers.playerId}}` : '}'
+                    }`,
+                    null,
+                    { context: '[HTTP]' }
+                )
             }
         })
     }
 
     private static logLoad(message: any) {
-        if (!Application.options?.log?.load) { return }
+        if (!Application.options?.log?.load) {
+            return
+        }
 
         Application.logger.log(message)
     }
 
     private static logHttp(message: any) {
-        if (!Application.options?.log?.eventHttp) { return }
+        if (!Application.options?.log?.eventHttp) {
+            return
+        }
 
         Application.logger.log(message, null, { context: '[HTTP]' })
     }
 
     private static logListener(message: any) {
-        if (!Application.options?.log?.eventListener) { return }
+        if (!Application.options?.log?.eventListener) {
+            return
+        }
 
         Application.logger.log(message, null, { context: '[LISTENER]' })
     }
 
     private static getMethodsInClassByMetadataKey<Metadata = any>(classConstructor: Construtor, key: string) {
-        return getMethodNamesByClass(classConstructor).map(methodName => ({ method: methodName, metadata: Metadata.Get.Method<Metadata>(key, classConstructor, methodName) })).filter(({ metadata }) => !!metadata)
+        return getMethodNamesByClass(classConstructor)
+            .map(methodName => ({ method: methodName, metadata: Metadata.Get.Method<Metadata>(key, classConstructor, methodName) }))
+            .filter(({ metadata }) => !!metadata)
     }
 
     private static getServer() {
