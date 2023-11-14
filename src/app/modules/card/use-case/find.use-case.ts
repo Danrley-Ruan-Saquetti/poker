@@ -1,29 +1,62 @@
-import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
-import { ID } from '@@types/index'
+import { Result } from '@esliph/common'
+import { ID } from '@@types'
 import { Service, ServiceContext } from '@common/module/decorator'
-import { Card } from '@modules/card/card.model'
 import { CardRepository } from '@modules/card/card.repository'
-import { DeckQueryUseCase } from '@modules/deck/use-case/query.use-case'
-import { GameRepository } from '@modules/game/game.repository'
+import { Card, CardSuit } from '@modules/card/card.model'
 
 @Service({ name: 'card.use-case.find', context: ServiceContext.USE_CASE })
 export class CardFindUseCase {
-    constructor(
-        @Injection.Inject('card.repository') private repository: CardRepository,
-        @Injection.Inject('game.repository') private gameRepository: GameRepository,
-        @Injection.Inject('deck.use-case.query') private deckQueryUC: DeckQueryUseCase
-    ) {}
+    constructor(@Injection.Inject('card.repository') private repository: CardRepository) {}
 
-    findManyByGameId(data: { id: ID }) {}
+    findById(data: { id: ID }) {
+        const card = this.repository.findFirst({ where: { id: { equals: data.id } } })
 
-    findManyByDeckId(data: { id: ID }) {
-        if (!this.deckQueryUC.getById({ id: data.id })) {
-            return Result.failure<Card[]>({ title: 'Query Card', message: 'Deck not found' })
+        if (!card) {
+            return Result.failure<Card>({ title: 'Find Card', message: 'Card not found' })
         }
 
-        const cards = this.repository.findMany({ where: { deckId: { equals: data.id } } })
+        return Result.success<Card>(card)
+    }
 
-        return Result.success<Card[]>(cards)
+    findByNumberAndSuitAndDeckId(data: { number: number; suit: CardSuit; deckId: ID }) {
+        const card = this.repository.findFirst({
+            where: {
+                deckId: { equals: data.deckId },
+                suit: { equals: data.suit },
+                number: { equals: data.number }
+            }
+        })
+
+        if (!card) {
+            return Result.failure<Card>({ title: 'Find Card', message: 'Card not found' })
+        }
+
+        return Result.success<Card>(card)
+    }
+
+    findByNumberAndSuitAndDeckIdAndInDeck(data: { number: number; suit: CardSuit; deckId: ID }) {
+        const card = this.repository.findFirst({
+            where: {
+                deckId: { equals: data.deckId },
+                suit: { equals: data.suit },
+                number: { equals: data.number },
+                inDeck: { equals: true }
+            }
+        })
+
+        if (!card) {
+            return Result.failure<Card>({ title: 'Find Card', message: 'Card not found' })
+        }
+
+        return Result.success<Card>(card)
+    }
+
+    findMany() {
+        return Result.success<Card[]>(this.repository.findMany())
+    }
+
+    findManyByDeckId(data: { deckId: ID }) {
+        return Result.success<Card[]>(this.repository.findMany({ where: { deckId: { equals: data.deckId } } }))
     }
 }

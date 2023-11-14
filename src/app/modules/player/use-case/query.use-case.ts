@@ -5,7 +5,7 @@ import { removeAttributesOfObject } from '@util'
 import { Service, ServiceContext } from '@common/module/decorator'
 import { PlayerRepository } from '@modules/player/player.repository'
 import { RoomQueryUseCase } from '@modules/room/use-case/query.use-case'
-import { Player, PlayerInfo, PlayerWithoutPassword } from '@modules/player/player.model'
+import { Player, PlayerInfoPublic, PlayerWithoutPassword } from '@modules/player/player.model'
 
 @Service({ name: 'player.use-case.query', context: ServiceContext.USE_CASE })
 export class PlayerQueryUseCase {
@@ -21,7 +21,7 @@ export class PlayerQueryUseCase {
             return playerResult
         }
 
-        return Result.success<PlayerInfo>(this.removeGeneralAttributesPlayer(playerResult.getValue()))
+        return Result.success<PlayerInfoPublic>(this.removeGeneralAttributesPlayer(playerResult.getValue()))
     }
 
     queryByLogin(data: { login: string }) {
@@ -31,7 +31,7 @@ export class PlayerQueryUseCase {
             return playerResult
         }
 
-        return Result.success<PlayerInfo>(this.removeGeneralAttributesPlayer(playerResult.getValue()))
+        return Result.success<PlayerInfoPublic>(this.removeGeneralAttributesPlayer(playerResult.getValue()))
     }
 
     queryAll() {
@@ -65,7 +65,7 @@ export class PlayerQueryUseCase {
             return playersResult
         }
 
-        return Result.success<PlayerInfo[]>(playersResult.getValue().map(player => this.removeGeneralAttributesPlayer(player)))
+        return Result.success<PlayerInfoPublic[]>(playersResult.getValue().map(player => this.removeGeneralAttributesPlayer(player)))
     }
 
     findManyByGameId(data: { gameId: ID }) {
@@ -99,6 +99,6 @@ export class PlayerQueryUseCase {
             'order',
             'status',
             'roomId'
-        ) as PlayerInfo
+        ) as PlayerInfoPublic
     }
 }
