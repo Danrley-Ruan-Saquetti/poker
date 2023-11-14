@@ -1,11 +1,11 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { ID } from '@@types'
 import { Deck } from '@modules/deck/deck.model'
 import { DeckRepository } from '@modules/deck/deck.repository'
 
-@Service({ name: 'deck.use-case.query', context: 'Use Case' })
+@Service({ name: 'deck.use-case.query', context: ServiceContext.USE_CASE })
 export class DeckQueryUseCase {
     constructor(@Injection.Inject('deck.repository') private deckRepository: DeckRepository) {}
 

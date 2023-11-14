@@ -1,11 +1,11 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
 import { ID } from '@@types'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { CardSuit } from '@modules/card/card.model'
 import { CardRepository } from '@modules/card/card.repository'
 
-@Service({ name: 'card.use-case.create', context: 'Use Case' })
+@Service({ name: 'card.use-case.create', context: ServiceContext.USE_CASE })
 export class CardCreateUseCase {
     constructor(@Injection.Inject('card.repository') private repository: CardRepository) {}
 

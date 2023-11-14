@@ -1,13 +1,13 @@
 import { Injection } from '@esliph/injection'
 import { Result } from '@esliph/common'
 import { ID } from '@@types/index'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { RoomQueryUseCase } from '@modules/room/use-case/query.use-case'
 import { GameRepository } from '@modules/game/game.repository'
 import { DeckRepository } from '@modules/deck/deck.repository'
 import { CardCreateUseCase } from '@modules/card/use-case/create.use-case'
 
-@Service({ name: 'deck.use-case.create', context: 'Use Case' })
+@Service({ name: 'deck.use-case.create', context: ServiceContext.USE_CASE })
 export class DeckCreateUseCase {
     constructor(
         @Injection.Inject('game.repository') private gameRepository: GameRepository,

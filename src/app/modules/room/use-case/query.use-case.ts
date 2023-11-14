@@ -1,15 +1,13 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { ID } from '@@types'
 import { Room } from '@modules/room/room.model'
 import { RoomRepository } from '@modules/room/room.repository'
 
-@Service({ name: 'room.use-case.query', context: 'Use Case' })
+@Service({ name: 'room.use-case.query', context: ServiceContext.USE_CASE })
 export class RoomQueryUseCase {
-    constructor(
-        @Injection.Inject('room.repository') private roomRepository: RoomRepository,
-    ) { }
+    constructor(@Injection.Inject('room.repository') private roomRepository: RoomRepository) {}
 
     getRoomByGameId(data: { gameId: ID }) {
         const room = this.roomRepository.findFirst({ where: { gameId: { equals: data.gameId } } })

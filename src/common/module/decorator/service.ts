@@ -2,8 +2,14 @@ import { DecoratorMetadata, Metadata } from '@esliph/metadata'
 import { METADATA_SERVICE_CONFIG_KEY, METADATA_SERVICE_KEY } from '@constants/index'
 import { Injection } from '@esliph/injection'
 
+export enum ServiceContext {
+    USE_CASE = 'Use Case',
+    REPOSITORY = 'Repository',
+    SERVICE = 'Service'
+}
+
 export type ServiceConfig = {
-    name: string,
+    name: string
     context: 'Use Case' | 'Repository' | 'Service'
 }
 

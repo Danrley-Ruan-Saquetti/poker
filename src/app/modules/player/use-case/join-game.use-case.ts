@@ -2,7 +2,7 @@ import { Injection } from '@esliph/injection'
 import { Result } from '@esliph/common'
 import { ID } from '@@types'
 import { Emitter } from '@services/observer.service'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { PlayerStatus } from '@modules/player/player.model'
 import { PlayerRepository } from '@modules/player/player.repository'
 import { RoomQueryUseCase } from '@modules/room/use-case/query.use-case'
@@ -10,7 +10,7 @@ import { PlayerQueryUseCase } from '@modules/player/use-case/query.use-case'
 import { PlayerInGameUseCase } from '@modules/player/use-case/in-game.use-case'
 import { GameRepository } from '@modules/game/game.repository'
 
-@Service({ name: 'player.use-case.join-game', context: 'Use Case' })
+@Service({ name: 'player.use-case.join-game', context: ServiceContext.USE_CASE })
 export class PlayerJoinGameUseCase {
     constructor(
         @Injection.Inject('player.repository') private playerRepository: PlayerRepository,
@@ -18,10 +18,10 @@ export class PlayerJoinGameUseCase {
         @Injection.Inject('player.use-case.query') private playerQueryUC: PlayerQueryUseCase,
         @Injection.Inject('game.repository') private gameRepository: GameRepository,
         @Injection.Inject('room.use-case.query') private roomQueryUC: RoomQueryUseCase,
-        @Injection.Inject('observer.emitter') private emitter: Emitter,
-    ) { }
+        @Injection.Inject('observer.emitter') private emitter: Emitter
+    ) {}
 
-    perform(data: { playerId: ID, roomId: ID }) {
+    perform(data: { playerId: ID; roomId: ID }) {
         if (!this.gameRepository.isExists({ where: { id: { equals: data.roomId } } })) {
             return Result.failure<{ ok: boolean }>({ title: 'Joint Game', message: 'Game not found' })
         }

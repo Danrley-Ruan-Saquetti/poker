@@ -1,7 +1,7 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
 import { ID } from '@@types/index'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { GameRepository } from '@modules/game/game.repository'
 import { PlayerQueryUseCase } from '@modules/player/use-case/query.use-case'
 import { DeckQueryUseCase } from '@modules/deck/use-case/query.use-case'
@@ -9,7 +9,7 @@ import { RoomQueryUseCase } from '@modules/room/use-case/query.use-case'
 import { Game, GameState } from '@modules/game/game.model'
 import { CardQueryUseCase } from '@modules/card/use-case/query.use-case'
 
-@Service({ name: 'game.use-case.query', context: 'Use Case' })
+@Service({ name: 'game.use-case.query', context: ServiceContext.USE_CASE })
 export class GameQueryUseCase {
     constructor(
         @Injection.Inject('game.repository') private gameRepository: GameRepository,

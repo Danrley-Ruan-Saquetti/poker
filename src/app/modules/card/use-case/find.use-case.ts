@@ -7,8 +7,8 @@ import { CardRepository } from '@modules/card/card.repository'
 import { DeckQueryUseCase } from '@modules/deck/use-case/query.use-case'
 import { GameRepository } from '@modules/game/game.repository'
 
-@Service({ name: 'card.use-case.query', context: ServiceContext.USE_CASE })
-export class CardQueryUseCase {
+@Service({ name: 'card.use-case.find', context: ServiceContext.USE_CASE })
+export class CardFindUseCase {
     constructor(
         @Injection.Inject('card.repository') private repository: CardRepository,
         @Injection.Inject('game.repository') private gameRepository: GameRepository,

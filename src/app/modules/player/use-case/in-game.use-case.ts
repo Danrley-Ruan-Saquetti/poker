@@ -1,10 +1,10 @@
 import { Injection } from '@esliph/injection'
 import { Result } from '@esliph/common'
 import { ID } from '@@types'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { PlayerQueryUseCase } from '@modules/player/use-case/query.use-case'
 
-@Service({ name: 'player.use-case.in-game', context: 'Use Case' })
+@Service({ name: 'player.use-case.in-game', context: ServiceContext.USE_CASE })
 export class PlayerInGameUseCase {
     constructor(@Injection.Inject('player.use-case.query') private playerQueryUC: PlayerQueryUseCase) {}
 

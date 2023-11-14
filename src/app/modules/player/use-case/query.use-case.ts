@@ -2,12 +2,12 @@ import { Injection } from '@esliph/injection'
 import { Result } from '@esliph/common'
 import { ID } from '@@types'
 import { removeAttributesOfObject } from '@util'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { PlayerRepository } from '@modules/player/player.repository'
 import { RoomQueryUseCase } from '@modules/room/use-case/query.use-case'
 import { Player, PlayerInfo, PlayerWithoutPassword } from '@modules/player/player.model'
 
-@Service({ name: 'player.use-case.query', context: 'Use Case' })
+@Service({ name: 'player.use-case.query', context: ServiceContext.USE_CASE })
 export class PlayerQueryUseCase {
     constructor(
         @Injection.Inject('player.repository') private playerRepository: PlayerRepository,

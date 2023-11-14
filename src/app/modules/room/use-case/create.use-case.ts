@@ -1,13 +1,11 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { RoomRepository } from '@modules/room/room.repository'
 
-@Service({ name: 'room.use-case.create', context: 'Use Case' })
+@Service({ name: 'room.use-case.create', context: ServiceContext.USE_CASE })
 export class RoomCreateUseCase {
-    constructor(
-        @Injection.Inject('room.repository') private roomRepository: RoomRepository,
-    ) { }
+    constructor(@Injection.Inject('room.repository') private roomRepository: RoomRepository) {}
 
     perform(data: { gameId: number }) {
         const { id } = this.roomRepository.create({
