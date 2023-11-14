@@ -13,7 +13,7 @@ export class PlayerCreateUseCase {
     ) {}
 
     perform(data: PlayerModel) {
-        if (this.playerQueryUC.findByLogin({ login: data.login }).isSuccess()) {
+        if (this.playerQueryUC.queryByLogin({ login: data.login }).isSuccess()) {
             return Result.failure<{ ok: boolean }>({ title: 'Create Player', message: `Login ${data.login} is already exists` })
         }
 
@@ -29,6 +29,6 @@ export class PlayerCreateUseCase {
             }
         })
 
-        return Result.success<{ ok: boolean }>({ ok: true })
+        return Result.success({ ok: true })
     }
 }

@@ -13,8 +13,8 @@ export class RoomQueryUseCase {
         @Injection.Inject('game.use-case.find') private gameFindUC: GameFindUseCase
     ) {}
 
-    queryById(data: { roomId: ID }) {
-        return this.findUC.findById({ id: data.roomId })
+    queryById(data: { id: ID }) {
+        return this.findUC.findById({ id: data.id })
     }
 
     queryByGameId(data: { gameId: ID }) {

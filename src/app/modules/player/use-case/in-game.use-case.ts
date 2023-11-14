@@ -9,7 +9,7 @@ export class PlayerInGameUseCase {
     constructor(@Injection.Inject('player.use-case.query') private playerQueryUC: PlayerQueryUseCase) {}
 
     varifyPlayerInGame(data: { playerId: ID }) {
-        const resultPlayer = this.playerQueryUC.findById({ id: data.playerId })
+        const resultPlayer = this.playerQueryUC.queryById({ id: data.playerId })
 
         if (!resultPlayer.isSuccess()) {
             return Result.inherit<{ inGame: boolean }>(resultPlayer.getResponse() as any)

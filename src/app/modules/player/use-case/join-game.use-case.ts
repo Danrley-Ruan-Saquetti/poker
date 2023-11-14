@@ -26,9 +26,9 @@ export class PlayerJoinGameUseCase {
             return Result.failure<{ ok: boolean }>({ title: 'Joint Game', message: 'Game not found' })
         }
 
-        const playersRoomResult = this.playerQueryUC.findManyByRoomId({ roomId: data.roomId })
+        const playersRoomResult = this.playerQueryUC.queryManyByRoomId({ roomId: data.roomId })
 
-        const resultPlayerAlreadyInGame = this.playerInGameUC.perform({ playerId: data.playerId })
+        const resultPlayerAlreadyInGame = this.playerInGameUC.varifyPlayerInGame({ playerId: data.playerId })
 
         if (!resultPlayerAlreadyInGame.isSuccess()) {
             return Result.inherit<{ ok: boolean }>(resultPlayerAlreadyInGame.getResponse() as any)
@@ -41,7 +41,33 @@ export class PlayerJoinGameUseCase {
         this.playerRepository.update({ where: { id: { equals: data.playerId } }, data: { roomId: data.roomId, status: PlayerStatus.WAITING } })
 
         if (playersRoomResult.getValue().length == 2) {
-            const roomResult = this.roomQueryUC.getRoomId({ roomId: data.roomId })
+            const roomResult = this.roomQueryUC.queryById({ id: data.roomId })
+
+            if (roomResult.isSuccess()) {
+                this.emitter.emit('game.start', { gameId: roomResult.getValue().gameId })
+            }
+        }
+
+        return Result.success({ ok: true })
+    }
+
+    private performJoinGame(data: { playerId: ID; roomId: ID }) {
+        const playersRoomResult = this.playerQueryUC.queryManyByRoomId({ roomId: data.roomId })
+
+        const resultPlayerAlreadyInGame = this.playerInGameUC.varifyPlayerInGame({ playerId: data.playerId })
+
+        if (!resultPlayerAlreadyInGame.isSuccess()) {
+            return Result.inherit<{ ok: boolean }>(resultPlayerAlreadyInGame.getResponse() as any)
+        }
+
+        if (resultPlayerAlreadyInGame.getValue().inGame) {
+            return Result.failure<{ ok: boolean }>({ title: 'Join Game', message: 'Cannot join game because player already in game' })
+        }
+
+        this.playerRepository.update({ where: { id: { equals: data.playerId } }, data: { roomId: data.roomId, status: PlayerStatus.WAITING } })
+
+        if (playersRoomResult.getValue().length == 2) {
+            const roomResult = this.roomQueryUC.queryById({ id: data.roomId })
 
             if (roomResult.isSuccess()) {
                 this.emitter.emit('game.start', { gameId: roomResult.getValue().gameId })

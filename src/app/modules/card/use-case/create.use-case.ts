@@ -13,16 +13,16 @@ export class CardCreateUseCase {
         return Result.success(this.getFullDeckCards())
     }
 
-    performCreateByDeckId(data: { deckId: ID }) {
-        const cards = this.getFullDeckCards()
-
+    createByDeckId(data: { deckId: ID }) {
         if (this.repository.isExists({ where: { deckId: { equals: data.deckId } } })) {
-            return Result.failure({ title: 'Create Card', message: 'Cards already exists' })
+            return Result.failure<{ ok: boolean }>({ title: 'Create Card', message: 'Cards already exists' })
         }
+
+        const cards = this.getFullDeckCards()
 
         this.repository.createMany({ data: cards.map(card => ({ ...card, inDeck: true, deckId: data.deckId })) })
 
-        return Result.success(this.getFullDeckCards())
+        return Result.success({ ok: true })
     }
 
     getFullDeckCards() {
