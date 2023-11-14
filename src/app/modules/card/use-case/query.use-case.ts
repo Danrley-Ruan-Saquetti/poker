@@ -24,7 +24,7 @@ export class CardQueryUseCase {
             return Result.failure<Card[]>(gameResult.getError())
         }
 
-        return this.findManyByGameId({ gameId: gameResult.getValue().id })
+        return this.findManyByGameId({ gameId: data.gameId })
     }
 
     private findManyByGameId(data: { gameId: ID }) {
@@ -44,7 +44,7 @@ export class CardQueryUseCase {
             return Result.failure<Card[]>(roomResult.getError())
         }
 
-        return this.findManyByRoomId({ roomId: roomResult.getValue().id })
+        return this.findManyByRoomId({ roomId: data.roomId })
     }
 
     private findManyByRoomId(data: { roomId: ID }) {
@@ -64,7 +64,7 @@ export class CardQueryUseCase {
             return Result.failure<Card[]>(deckResult.getError())
         }
 
-        return this.findUC.findManyByDeckId({ deckId: deckResult.getValue().id })
+        return this.findUC.findManyByDeckId({ deckId: data.deckId })
     }
 
     private findManyByDeckId(data: { deckId: ID }) {
