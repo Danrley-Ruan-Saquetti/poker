@@ -17,10 +17,10 @@ export class GameCreateUseCase {
     ) {}
 
     perform(data: { playerId: number; type: GameType }) {
-        const playerInGameResult = this.playerInGameUC.perform({ playerId: data.playerId })
+        const playerInGameResult = this.playerInGameUC.varifyPlayerInGame({ playerId: data.playerId })
 
         if (!playerInGameResult.isSuccess()) {
-            return Result.inherit<{ ok: boolean }>(playerInGameResult as any)
+            return Result.failure<{ ok: boolean }>(playerInGameResult.getError())
         }
 
         if (playerInGameResult.getValue().inGame) {

@@ -12,7 +12,7 @@ export class PlayerInGameUseCase {
         const resultPlayer = this.playerQueryUC.queryById({ id: data.playerId })
 
         if (!resultPlayer.isSuccess()) {
-            return Result.inherit<{ inGame: boolean }>(resultPlayer.getResponse() as any)
+            return Result.failure<{ inGame: boolean }>(resultPlayer.getError())
         }
 
         return Result.success<{ inGame: boolean }>({ inGame: !!resultPlayer.getValue().roomId })

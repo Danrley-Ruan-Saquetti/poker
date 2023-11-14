@@ -21,17 +21,21 @@ export class PlayerJoinGameUseCase {
         @Injection.Inject('observer.emitter') private emitter: Emitter
     ) {}
 
-    perform(data: { playerId: ID; roomId: ID }) {
-        if (!this.gameRepository.isExists({ where: { id: { equals: data.roomId } } })) {
-            return Result.failure<{ ok: boolean }>({ title: 'Joint Game', message: 'Game not found' })
+    joinGameByRoomId(data: { playerId: ID; roomId: ID }) {
+        const roomResult = this.roomQueryUC.queryById({ id: data.roomId })
+
+        if (!roomResult.isSuccess()) {
+            return Result.failure<{ ok: boolean }>(roomResult.getError())
         }
 
-        const playersRoomResult = this.playerQueryUC.queryManyByRoomId({ roomId: data.roomId })
+        return this.performJoinGame({ playerId: data.playerId, roomId: data.roomId })
+    }
 
+    private performJoinGame(data: { playerId: ID; roomId: ID }) {
         const resultPlayerAlreadyInGame = this.playerInGameUC.varifyPlayerInGame({ playerId: data.playerId })
 
         if (!resultPlayerAlreadyInGame.isSuccess()) {
-            return Result.inherit<{ ok: boolean }>(resultPlayerAlreadyInGame.getResponse() as any)
+            return Result.failure<{ ok: boolean }>(resultPlayerAlreadyInGame.getError())
         }
 
         if (resultPlayerAlreadyInGame.getValue().inGame) {
@@ -40,40 +44,28 @@ export class PlayerJoinGameUseCase {
 
         this.playerRepository.update({ where: { id: { equals: data.playerId } }, data: { roomId: data.roomId, status: PlayerStatus.WAITING } })
 
-        if (playersRoomResult.getValue().length == 2) {
-            const roomResult = this.roomQueryUC.queryById({ id: data.roomId })
-
-            if (roomResult.isSuccess()) {
-                this.emitter.emit('game.start', { gameId: roomResult.getValue().gameId })
-            }
-        }
+        this.startGameDispachEvent({ roomId: data.roomId })
 
         return Result.success({ ok: true })
     }
 
-    private performJoinGame(data: { playerId: ID; roomId: ID }) {
+    private startGameDispachEvent(data: { roomId: ID }) {
         const playersRoomResult = this.playerQueryUC.queryManyByRoomId({ roomId: data.roomId })
 
-        const resultPlayerAlreadyInGame = this.playerInGameUC.varifyPlayerInGame({ playerId: data.playerId })
-
-        if (!resultPlayerAlreadyInGame.isSuccess()) {
-            return Result.inherit<{ ok: boolean }>(resultPlayerAlreadyInGame.getResponse() as any)
+        if (!playersRoomResult.isSuccess()) {
+            return
         }
 
-        if (resultPlayerAlreadyInGame.getValue().inGame) {
-            return Result.failure<{ ok: boolean }>({ title: 'Join Game', message: 'Cannot join game because player already in game' })
+        if (playersRoomResult.getValue().length != 2) {
+            return
         }
 
-        this.playerRepository.update({ where: { id: { equals: data.playerId } }, data: { roomId: data.roomId, status: PlayerStatus.WAITING } })
+        const roomResult = this.roomQueryUC.queryById({ id: data.roomId })
 
-        if (playersRoomResult.getValue().length == 2) {
-            const roomResult = this.roomQueryUC.queryById({ id: data.roomId })
-
-            if (roomResult.isSuccess()) {
-                this.emitter.emit('game.start', { gameId: roomResult.getValue().gameId })
-            }
+        if (!roomResult.isSuccess()) {
+            return
         }
 
-        return Result.success({ ok: true })
+        this.emitter.emit('game.start', { gameId: roomResult.getValue().gameId })
     }
 }
