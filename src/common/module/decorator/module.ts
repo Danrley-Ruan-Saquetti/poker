@@ -1,10 +1,10 @@
-import { Construtor } from '@@types/index'
+import { Construtor } from '@@types'
 import { DecoratorMetadata, Metadata } from '@esliph/metadata'
-import { METADATA_MODULE_CONFIG_KEY, METADATA_MODULE_KEY } from '@constants/index'
+import { METADATA_MODULE_CONFIG_KEY, METADATA_MODULE_KEY } from '@constants'
 import { isController } from '@common/controller'
 import { isService } from '@common/service'
 import { ResultException } from '@esliph/common'
-import { isInstance } from '@util/index'
+import { isInstance } from '@util'
 import { Injection } from '@esliph/injection'
 
 type ProviderOptions = {

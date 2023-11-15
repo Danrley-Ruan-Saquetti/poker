@@ -1,4 +1,4 @@
-import { METADATA_CONTROLLER_CONFIG_KEY, METADATA_CONTROLLER_KEY } from '@constants/index'
+import { METADATA_CONTROLLER_CONFIG_KEY, METADATA_CONTROLLER_KEY } from '@constants'
 import { Injection } from '@esliph/injection'
 import { DecoratorMetadata, Metadata } from '@esliph/metadata'
 

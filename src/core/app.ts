@@ -1,13 +1,13 @@
 import express from 'express'
 import { ResultException } from '@esliph/common'
 import { Injection } from '@esliph/injection'
-import { Listener } from '@services/observer.service'
 import { Metadata } from '@esliph/metadata'
 import { Client, Server } from '@esliph/http'
-import { Construtor } from '@@types/index'
-import { Logger } from '@services/logger.service'
+import { Listener } from '@services/observer.service'
+import { Construtor } from '@@types'
 import { ModuleConfig, ServiceConfig } from '@common/module/decorator'
 import { isModule } from '@common/module'
+import { Logger } from '@services/logger.service'
 import {
     METADATA_EVENT_CONFIG_KEY,
     METADATA_EVENT_HANDLER_KEY,
@@ -16,8 +16,8 @@ import {
     METADATA_HTTP_ROUTER_HANDLER_KEY,
     METADATA_MODULE_CONFIG_KEY,
     METADATA_SERVICE_CONFIG_KEY
-} from '@constants/index'
-import { getMethodNamesByClass, isInstance } from '@util/index'
+} from '@constants'
+import { getMethodNamesByClass, isInstance } from '@util'
 import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
 import { GuardConfig, FilterConfig } from '@common/module/decorator'
@@ -201,8 +201,7 @@ export class Application {
                 )
             } else {
                 Application.logger.error(
-                    `${arg.request.method} ${arg.request.name} {"error": "${arg.response.getError().message}"${
-                        arg.request.headers.playerId ? `, "player" ${arg.request.headers.playerId}}` : '}'
+                    `${arg.request.method} ${arg.request.name} {"error": "${arg.response.getError().message}"${arg.request.headers.playerId ? `, "player" ${arg.request.headers.playerId}}` : '}'
                     }`,
                     null,
                     { context: '[HTTP]' }

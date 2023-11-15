@@ -1,6 +1,6 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
-import { ID } from '@@types/index'
+import { ID } from '@@types'
 import { Service, ServiceContext } from '@common/module/decorator'
 import { Card } from '@modules/card/card.model'
 import { CardFindUseCase } from '@modules/card/use-case/find.use-case'
@@ -15,7 +15,7 @@ export class CardQueryUseCase {
         @Injection.Inject('deck.use-case.find') private deckFindUC: DeckFindUseCase,
         @Injection.Inject('game.use-case.find') private gameFindUC: GameFindUseCase,
         @Injection.Inject('room.use-case.find') private RoomFindUC: RoomFindUseCase
-    ) {}
+    ) { }
 
     queryManyByGameId(data: { gameId: ID }) {
         const gameResult = this.gameFindUC.findById({ id: data.gameId })

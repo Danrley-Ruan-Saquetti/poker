@@ -1,6 +1,6 @@
 import { Injection } from '@esliph/injection'
 import { Result } from '@esliph/common'
-import { ID } from '@@types/index'
+import { ID } from '@@types'
 import { Service, ServiceContext } from '@common/module/decorator'
 import { RoomQueryUseCase } from '@modules/room/use-case/query.use-case'
 import { DeckRepository } from '@modules/deck/deck.repository'
@@ -14,7 +14,7 @@ export class DeckCreateUseCase {
         @Injection.Inject('room.use-case.query') private roomQueryUC: RoomQueryUseCase,
         @Injection.Inject('card.use-case.create') private cardCreateUC: CardCreateUseCase,
         @Injection.Inject('deck.repository') private deckRepository: DeckRepository
-    ) {}
+    ) { }
 
     createByGameId(data: { gameId: ID }) {
         if (!this.gameQueryUC.findById({ id: data.gameId })) {

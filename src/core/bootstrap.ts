@@ -1,4 +1,4 @@
-import { Construtor } from '@@types/index'
+import { Construtor } from '@@types'
 import { Application } from '@core/app'
 
 export function Bootstrap(appModule: Construtor, options: { port: number, serverLocal?: boolean, logLoad?: boolean, logEventHttp?: boolean, logEventListener?: boolean }) {

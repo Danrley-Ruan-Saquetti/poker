@@ -1,6 +1,6 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
-import { ID } from '@@types/index'
+import { ID } from '@@types'
 import { Service, ServiceContext } from '@common/module/decorator'
 import { GameRepository } from '@modules/game/game.repository'
 import { PlayerQueryUseCase } from '@modules/player/use-case/query.use-case'
@@ -17,7 +17,7 @@ export class GameQueryUseCase {
         @Injection.Inject('room.use-case.query') private roomQueryUC: RoomQueryUseCase,
         @Injection.Inject('card.use-case.query') private cardQueryUC: CardQueryUseCase,
         @Injection.Inject('deck.use-case.query') private deckQueryUC: DeckQueryUseCase
-    ) {}
+    ) { }
 
     getState(data: { gameId: ID }) {
         const gameResult = this.findById({ id: data.gameId })

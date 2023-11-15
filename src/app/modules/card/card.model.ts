@@ -1,4 +1,4 @@
-import { ID } from '@@types/index'
+import { ID } from '@@types'
 import { Document } from '@esliph/repository-memory'
 
 export enum CardSuit {
