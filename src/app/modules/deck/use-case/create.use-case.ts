@@ -10,18 +10,18 @@ import { GameQueryUseCase } from '@modules/game/use-case/query.use-case'
 @Service({ name: 'deck.use-case.create', context: ServiceContext.USE_CASE })
 export class DeckCreateUseCase {
     constructor(
-        @Injection.Inject('game.repository') private gameQueryUC: GameQueryUseCase,
+        @Injection.Inject('game.use-case.query') private gameQueryUC: GameQueryUseCase,
         @Injection.Inject('room.use-case.query') private roomQueryUC: RoomQueryUseCase,
         @Injection.Inject('card.use-case.create') private cardCreateUC: CardCreateUseCase,
         @Injection.Inject('deck.repository') private deckRepository: DeckRepository
     ) { }
 
     createByGameId(data: { gameId: ID }) {
-        if (!this.gameQueryUC.findById({ id: data.gameId })) {
+        if (!this.gameQueryUC.queryById({ id: data.gameId })) {
             return Result.failure<{ ok: boolean }>({ title: 'Create Deck', message: 'Game not found' })
         }
 
-        const roomResult = this.roomQueryUC.queryByGameId({ gameId: data.gameId })
+        const roomResult = this.roomQueryUC.queryByGameId(data)
 
         if (!roomResult.isSuccess()) {
             return Result.failure<{ ok: boolean }>(roomResult.getError())
@@ -37,7 +37,7 @@ export class DeckCreateUseCase {
             return Result.failure<{ ok: boolean }>(roomResult.getError())
         }
 
-        return this.performCreate({ roomId: data.roomId })
+        return this.performCreate(data)
     }
 
     private performCreate(data: { roomId: ID }) {

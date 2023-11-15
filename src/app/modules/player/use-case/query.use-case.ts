@@ -14,7 +14,7 @@ export class PlayerQueryUseCase {
         @Injection.Inject('player.use-case.find') private findUC: PlayerFindUseCase,
         @Injection.Inject('room.use-case.find') private roomFindUC: RoomFindUseCase,
         @Injection.Inject('game.use-case.find') private gameFindUC: GameFindUseCase
-    ) {}
+    ) { }
 
     querySimpleById(data: { id: ID }) {
         const playerResult = this.queryById({ id: data.id })
@@ -56,11 +56,21 @@ export class PlayerQueryUseCase {
         return Result.success<Player>(playerResult.getValue())
     }
 
+    queryManySimpleByGameId(data: { gameId: ID }) {
+        const playersResult = this.queryManyByGameId(data)
+
+        if (!playersResult.isSuccess()) {
+            return Result.failure<PlayerWithoutPassword[]>(playersResult.getError())
+        }
+
+        return Result.success(playersResult.getValue().map(player => this.removeAttributePasswordPlayer(player)))
+    }
+
     queryManyByGameId(data: { gameId: ID }) {
         const gameResult = this.gameFindUC.findById({ id: data.gameId })
 
         if (!gameResult.isSuccess()) {
-            return Result.failure<Player>(gameResult.getError())
+            return Result.failure<Player[]>(gameResult.getError())
         }
 
         return this.findManyByGameId({ gameId: data.gameId })
@@ -70,10 +80,20 @@ export class PlayerQueryUseCase {
         const roomResult = this.roomFindUC.findByGameId({ gameId: data.gameId })
 
         if (!roomResult.isSuccess()) {
-            return Result.failure<Player>(roomResult.getError())
+            return Result.failure<Player[]>(roomResult.getError())
         }
 
         return this.findManyByRoomId({ roomId: roomResult.getValue().id })
+    }
+
+    queryManySimpleByRoomId(data: { roomId: ID }) {
+        const playersResult = this.queryManyByRoomId(data)
+
+        if (!playersResult.isSuccess()) {
+            return Result.failure<PlayerWithoutPassword[]>(playersResult.getError())
+        }
+
+        return Result.success(playersResult.getValue().map(player => this.removeAttributePasswordPlayer(player)))
     }
 
     queryManyByRoomId(data: { roomId: ID }) {
@@ -84,6 +104,10 @@ export class PlayerQueryUseCase {
         }
 
         return this.findManyByRoomId({ roomId: data.roomId })
+    }
+
+    queryMany() {
+        return Result.success<PlayerInfoPublic[]>(this.findUC.findMany().getValue().map(player => this.removeAttributesPrivatePlayer(player)))
     }
 
     private findManyByRoomId(data: { roomId: ID }) {

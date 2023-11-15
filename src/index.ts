@@ -3,7 +3,7 @@ import { Bootstrap } from '@core/bootstrap'
 import { MainModule } from '@main.module'
 import { GameType } from '@modules/game/game.model'
 
-const application = Bootstrap(MainModule, { serverLocal: true, port: 8080, logLoad: true, logEventHttp: true, logEventListener: true })
+const application = Bootstrap(MainModule, { serverLocal: true, port: 8080, logLoad: false, logEventHttp: true, logEventListener: true, logError: true })
 
 async function App() {
     const users = [
@@ -16,7 +16,13 @@ async function App() {
 
     await users[0].post('/games/create', { gameType: GameType.TEXAS_HOLDEM })
 
-    const { roomId } = (await users[0].get('/players/current')).getValue()
+    const currentPlayerResult = await users[0].get('/players/current')
+
+    if (!currentPlayerResult.isSuccess()) {
+        return
+    }
+
+    const { roomId } = currentPlayerResult.getValue()
 
     users[0].use({ params: { roomId } })
 

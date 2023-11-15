@@ -24,11 +24,11 @@ export class CardQueryUseCase {
             return Result.failure<Card[]>(gameResult.getError())
         }
 
-        return this.findManyByGameId({ gameId: data.gameId })
+        return this.findManyByGameId(data)
     }
 
     private findManyByGameId(data: { gameId: ID }) {
-        const roomResult = this.RoomFindUC.findByGameId({ gameId: data.gameId })
+        const roomResult = this.RoomFindUC.findByGameId(data)
 
         if (!roomResult.isSuccess()) {
             return Result.failure<Card[]>(roomResult.getError())
@@ -44,11 +44,11 @@ export class CardQueryUseCase {
             return Result.failure<Card[]>(roomResult.getError())
         }
 
-        return this.findManyByRoomId({ roomId: data.roomId })
+        return this.findManyByRoomId(data)
     }
 
     private findManyByRoomId(data: { roomId: ID }) {
-        const deckResult = this.deckFindUC.findByRoomId({ roomId: data.roomId })
+        const deckResult = this.deckFindUC.findByRoomId(data)
 
         if (!deckResult.isSuccess()) {
             return Result.failure<Card[]>(deckResult.getError())
@@ -64,10 +64,10 @@ export class CardQueryUseCase {
             return Result.failure<Card[]>(deckResult.getError())
         }
 
-        return this.findUC.findManyByDeckId({ deckId: data.deckId })
+        return this.findUC.findManyByDeckId(data)
     }
 
     private findManyByDeckId(data: { deckId: ID }) {
-        return this.findUC.findManyByDeckId({ deckId: data.deckId })
+        return this.findUC.findManyByDeckId(data)
     }
 }

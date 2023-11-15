@@ -19,7 +19,7 @@ export class PlayerJoinGameUseCase {
         @Injection.Inject('game.repository') private gameRepository: GameRepository,
         @Injection.Inject('room.use-case.query') private roomQueryUC: RoomQueryUseCase,
         @Injection.Inject('observer.emitter') private emitter: Emitter
-    ) {}
+    ) { }
 
     joinGameByRoomId(data: { playerId: ID; roomId: ID }) {
         const roomResult = this.roomQueryUC.queryById({ id: data.roomId })
@@ -32,7 +32,7 @@ export class PlayerJoinGameUseCase {
     }
 
     private performJoinGame(data: { playerId: ID; roomId: ID }) {
-        const resultPlayerAlreadyInGame = this.playerInGameUC.varifyPlayerInGame({ playerId: data.playerId })
+        const resultPlayerAlreadyInGame = this.playerInGameUC.verifyPlayerInGame({ playerId: data.playerId })
 
         if (!resultPlayerAlreadyInGame.isSuccess()) {
             return Result.failure<{ ok: boolean }>(resultPlayerAlreadyInGame.getError())
@@ -44,12 +44,12 @@ export class PlayerJoinGameUseCase {
 
         this.playerRepository.update({ where: { id: { equals: data.playerId } }, data: { roomId: data.roomId, status: PlayerStatus.WAITING } })
 
-        this.startGameDispachEvent({ roomId: data.roomId })
+        this.startGameDispatchEvent({ roomId: data.roomId })
 
         return Result.success({ ok: true })
     }
 
-    private startGameDispachEvent(data: { roomId: ID }) {
+    private startGameDispatchEvent(data: { roomId: ID }) {
         const playersRoomResult = this.playerQueryUC.queryManyByRoomId({ roomId: data.roomId })
 
         if (!playersRoomResult.isSuccess()) {

@@ -7,10 +7,13 @@ import { PlayerQueryUseCase } from '@modules/player/use-case/query.use-case'
 
 @Service({ name: 'auth.use-case.login', context: ServiceContext.USE_CASE })
 export class AuthLoginUseCase {
-    constructor(@Injection.Inject('player.repository') private playerRepository: PlayerQueryUseCase, @Injection.Inject('jwt') private jwtService: JWTService) {}
+    constructor(
+        @Injection.Inject('player.use-case.query') private playerQueryUC: PlayerQueryUseCase,
+        @Injection.Inject('jwt') private jwtService: JWTService
+    ) { }
 
     perform(data: { login: string; password: string }) {
-        const playerResult = this.playerRepository.queryByLogin({ login: data.login })
+        const playerResult = this.playerQueryUC.queryByLogin(data)
 
         if (!playerResult.isSuccess() || playerResult.getValue().password != data.password) {
             return Result.failure<{ token: string }>({ title: 'Authentication Player', message: 'Email or password invalid' })

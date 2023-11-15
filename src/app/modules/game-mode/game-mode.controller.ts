@@ -25,7 +25,7 @@ export class GameModeController {
 
     @OnEvent('game.deck.create')
     prepareDeck(data: { gameId: ID }) {
-        this.deckCreateUC.perform({ gameId: data.gameId })
+        this.deckCreateUC.createByGameId({ gameId: data.gameId })
     }
 
     getOrderEmpty(data: { gameId: ID }) { }

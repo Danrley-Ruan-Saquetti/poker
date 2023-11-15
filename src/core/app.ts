@@ -22,7 +22,7 @@ import { isFilter } from '@common/filter'
 import { isGuard } from '@common/guard'
 import { GuardConfig, FilterConfig } from '@common/module/decorator'
 
-type ApplicationOptions = { serverLocal?: boolean; log?: { load?: boolean; eventHttp?: boolean; eventListener?: boolean } }
+type ApplicationOptions = { serverLocal?: boolean; log?: { load?: boolean; eventHttp?: boolean; eventListener?: boolean, logError?: boolean } }
 
 export class Application {
     static serverHttp = express()
@@ -206,6 +206,10 @@ export class Application {
                     null,
                     { context: '[HTTP]' }
                 )
+
+                if (Application.options?.log?.logError) {
+                    Application.logger.error(arg.response.getResponse())
+                }
             }
         })
     }

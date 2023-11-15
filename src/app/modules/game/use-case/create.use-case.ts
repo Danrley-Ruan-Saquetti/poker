@@ -14,10 +14,10 @@ export class GameCreateUseCase {
         @Injection.Inject('player.use-case.in-game') private playerInGameUC: PlayerInGameUseCase,
         @Injection.Inject('room.use-case.create') private roomCreateUC: RoomCreateUseCase,
         @Injection.Inject('player.use-case.join-game') private playerJoinGameUC: PlayerJoinGameUseCase
-    ) {}
+    ) { }
 
     perform(data: { playerId: number; type: GameType }) {
-        const playerInGameResult = this.playerInGameUC.varifyPlayerInGame({ playerId: data.playerId })
+        const playerInGameResult = this.playerInGameUC.verifyPlayerInGame({ playerId: data.playerId })
 
         if (!playerInGameResult.isSuccess()) {
             return Result.failure<{ ok: boolean }>(playerInGameResult.getError())
@@ -30,7 +30,7 @@ export class GameCreateUseCase {
         const game = this.gameRepository.create({ data: { isRunning: false, type: data.type } })
         const room = this.roomCreateUC.perform({ gameId: game.id })
 
-        this.playerJoinGameUC.perform({ playerId: data.playerId, roomId: room.getValue().id })
+        this.playerJoinGameUC.joinGameByRoomId({ playerId: data.playerId, roomId: room.getValue().id })
 
         return Result.success<{ ok: boolean }>({ ok: true })
     }

@@ -23,33 +23,33 @@ export class PlayerController {
     @Guard({ name: GUARD_AUTHORIZATION })
     @Post('/players/join-game')
     joinGame(req: Request, res: Response) {
-        return this.joinGameUC.perform({ playerId: req.headers.playerId, roomId: req.params.roomId })
+        return this.joinGameUC.joinGameByRoomId({ playerId: req.headers.playerId, roomId: req.params.roomId })
     }
 
     @Get('/players')
     findAll(req: Request, res: Response) {
-        return this.queryUC.queryAll()
+        return this.queryUC.queryMany()
     }
 
     @Get('/players?:roomId')
     findManyByIdRoom(req: Request, res: Response) {
-        return this.queryUC.findManyByRoomId({ roomId: req.params.roomId })
+        return this.queryUC.queryManyByRoomId({ roomId: req.params.roomId })
     }
 
     @Get('/players?:gameId')
     findManyByIdGame(req: Request, res: Response) {
-        return this.queryUC.findManyByGameId({ gameId: req.params.gameId })
+        return this.queryUC.queryManyByGameId({ gameId: req.params.gameId })
     }
 
     @Guard({ name: GUARD_AUTHORIZATION })
     @Get('/players?:id')
     findFirst(req: Request, res: Response) {
-        return this.queryUC.queryById({ playerId: req.params.playerId })
+        return this.queryUC.queryById({ id: req.params.playerId })
     }
 
     @Guard({ name: GUARD_AUTHORIZATION })
     @Get('/players/current')
     findMe(req: Request, res: Response) {
-        return this.queryUC.findById({ playerId: req.headers.playerId })
+        return this.queryUC.queryById({ id: req.headers.playerId })
     }
 }

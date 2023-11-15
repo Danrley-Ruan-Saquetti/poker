@@ -7,7 +7,7 @@ import { BlindType, Player, PlayerStatus } from '@modules/player/player.model'
 
 @Service({ name: 'player.use-case.find', context: ServiceContext.USE_CASE })
 export class PlayerFindUseCase {
-    constructor(@Injection.Inject('player.repository') private repository: PlayerRepository) {}
+    constructor(@Injection.Inject('player.repository') private repository: PlayerRepository) { }
 
     findById(data: { id: ID }) {
         const player = this.repository.findFirst({ where: { id: { equals: data.id } } })
@@ -29,7 +29,7 @@ export class PlayerFindUseCase {
         return Result.success<Player>(player)
     }
 
-    findByRoomIdAndIsCuurentBidding(data: { roomId: ID }) {
+    findByRoomIdAndIsCurrentBidding(data: { roomId: ID }) {
         const player = this.repository.findFirst({
             where: {
                 roomId: { equals: data.roomId },
@@ -68,7 +68,7 @@ export class PlayerFindUseCase {
             this.repository.findMany({
                 where: {
                     roomId: { equals: data.roomId },
-                    OR: data.blindTypes.map(blintType => ({ blindType: { equals: blintType } }))
+                    OR: data.blindTypes.map(blindType => ({ blindType: { equals: blindType } }))
                 },
                 orderBy: { order: 'ASC' }
             })

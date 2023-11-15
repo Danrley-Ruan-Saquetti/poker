@@ -6,9 +6,9 @@ import { PlayerQueryUseCase } from '@modules/player/use-case/query.use-case'
 
 @Service({ name: 'player.use-case.in-game', context: ServiceContext.USE_CASE })
 export class PlayerInGameUseCase {
-    constructor(@Injection.Inject('player.use-case.query') private playerQueryUC: PlayerQueryUseCase) {}
+    constructor(@Injection.Inject('player.use-case.query') private playerQueryUC: PlayerQueryUseCase) { }
 
-    varifyPlayerInGame(data: { playerId: ID }) {
+    verifyPlayerInGame(data: { playerId: ID }) {
         const resultPlayer = this.playerQueryUC.queryById({ id: data.playerId })
 
         if (!resultPlayer.isSuccess()) {

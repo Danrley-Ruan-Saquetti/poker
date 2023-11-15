@@ -1,3 +1,4 @@
+import { GameFindUseCase } from '@modules/game/use-case/find.use-case'
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
 import { ID } from '@@types'
@@ -10,8 +11,25 @@ import { Deck } from '@modules/deck/deck.model'
 export class DeckQueryUseCase {
     constructor(
         @Injection.Inject('deck.use-case.find') private findUC: DeckFindUseCase,
-        @Injection.Inject('room.use-case.find') private roomFindUC: RoomFindUseCase
-    ) {}
+        @Injection.Inject('room.use-case.find') private roomFindUC: RoomFindUseCase,
+        @Injection.Inject('game.use-case.find') private gameFindUC: GameFindUseCase
+    ) { }
+
+    queryByGameId(data: { gameId: ID }) {
+        const gameResult = this.gameFindUC.findById({ id: data.gameId })
+
+        if (!gameResult.isSuccess()) {
+            return Result.failure<Deck>(gameResult.getError())
+        }
+
+        const roomResult = this.roomFindUC.findByGameId({ gameId: data.gameId })
+
+        if (!roomResult.isSuccess()) {
+            return Result.failure<Deck>(roomResult.getError())
+        }
+
+        return this.findByRoomId({ roomId: roomResult.getValue().id })
+    }
 
     queryByRoomId(data: { roomId: ID }) {
         const roomResult = this.roomFindUC.findById({ id: data.roomId })
