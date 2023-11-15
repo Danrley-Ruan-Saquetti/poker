@@ -1,15 +1,13 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { KEY_SECRET_SERVER } from '@constants'
 import { JWTService } from '@services/jwt.service'
 import { PayloadJWT } from '@@types'
 
-@Service({ name: 'auth.use-case.authorization', context: 'Use Case' })
+@Service({ name: 'auth.use-case.authorization', context: ServiceContext.USE_CASE })
 export class AuthAuthorizationUseCase {
-    constructor(
-        @Injection.Inject('jwt') private jwtService: JWTService
-    ) { }
+    constructor(@Injection.Inject('jwt') private jwtService: JWTService) {}
 
     perform(Authorization: string) {
         if (!Authorization) {

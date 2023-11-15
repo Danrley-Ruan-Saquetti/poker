@@ -2,7 +2,7 @@ import { Injection } from '@esliph/injection'
 import { Result } from '@esliph/common'
 import { ID } from '@@types'
 import { Emitter } from '@services/observer.service'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { PlayerStatus } from '@modules/player/player.model'
 import { PlayerRepository } from '@modules/player/player.repository'
 import { RoomQueryUseCase } from '@modules/room/use-case/query.use-case'
@@ -10,7 +10,7 @@ import { PlayerQueryUseCase } from '@modules/player/use-case/query.use-case'
 import { PlayerInGameUseCase } from '@modules/player/use-case/in-game.use-case'
 import { GameRepository } from '@modules/game/game.repository'
 
-@Service({ name: 'player.use-case.join-game', context: 'Use Case' })
+@Service({ name: 'player.use-case.join-game', context: ServiceContext.USE_CASE })
 export class PlayerJoinGameUseCase {
     constructor(
         @Injection.Inject('player.repository') private playerRepository: PlayerRepository,
@@ -18,20 +18,24 @@ export class PlayerJoinGameUseCase {
         @Injection.Inject('player.use-case.query') private playerQueryUC: PlayerQueryUseCase,
         @Injection.Inject('game.repository') private gameRepository: GameRepository,
         @Injection.Inject('room.use-case.query') private roomQueryUC: RoomQueryUseCase,
-        @Injection.Inject('observer.emitter') private emitter: Emitter,
-    ) { }
+        @Injection.Inject('observer.emitter') private emitter: Emitter
+    ) {}
 
-    perform(data: { playerId: ID, roomId: ID }) {
-        if (!this.gameRepository.isExists({ where: { id: { equals: data.roomId } } })) {
-            return Result.failure<{ ok: boolean }>({ title: 'Joint Game', message: 'Game not found' })
+    joinGameByRoomId(data: { playerId: ID; roomId: ID }) {
+        const roomResult = this.roomQueryUC.queryById({ id: data.roomId })
+
+        if (!roomResult.isSuccess()) {
+            return Result.failure<{ ok: boolean }>(roomResult.getError())
         }
 
-        const playersRoomResult = this.playerQueryUC.findManyByRoomId({ roomId: data.roomId })
+        return this.performJoinGame({ playerId: data.playerId, roomId: data.roomId })
+    }
 
-        const resultPlayerAlreadyInGame = this.playerInGameUC.perform({ playerId: data.playerId })
+    private performJoinGame(data: { playerId: ID; roomId: ID }) {
+        const resultPlayerAlreadyInGame = this.playerInGameUC.varifyPlayerInGame({ playerId: data.playerId })
 
         if (!resultPlayerAlreadyInGame.isSuccess()) {
-            return Result.inherit<{ ok: boolean }>(resultPlayerAlreadyInGame.getResponse() as any)
+            return Result.failure<{ ok: boolean }>(resultPlayerAlreadyInGame.getError())
         }
 
         if (resultPlayerAlreadyInGame.getValue().inGame) {
@@ -40,14 +44,28 @@ export class PlayerJoinGameUseCase {
 
         this.playerRepository.update({ where: { id: { equals: data.playerId } }, data: { roomId: data.roomId, status: PlayerStatus.WAITING } })
 
-        if (playersRoomResult.getValue().length == 2) {
-            const roomResult = this.roomQueryUC.getRoomId({ roomId: data.roomId })
-
-            if (roomResult.isSuccess()) {
-                this.emitter.emit('game.start', { gameId: roomResult.getValue().gameId })
-            }
-        }
+        this.startGameDispachEvent({ roomId: data.roomId })
 
         return Result.success({ ok: true })
+    }
+
+    private startGameDispachEvent(data: { roomId: ID }) {
+        const playersRoomResult = this.playerQueryUC.queryManyByRoomId({ roomId: data.roomId })
+
+        if (!playersRoomResult.isSuccess()) {
+            return
+        }
+
+        if (playersRoomResult.getValue().length != 2) {
+            return
+        }
+
+        const roomResult = this.roomQueryUC.queryById({ id: data.roomId })
+
+        if (!roomResult.isSuccess()) {
+            return
+        }
+
+        this.emitter.emit('game.start', { gameId: roomResult.getValue().gameId })
     }
 }

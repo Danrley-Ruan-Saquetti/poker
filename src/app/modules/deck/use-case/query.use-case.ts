@@ -1,31 +1,37 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
-import { Service } from '@common/module/decorator'
 import { ID } from '@@types'
+import { Service, ServiceContext } from '@common/module/decorator'
+import { DeckFindUseCase } from '@modules/deck/use-case/find.use-case'
+import { RoomFindUseCase } from '@modules/room/use-case/find.use-case'
 import { Deck } from '@modules/deck/deck.model'
-import { DeckRepository } from '@modules/deck/deck.repository'
 
-@Service({ name: 'deck.use-case.query', context: 'Use Case' })
+@Service({ name: 'deck.use-case.query', context: ServiceContext.USE_CASE })
 export class DeckQueryUseCase {
-    constructor(@Injection.Inject('deck.repository') private deckRepository: DeckRepository) {}
+    constructor(
+        @Injection.Inject('deck.use-case.find') private findUC: DeckFindUseCase,
+        @Injection.Inject('room.use-case.find') private roomFindUC: RoomFindUseCase
+    ) {}
 
-    getById(data: { id: ID }) {
-        const deck = this.deckRepository.findFirst({ where: { id: { equals: data.id } } })
+    queryByRoomId(data: { roomId: ID }) {
+        const roomResult = this.roomFindUC.findById({ id: data.roomId })
 
-        if (!deck) {
-            return Result.failure<Deck>({ title: 'Find Deck', message: 'Cannot found deck' })
+        if (!roomResult.isSuccess()) {
+            return Result.failure<Deck>(roomResult.getError())
         }
 
-        return Result.success<Deck>(deck)
+        return this.findByRoomId({ roomId: data.roomId })
     }
 
-    getByRoomId(data: { roomId: ID }) {
-        const deck = this.deckRepository.findFirst({ where: { roomId: { equals: data.roomId } } })
+    private findByRoomId(data: { roomId: ID }) {
+        return this.findUC.findByRoomId({ roomId: data.roomId })
+    }
 
-        if (!deck) {
-            return Result.failure<Deck>({ title: 'Find Deck', message: 'Cannot found deck' })
-        }
+    queryById(data: { id: ID }) {
+        return this.findById({ id: data.id })
+    }
 
-        return Result.success<Deck>(deck)
+    private findById(data: { id: ID }) {
+        return this.findUC.findById({ id: data.id })
     }
 }

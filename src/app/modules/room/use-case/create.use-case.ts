@@ -1,18 +1,21 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { RoomRepository } from '@modules/room/room.repository'
 
-@Service({ name: 'room.use-case.create', context: 'Use Case' })
+@Service({ name: 'room.use-case.create', context: ServiceContext.USE_CASE })
 export class RoomCreateUseCase {
-    constructor(
-        @Injection.Inject('room.repository') private roomRepository: RoomRepository,
-    ) { }
+    constructor(@Injection.Inject('room.repository') private repository: RoomRepository) {}
 
     perform(data: { gameId: number }) {
-        const { id } = this.roomRepository.create({
+        if (this.repository.isExists({ where: { gameId: { equals: data.gameId } } })) {
+            return Result.failure({ title: 'Create Room', message: 'Room in game already exists' })
+        }
+
+        const { id } = this.repository.create({
             data: {
                 betTimeout: 15 * 1000,
+                playersLimit: 9,
                 betValueCurrentRound: 0,
                 gameId: data.gameId,
                 minimumBetAmount: 0,

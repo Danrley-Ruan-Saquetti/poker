@@ -1,29 +1,73 @@
 import { Result } from '@esliph/common'
 import { Injection } from '@esliph/injection'
 import { ID } from '@@types/index'
-import { Service } from '@common/module/decorator'
+import { Service, ServiceContext } from '@common/module/decorator'
 import { Card } from '@modules/card/card.model'
-import { CardRepository } from '@modules/card/card.repository'
-import { DeckQueryUseCase } from '@modules/deck/use-case/query.use-case'
-import { GameRepository } from '@modules/game/game.repository'
+import { CardFindUseCase } from '@modules/card/use-case/find.use-case'
+import { DeckFindUseCase } from '@modules/deck/use-case/find.use-case'
+import { RoomFindUseCase } from '@modules/room/use-case/find.use-case'
+import { GameFindUseCase } from '@modules/game/use-case/find.use-case'
 
-@Service({ name: 'card.use-case.query', context: 'Use Case' })
+@Service({ name: 'card.use-case.query', context: ServiceContext.USE_CASE })
 export class CardQueryUseCase {
     constructor(
-        @Injection.Inject('card.repository') private repository: CardRepository,
-        @Injection.Inject('game.repository') private gameRepository: GameRepository,
-        @Injection.Inject('deck.use-case.query') private deckQueryUC: DeckQueryUseCase
+        @Injection.Inject('card.use-case.find') private findUC: CardFindUseCase,
+        @Injection.Inject('deck.use-case.find') private deckFindUC: DeckFindUseCase,
+        @Injection.Inject('game.use-case.find') private gameFindUC: GameFindUseCase,
+        @Injection.Inject('room.use-case.find') private RoomFindUC: RoomFindUseCase
     ) {}
 
-    findManyByGameId(data: { id: ID }) {}
+    queryManyByGameId(data: { gameId: ID }) {
+        const gameResult = this.gameFindUC.findById({ id: data.gameId })
 
-    findManyByDeckId(data: { id: ID }) {
-        if (!this.deckQueryUC.getById({ id: data.id })) {
-            return Result.failure<Card[]>({ title: 'Query Card', message: 'Deck not found' })
+        if (!gameResult.isSuccess()) {
+            return Result.failure<Card[]>(gameResult.getError())
         }
 
-        const cards = this.repository.findMany({ where: { deckId: { equals: data.id } } })
+        return this.findManyByGameId({ gameId: data.gameId })
+    }
 
-        return Result.success<Card[]>(cards)
+    private findManyByGameId(data: { gameId: ID }) {
+        const roomResult = this.RoomFindUC.findByGameId({ gameId: data.gameId })
+
+        if (!roomResult.isSuccess()) {
+            return Result.failure<Card[]>(roomResult.getError())
+        }
+
+        return this.findManyByRoomId({ roomId: roomResult.getValue().id })
+    }
+
+    queryManyByRoomId(data: { roomId: ID }) {
+        const roomResult = this.RoomFindUC.findById({ id: data.roomId })
+
+        if (!roomResult.isSuccess()) {
+            return Result.failure<Card[]>(roomResult.getError())
+        }
+
+        return this.findManyByRoomId({ roomId: data.roomId })
+    }
+
+    private findManyByRoomId(data: { roomId: ID }) {
+        const deckResult = this.deckFindUC.findByRoomId({ roomId: data.roomId })
+
+        if (!deckResult.isSuccess()) {
+            return Result.failure<Card[]>(deckResult.getError())
+        }
+
+        return this.findManyByDeckId({ deckId: deckResult.getValue().id })
+    }
+
+    queryManyByDeckId(data: { deckId: ID }) {
+        const deckResult = this.deckFindUC.findById({ id: data.deckId })
+
+        if (!deckResult.isSuccess()) {
+            return Result.failure<Card[]>(deckResult.getError())
+        }
+
+        return this.findUC.findManyByDeckId({ deckId: data.deckId })
+    }
+
+    private findManyByDeckId(data: { deckId: ID }) {
+        return this.findUC.findManyByDeckId({ deckId: data.deckId })
     }
 }

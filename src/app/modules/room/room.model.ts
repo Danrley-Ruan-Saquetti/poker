@@ -3,6 +3,7 @@ import { Document } from '@esliph/repository-memory'
 
 export type RoomModel = {
     gameId: ID
+    playersLimit: number
     minimumBetAmount: number
     betValueCurrentRound: number
     potAmount: number
