@@ -6,7 +6,6 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
-dist
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -42,8 +41,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-.codesandbox
-.devcontainer
+.devcontainer/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -131,3 +129,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# prisma generate
+server/src/resources/database/client
+
+# Packages
+packages/server/*

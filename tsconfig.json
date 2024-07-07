@@ -1,14 +1,19 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "lib": ["ES6"],
-        "types": ["node"],
+        "module": "Node16",
+        "lib": [
+            "ES6"
+        ],
+        "types": [
+            "node",
+            "bun"
+        ],
         "declaration": false,
         "removeComments": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true,
-        "target": "es2017",
+        "target": "es2022",
         "alwaysStrict": true,
         "checkJs": false,
         "diagnostics": false,
@@ -24,15 +29,20 @@
         "strictBindCallApply": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": false,
-        "moduleResolution": "node",
+        "moduleResolution": "Node",
         "noEmitHelpers": true,
         "esModuleInterop": true,
         "strict": true,
         "resolveJsonModule": true,
         "paths": {
-            "@modules/*": ["src/app/modules/*"],
-            "@*": ["src/*"]
+            "@*": [
+                "src/*",
+                "src/app/*"
+            ]
         }
     },
-    "exclude": ["node_modules"]
+    "exclude": [
+        "node_modules",
+        "update.js"
+    ]
 }

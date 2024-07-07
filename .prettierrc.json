@@ -16,6 +16,5 @@
     "useTabs": false,
     "functionParenNewline": "never",
     "arrayInlineSingleLine": true,
-    "objectLiteralInlineSingleLine": true,
-    "trailingComma": "none"
+    "objectLiteralInlineSingleLine": true
 }
